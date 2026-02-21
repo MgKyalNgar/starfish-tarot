@@ -1,7 +1,7 @@
 // seed.js
 
 import { createClient } from '@supabase/supabase-js';
-import { tarotCards } from './lib/tarot-data'; // <-- ခင်ဗျားရဲ့ card data တွေကို ဒီ file ထဲမှာထားမယ်
+import { tarotCards } from './lib/tarot-data.js'; // <-- ခင်ဗျားရဲ့ card data တွေကို ဒီ file ထဲမှာထားမယ်
 
 // .env.local file ထဲက key တွေကို ဖတ်ဖို့အတွက် dotenv library လိုအပ်တယ်
 import dotenv from 'dotenv';
