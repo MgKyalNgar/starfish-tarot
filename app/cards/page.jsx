@@ -1,18 +1,23 @@
 // app/cards/page.jsx
+
+// cookies import ကို ဒီမှာ မလိုတော့ပါဘူး
+// import { cookies } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+
 
 export default async function CardsPage() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  // const cookieStore = cookies();  <-- ဒီတစ်ကြောင်း မလိုတော့ပါဘူး
+  
+  // createClient() ကို parameter မပါဘဲ တိုက်ရိုက်ခေါ်လိုက်ရုံပါပဲ
+  const supabase = createClient();
 
-  // Supabase ကနေ TarotCard table ထဲက data အားလုံးကို ဆွဲထုတ်မယ်
   const { data: tarotCards, error } = await supabase.from('TarotCard').select('*').order('id', { ascending: true });
 
   if (error) {
     return <p>Error fetching cards: {error.message}</p>;
   }
 
+  // ... ကျန်တဲ့ return statement ကတော့ အတူတူပါပဲ ...
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Starfish Tarot Deck ({tarotCards.length} Cards)</h1>

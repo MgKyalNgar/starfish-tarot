@@ -1,20 +1,21 @@
 // utils/supabase/server.js
-
 import { createServerClient } from '@supabase/ssr'
+// cookies function ကို ဒီ file ထဲမှာ တိုက်ရိုက် import လုပ်ပြီး သုံးပါမယ်။
 import { cookies } from 'next/headers'
 
-// Function parameter 'cookieStore' အတွက် Type ကို ထည့်သွင်းသတ်မှတ်ပေးလိုက်ပါတယ်
-export function createClient(cookieStore) {
+export function createClient() {
+  // page.jsx ကနေ cookieStore object ကြီးကို လက်ခံမယ့်အစား၊
+  // ဒီ function အခေါ်ခံရတဲ့အခါတိုင်း cookies() ကို ဒီထဲမှာပဲ တိုက်ရိုက်ခေါ်သုံးလိုက်ပါမယ်။
+  const cookieStore = cookies()
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        // 'get' method ရဲ့ parameter 'name' အတွက်လည်း Type ကို သတ်မှတ်ပေးပါတယ်
         get(name) {
           return cookieStore.get(name)?.value
         },
-        // (Optional but good practice) Action Components တွေမှာ သုံးဖို့အတွက် set နဲ့ remove function တွေကိုပါ ထည့်သွင်းပေးထားပါတယ်
         set(name, value, options) {
           try {
             cookieStore.set({ name, value, ...options })
