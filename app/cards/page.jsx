@@ -1,9 +1,9 @@
 // app/cards/page.jsx
-import { createClient } from '@/supabase/server';
+import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 
 export default async function CardsPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   // Supabase ကနေ TarotCard table ထဲက data အားလုံးကို ဆွဲထုတ်မယ်
