@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export default async function CardsPage() {
   const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient(cookieStore);
 
   // Supabase ကနေ TarotCard table ထဲက data အားလုံးကို ဆွဲထုတ်မယ်
   const { data: tarotCards, error } = await supabase.from('TarotCard').select('*').order('id', { ascending: true });
