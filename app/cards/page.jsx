@@ -1,5 +1,5 @@
 // app/cards/page.jsx
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/supabase/server';
 import { cookies } from 'next/headers';
 
 export default async function CardsPage() {
