@@ -1,20 +1,28 @@
-// lib/supabase/server.js
+// utils/supabase/server.js
+
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-export function createServerSupabaseClient() {
-  const cookieStore = cookies()
+export async function createClient() {
+  const cookieStore = await cookies()
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get(name) { return cookieStore.get(name)?.value },
-        set(name, value, options) {
-          try { cookieStore.set({ name, value, ...options }) } catch (error) {}
+        getAll() {
+          return cookieStore.getAll()
         },
-        remove(name, options) {
-          try { cookieStore.set({ name, value: '', ...options }) } catch (error) {}
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // Server Component ကနေ သွားပြင်ရင် (ဥပမာ - rendering ချိန်မှာ)
+            // Error မတက်အောင် catch ထားတာပါ
+          }
         },
       },
     }
