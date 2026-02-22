@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@/lib/*": ["utils/*"]
+      "@/*": ["./utils/*"]
     }
   },
   "include": [
