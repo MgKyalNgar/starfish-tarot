@@ -1,0 +1,61 @@
+Data Model (Database တည်ဆောက်ပုံ)
+System Sequence Diagram
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  image          String?
+  role           Role      @default(USER)
+  lastDrawDate   DateTime? // Daily Draw တစ်ရက်တစ်ခါ ကန့်သတ်ရန်
+  isSubscribed   Boolean   @default(false) // Premium ဟုတ်မဟုတ် ချက်ချင်းစစ်ရန်
+  readings       Reading[]
+  subscriptions  Subscription[]
+  bookings       Booking[]
+}
+
+model TarotCard {
+  id          Int       @id @default(autoincrement())
+  name        String
+  arcana      String    // Major or Minor
+  meaning     String    @db.Text
+  imageUrl    String // URL to the card image
+  readings    Reading[]
+}
+
+model Reading {
+  id        String   @id @default(cuid())
+  userId    String?  // Optional for Guest users
+  user      User?    @relation(fields: [userId], references: [id])
+  cardId    index
+  card      TarotCard @relation(fields: [cardId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   // PENDING, PAID, COMPLETED, CANCELLED
+  scheduledAt DateTime
+  amount      Int
+  paymentScreenshot String? // KPay/Wave Screenhot Path သိမ်းရန်
+  meetingLink       String? // Zoom သို့မဟုတ် Telegram Link ထည့်ရန်
+
+}
+
+
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  plan      String   // e.g., "MONTHLY", "YEARLY"
+  startDate DateTime @default(now())
+  endDate   DateTime // ဒီရက်ကျော်ရင် Premium Content တွေ Lock ပြန်လုပ်ရန်
+  isActive  Boolean  @default(true)
+}
+enum Role {
+  USER
+  ADMIN
+}
