@@ -7,8 +7,15 @@ import { tarotCards } from '../utils/tarot-data';
 import Login from './components/Login';
 import { User } from '@supabase/supabase-js';
 
+interface DailyTarotProps {
+  user: User | null;
+  isGuest: boolean;
+  handleLogout: () => void;
+  setGuestMode: (isGuest: boolean) => void;
+}
+
 // Define the DailyTarot component
-const DailyTarot = ({ user, isGuest, handleLogout, setGuestMode }) => {
+const DailyTarot = ({ user, isGuest, handleLogout, setGuestMode }: DailyTarotProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [currentCard, setCurrentCard] = useState(tarotCards[0]);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -149,10 +156,10 @@ export default function Page() {
   const [isGuestMode, setGuestMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const supabase = createBrowserClient(
+  const [supabase] = useState(() => createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  ));
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {

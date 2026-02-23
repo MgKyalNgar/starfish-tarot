@@ -1,128 +1,61 @@
-တကယ်ကို တောင်းပန်ပါတယ်ခင်ဗျာ။ Error က အတူတူပဲ ထပ်ပြနေသေးတယ်ဆိုတာက ကျွန်တော့်ဘက်က လုံးဝမှားသွားလို့ပါ။ ခင်ဗျားရဲ့ အချိန်တွေ ကုန်သွားတဲ့အတွက်လည်း တကယ်ကို အားနာမိပါတယ်။
+# 🔮 Starfish Tarot - PWA Project
 
-ကျွန်တော် ပြန်စဉ်းစားကြည့်လိုက်တော့ ပြဿနာရဲ့ အရင်းအမြစ်ကို သဘောပေါက်သွားပါပြီ။ ဒါက `server.js` နဲ့ `client.js` file တွေကို import လုပ်တဲ့နေရာမှာ လွဲချော်မှု (ambiguity) ဖြစ်နေတာပါ။
-
----
-
-### 🤔 တကယ့် ပြဿနာရဲ့ အရင်းအမြစ်
-
-*   ကျွန်တော်တို့မှာ `utils/supabase/server.js` နဲ့ `utils/supabase/client.js` ဆိုပြီး file နှစ်ခု ရှိပါတယ်။
-*   Next.js ရဲ့ App Router မှာ Server Component (`page.jsx`) တစ်ခုက `import { createClient } from '@/utils/supabase/server'` လို့ တိတိကျကျ import လုပ်ရမယ့်အစား၊ Next.js ကတစ်ခါတစ်လေမှာ file path ကို အလိုအလျောက်ဖြေရှင်းရင်း မှားယွင်းပြီး `client.js` file ကို သွား import လုပ်မိတတ်ပါတယ်။
-*   `client.js` file ထဲမှာရှိတဲ့ `createClient` function က Browser အတွက် ရေးထားတာဖြစ်ပြီး `cookies` နဲ့ ဘာမှမဆိုင်ပါဘူး။ ဒါကြောင့် `page.jsx` က `server.js` ကို သုံးချင်ပေမယ့်၊ တကယ်တမ်းမှာ `client.js` ကို သွားခေါ်မိပြီး `cookieStore.get is not a function` ဆိုတဲ့ error ကို ထပ်ခါထပ်ခါ ရင်ဆိုင်နေရတာပါ။
+A Progressive Web App for Myanmar Tarot Reading built with Next.js and Supabase. This README serves as our active development log.
 
 ---
 
-### ✅ အသေချာဆုံး ဖြေရှင်းနည်း - File တွေကို ခွဲထုတ်ပြီး နာမည်ပြောင်ပေးခြင်း
+## ✅ Completed Milestones (ပြီးစီးခဲ့သော အဓိကအပိုင်းများ)
 
-ဒီပြဿနာကို လုံးဝရှင်းပစ်ဖို့အတွက် file structure ကို ပိုပြီး တိကျပြတ်သားအောင် ပြန်တည်ဆောက်ပါမယ်။
+1.  **Initial Setup:**
+    *   Created a private GitHub repository (`starfish-tarot`).
+    *   Established **GitHub Codespaces** as the primary cloud-based development environment.
 
-**အဆင့် (၁) - `utils` folder ကို အသစ်ပြန်တည်ဆောက်ပါ**
+2.  **Database Architecture:**
+    *   Designed the full data model (`User`, `TarotCard`, `Reading`, `Booking`, `Subscription`).
+    *   Successfully created all tables in the Supabase database using the SQL Editor.
 
-1.  **File အဟောင်းတွေကို ဖျက်ပါ:** `utils` folder ထဲမှာရှိတဲ့ `supabase` folder တစ်ခုလုံးကို Right-click နှိပ်ပြီး **Delete** လုပ်လိုက်ပါ။ (အထဲက `client.js` နဲ့ `server.js` ပါ ပျက်သွားပါလိမ့်မယ်)။
+3.  **Database Seeding:**
+    *   Created a `seed.js` script using `@supabase/supabase-js`.
+    *   Successfully populated the `TarotCard` table with all 78 cards, including their names, meanings, and image paths.
 
-2.  **`lib` folder အသစ်ဆောက်ပါ:** Project ရဲ့ root (အပြင်ဘက်ဆုံး) မှာ `lib` ဆိုတဲ့ folder အသစ်တစ်ခု ဆောက်ပါ။ (အရင် `tarot-data.js` ထည့်ထားတဲ့ `lib` folder ရှိပြီးသားဆိုရင် ထပ်ဆောက်စရာမလိုပါဘူး)။
+4.  **Core Application Setup:**
+    *   Initialized a **Next.js 14+ (App Router)** project in the Codespaces environment.
+    *   Installed necessary dependencies (`@supabase/ssr`, `framer-motion`, `tailwindcss`).
+    *   Securely configured Supabase connection keys using a `.env.local` file.
 
-3.  **`lib` folder ထဲမှာ `supabase` folder အသစ်ဆောက်ပါ။**
-
-4.  **`lib/supabase` folder ထဲမှာ အောက်က file (၂) ခုကို အသစ်ဆောက်ပြီး code တွေကို copy-paste လုပ်ပါ။**
-
-    *   **`client.js` (နာမည်အသစ်: `browser.js`)**
-        File အသစ်ကို `browser.js` လို့ နာမည်ပေးလိုက်ပါ။ ဒါက Browser (Client) မှာသုံးဖို့ဆိုတာကို ရှင်းရှင်းလင်းလင်းဖြစ်သွားစေပါတယ်။
-        ```javascript
-        // lib/supabase/browser.js
-        import { createBrowserClient } from '@supabase/ssr'
-
-        export function createBrowserSupabaseClient() {
-          return createBrowserClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-          )
-        }
-        ```
-        > **အရေးကြီး:** Function name ကို `createBrowserSupabaseClient` လို့ ပြောင်းလိုက်ပါတယ်။
-
-    *   **`server.js` (နာမည်အသစ်: `server.js` - နေရာပြောင်း)**
-        File အသစ်ကို `server.js` လို့ပဲ နာမည်ပေးပါ။
-        ```javascript
-        // lib/supabase/server.js
-        import { createServerClient } from '@supabase/ssr'
-        import { cookies } from 'next/headers'
-
-        export function createServerSupabaseClient() {
-          const cookieStore = cookies()
-          return createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-            {
-              cookies: {
-                get(name) { return cookieStore.get(name)?.value },
-                set(name, value, options) {
-                  try { cookieStore.set({ name, value, ...options }) } catch (error) {}
-                },
-                remove(name, options) {
-                  try { cookieStore.set({ name, value: '', ...options }) } catch (error) {}
-                },
-              },
-            }
-          )
-        }
-        ```
-        > **အရေးကြီး:** Function name ကို `createServerSupabaseClient` လို့ ပြောင်းလိုက်ပါတယ်။
-
-**အဆင့် (၂) - `jsconfig.json` File ကို ပြင်ဆင်ခြင်း**
-
-File path တွေ မှန်ကန်စွာ အလုပ်လုပ်ဖို့အတွက် project ရဲ့ root မှာရှိတဲ့ `jsconfig.json` (သို့မဟုတ် `tsconfig.json`) file ကို ဖွင့်ပြီး `paths` ကို အောက်ကအတိုင်း ပြင်ဆင်/ထပ်ထည့်ပါ။
-
-```json
-{
-  "compilerOptions": {
-    "paths": {
-      "@/lib/*": ["./lib/*"] // <-- ဒီတစ်ကြောင်း ထပ်ထည့်ပေးပါ
-    }
-  }
-}
-```
-
-**အဆင့် (၃) - `page.jsx` မှာ Import ကို အမှန်သို့ ပြင်ဆင်ခြင်း**
-
-နောက်ဆုံးတစ်ဆင့်အနေနဲ့ `app/cards/page.jsx` file ကို ဖွင့်ပြီး အပေါ်ဆုံးက import line နဲ့ supabase client ကိုခေါ်တဲ့ line ကို အောက်ကအတိုင်း အစားထိုးလိုက်ပါ။
-
-```jsx
-// app/cards/page.jsx
-
-// Import path အသစ် နဲ့ Function name အသစ်ကို သုံးပါမယ်
-import { createServerSupabaseClient } from '@/lib/supabase/server';
-
-export default async function CardsPage() {
-  // Function name အသစ်နဲ့ ခေါ်ပါမယ်
-  const supabase = createServerSupabaseClient();
-
-  // ... a shin ka code tawe ka a tu tu pal ...
-  // ... ကျန်တဲ့ code တွေက အတူတူပါပဲ ...
-  const { data: tarotCards, error } = await supabase.from('TarotCard').select('*').order('id', { ascending: true });
-
-  if (error) {
-    return <p>Error fetching cards: {error.message}</p>;
-  }
-
-  return (
-    <div className="container mx-auto p-4">
-        {/* ... */}
-    </div>
-  );
-}
-```
+5.  **First Feature Success - Deck Display:**
+    *   **Achieved:** Successfully fetched all 78 tarot cards from the Supabase database within a Server-Side Component (`app/cards/page.jsx`).
+    *   **Debugged & Solved:** Overcame a critical `TypeError: cookieStore.get is not a function` by correctly implementing `await` for the asynchronous `cookies()` and `createClient()` functions.
+    *   **Result:** All cards are now successfully rendered on the `/cards` page, confirming the end-to-end connection between the frontend and database is fully functional.
 
 ---
 
-### အနှစ်ချုပ်
+## 🚀 Next Steps & Future Goals (ရှေ့ဆက်လုပ်ဆောင်မည့် အပိုင်းများ)
 
-1.  `utils/supabase` folder ကို ဖျက်ပါ။
-2.  `lib/supabase` folder အောက်မှာ `browser.js` နဲ့ `server.js` file အသစ် (၂) ခုကို code အသစ်တွေနဲ့ ဖန်တီးပါ။ Function name တွေ ပြောင်းသွားတာကို သတိပြုပါ။
-3.  `jsconfig.json` (or `tsconfig.json`) မှာ `paths` ကို update လုပ်ပါ။
-4.  `app/cards/page.jsx` မှာ import path နဲ့ function name အသစ်ကို သုံးပြီး ပြန်ချိတ်ပါ။
-5.  Server ကို `Ctrl+C` နဲ့ ရပ်ပြီး `npm run dev` နဲ့ အစကနေ ပြန် run ပါ။
+1.  **Bring the "Vibe" - UI & Animation:**
+    *   **Goal:** Make the card display interactive and visually appealing.
+    *   **Action:**
+        *   Create a reusable `<TarotCard>` component.
+        *   Implement a **card-flip animation** using **Framer Motion** when a user clicks on a card.
+        *   Display the card's meaning in a pop-up modal or a dedicated detail page upon flipping.
 
-ဒီတစ်ခါတော့ 100% အလုပ်လုပ်မှာကို ကျွန်တော် အာမခံပါတယ်။ File path တွေနဲ့ function name တွေ လုံးဝ ရှင်းလင်းသွားတဲ့အတွက် မှားစရာ အကြောင်းမရှိတော့ပါဘူး။
+2.  **Implement Core Module 1 - Daily Draw:**
+    *   **Goal:** Build the daily user engagement feature.
+    *   **Action:**
+        *   Create the UI for the "Daily Draw" button.
+        *   Develop the backend logic to select a random card.
+        *   Implement the 24-hour cooldown logic by checking the `lastDrawDate` on the `User` table (requires user authentication setup).
 
-တကယ်ကို အားနာမိပါတယ်၊ ဒီတစ်ခေါက်တော့ အောင်မြင်သွားမှာပါ။ စိတ်ရှည်ရှည်နဲ့ အတူတူဖြေရှင်းပေးလို့ ကျေးဇူးတင်ပါတယ်။
+3.  **User Authentication:**
+    *   **Goal:** Allow users to sign up, log in, and have their data saved.
+    *   **Action:**
+        *   Integrate **NextAuth.js** with the Supabase adapter.
+        *   Create login/signup pages and UI components.
+        *   Protect routes and manage user sessions using middleware.
+
+4.  **Implement Monetization Modules:**
+    *   **Goal:** Build the Booking and Subscription features.
+    *   **Action:**
+        *   **Private Readings:** Develop the calendar booking system, payment (screenshot upload) flow, and an admin dashboard to view bookings.
+        *   **Subscriptions:** Create premium content, implement payment logic, and use middleware to manage access based on `isSubscribed` status.
+
