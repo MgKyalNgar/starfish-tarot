@@ -1,32 +1,55 @@
 // app/page.jsx
-import Link from 'next/link'; // Next.js ရဲ့ built-in Link component ကိုသုံးပြီး စာမျက်နှာတွေကူးပြောင်းပါမယ်
+"use client";
+import Link from 'next/link';
+import AuthButton from '@/components/AuthButton';
+import { useAppContext } from '@/context/AppContext'; // <-- Import our custom hook
 
 export default function HomePage() {
-  return (
-    // Main container ကို screen အပြည့်ဖြစ်အောင်လုပ်ပြီး အလယ်မှာစုထားမယ်
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
+  const { currentUser, isGuest, loginAsGuest, isLoading } = useAppContext();
+  // Show a loading state while session is being determined
+  if (isLoading) {
+    return (
+      <main className="flex items-center justify-center min-h-screen bg-gray-900">
+        <p className="text-white text-xl">Loading...</p>
+      </main>
+    );
+  }
 
-      {/* Title Section */}
+  // User is either logged in or is a guest
+  const isUserActive = currentUser || isGuest;
+
+  return (
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
+      <div className="absolute top-5 right-5">
+        <AuthButton />
+      </div>
       <div className="text-center">
-        <h1 className="text-5xl font-bold mb-2">
-          Starfish Tarot
-        </h1>
+        <h1 className="text-5xl font-bold mb-2">Starfish Tarot</h1>
         <p className="text-lg text-indigo-300">
           Your mystical journey begins here.
         </p>
       </div>
-
-      {/* Separator */}
       <div className="my-8 h-px w-1/3 bg-gray-600"></div>
-
-      {/* Call to Action Button */}
-      <Link
-        href="/cards" // '/cards' page ကိုသွားမယ့် လမ်းကြောင်း
-        className="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75"
-      >
-        View the Deck
-      </Link>
-
+      {/* Conditional Buttons */}
+      <div className="flex flex-col items-center gap-4">
+        {isUserActive ? (
+          // If user is logged in OR is a guest, show the main button
+          <Link
+            href="/cards"
+            className="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-500 transition-colors"
+          >
+            View the Deck
+          </Link>
+        ) : (
+          // If no one is logged in, show the guest option
+          <button
+            onClick={loginAsGuest}
+            className="px-8 py-4 bg-gray-700 text-white font-semibold rounded-lg shadow-lg hover:bg-gray-600 transition-colors"
+          >
+            Continue as Guest
+          </button>
+        )}
+      </div>
     </main>
   );
 }
