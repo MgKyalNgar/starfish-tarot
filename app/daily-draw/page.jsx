@@ -1,10 +1,10 @@
 // app/daily-draw/page.jsx
 "use client";
 
-import { useFormState, useFormStatus } from 'react-dom'; // <-- React's built-in hooks for this
+import { useFormState, useFormStatus } from 'react-dom'; 
 import TarotCard from '@/components/TarotCard';
 import ReadingBox from '@/components/ReadingBox';
-import { drawAndInterpretCard } from '@/actions/tarotActions';
+import { drawAndInterpretCard } from '@/tarotActions'; 
 import { useEffect, useState } from 'react';
 
 // A helper component to manage the button's pending state
