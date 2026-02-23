@@ -1,12 +1,9 @@
 // app/cards/page.jsx
-import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
+import TarotCard from '@/components/TarotCard'; // <-- Component အသစ်ကို import လုပ်မယ်
 
 export default async function CardsPage() {
-  const cookieStore = await cookies();
-  const supabase = await createClient(cookieStore);
-
-  // Supabase ကနေ TarotCard table ထဲက data အားလုံးကို ဆွဲထုတ်မယ်
+  const supabase = createServerSupabaseClient();
   const { data: tarotCards, error } = await supabase.from('TarotCard').select('*').order('id', { ascending: true });
 
   if (error) {
@@ -14,14 +11,12 @@ export default async function CardsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Starfish Tarot Deck ({tarotCards.length} Cards)</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+    <div className="container mx-auto p-4 bg-gray-900 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-center text-white">Starfish Tarot Deck</h1>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6">
         {tarotCards.map((card) => (
-          <div key={card.id} className="border rounded-lg p-2 text-center shadow-lg">
-            <img src={card.imageUrl} alt={card.name} className="w-full h-auto rounded-md" />
-            <p className="mt-2 text-sm font-semibold">{card.name}</p>
-          </div>
+          // ရိုးရိုး div အစား <TarotCard> component ကို ဒီမှာသုံးမယ်
+          <TarotCard key={card.id} card={card} />
         ))}
       </div>
     </div>
