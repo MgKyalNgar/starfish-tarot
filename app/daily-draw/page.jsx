@@ -1,72 +1,66 @@
 // app/daily-draw/page.jsx
 "use client";
 
-import { useState, useTransition } from 'react';
+import { useFormState, useFormStatus } from 'react-dom'; // <-- React's built-in hooks for this
 import TarotCard from '@/components/TarotCard';
 import ReadingBox from '@/components/ReadingBox';
-import { drawAndInterpretCard } from '@/actions/tarotActions'; // <-- Import our new Server Action
+import { drawAndInterpretCard } from '@/actions/tarotActions';
+import { useEffect, useState } from 'react';
+
+// A helper component to manage the button's pending state
+function SubmitButton() {
+  const { pending } = useFormStatus(); // This hook gets the form's pending state
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="px-10 py-5 bg-purple-700 text-white font-bold text-xl rounded-full shadow-lg hover:bg-purple-600 transition-transform hover:scale-105 duration-300 disabled:bg-gray-500 disabled:scale-100"
+    >
+      {pending ? "Consulting the cosmos..." : "Draw Your Card"}
+    </button>
+  );
+}
+
+const initialState = {
+  card: null,
+  reading: null,
+  error: null,
+};
 
 export default function DailyDrawPage() {
-  const [drawnCard, setDrawnCard] = useState(null);
+  // useFormState hook manages the state based on the Server Action's return value
+  const [state, formAction] = useFormState(drawAndInterpretCard, initialState);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
-  const [aiReading, setAiReading] = useState('');
-  const [error, setError] = useState('');
-  
-  // useTransition hook is the modern way to handle pending states for Server Actions
-  const [isPending, startTransition] = useTransition();
 
-  const handleDrawCard = () => {
-    startTransition(async () => {
-      setDrawnCard(null);
-      setIsCardFlipped(false);
-      setAiReading('');
-      setError('');
-
-      const { card, reading, error: actionError } = await drawAndInterpretCard();
-
-      if (actionError) {
-        setError(actionError);
-        return;
-      }
-
-      setDrawnCard(card);
-      setAiReading(reading);
-      
-      // Flip the card after it has been set in state
+  useEffect(() => {
+    // When a new card is drawn by the action, flip it
+    if (state.card) {
       setTimeout(() => setIsCardFlipped(true), 100);
-    });
-  };
+    } else {
+      // Reset flip state if there's no card (e.g., on error or initial load)
+      setIsCardFlipped(false);
+    }
+  }, [state.card]); // Dependency array ensures this runs only when the card changes
 
   return (
     <main className="flex flex-col items-center justify-start min-h-screen bg-gray-900 text-white p-8 pt-24">
       <h1 className="text-4xl font-bold text-indigo-300 mb-4">Your Daily Guidance</h1>
       
       <div className="h-96 flex items-center justify-center">
-        {!drawnCard && !isPending && (
-           <button
-            onClick={handleDrawCard}
-            disabled={isPending}
-            className="px-10 py-5 bg-purple-700 text-white font-bold text-xl rounded-full shadow-lg hover:bg-purple-600 transition-transform hover:scale-105 duration-300 disabled:bg-gray-500 disabled:scale-100"
-          >
-            Draw Your Card
-          </button>
-        )}
-
-        {isPending && (
-          <p className="text-2xl animate-pulse">Consulting the cosmos...</p>
-        )}
-        
-        {drawnCard && (
+        {state.card ? (
           <div className="w-64">
-            <TarotCard card={drawnCard} isFlipped={isCardFlipped} />
+            <TarotCard card={state.card} isFlipped={isCardFlipped} />
           </div>
+        ) : (
+          <form action={formAction}>
+            <SubmitButton />
+          </form>
         )}
       </div>
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+      {state.error && <p className="text-red-500 mt-4">{state.error}</p>}
 
-      {/* ReadingBox doesn't need its own loading state anymore, it just depends on aiReading */}
-      <ReadingBox reading={aiReading} isLoading={false} />
+      <ReadingBox reading={state.reading} isLoading={false} />
     </main>
   );
 }

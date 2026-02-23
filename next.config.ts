@@ -3,8 +3,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // experimental block ကို လုံးဝ ဖယ်ရှားလိုက်ပါ
-  images: {
+ images: {
     remotePatterns: [
       {
         protocol: 'https',
