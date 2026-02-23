@@ -35,7 +35,7 @@ export default function HomePage() {
         {isUserActive ? (
           // If user is logged in OR is a guest, show the main button
           <Link
-            href="/cards"
+            href="/daily-draw"
             className="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-500 transition-colors"
           >
             View the Deck
