@@ -32,10 +32,14 @@ export default function TarotCard({ card }) {
       >
         {/* Card Back Side (မှောက်ထားတဲ့ဘက်) */}
         <div
-          className="absolute w-full h-full bg-indigo-800 rounded-lg shadow-xl flex items-center justify-center"
-          style={{ backfaceVisibility: 'hidden' }} // လှန်လိုက်ရင် ဒီဘက်ခြမ်းကို မမြင်ရတော့အောင်
+          className="absolute w-full h-full rounded-lg shadow-xl" // background color နဲ့ flex properties တွေ မလိုတော့ဘူး
+          style={{ backfaceVisibility: 'hidden' }}
         >
-          <span className="text-4xl">🔮</span>
+          <img
+            src="/Tarot Card/tarot-card-back.png"
+            alt="Tarot Card Back"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </div>
 
         {/* Card Front Side (ပေါ်နေတဲ့ဘက်) */}

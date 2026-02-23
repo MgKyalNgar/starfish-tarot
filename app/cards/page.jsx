@@ -1,11 +1,15 @@
 // app/cards/page.jsx
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+//import { createServerSupabaseClient } from '@/utils/supabase/server';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 import TarotCard from '@/components/TarotCard'; // <-- Component အသစ်ကို import လုပ်မယ်
 
 export default async function CardsPage() {
-  const supabase = createServerSupabaseClient();
-  const { data: tarotCards, error } = await supabase.from('TarotCard').select('*').order('id', { ascending: true });
-
+  const supabase = await createClient(cookies());
+    const { data: tarotCards, error } = await supabase
+    .from('TarotCard')
+    .select('*')
+    .order('id', { ascending: true }); // .order() ကို .select() နဲ့ တစ်ဆက်တည်း ခေါ်သုံးရပါမယ်။
   if (error) {
     return <p>Error fetching cards: {error.message}</p>;
   }
