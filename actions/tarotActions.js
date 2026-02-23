@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // This is a "private" function within the file. It's not exported.
 // It contains the logic that needs cookies().
+
 async function getCardAndReadingFromDB() {
   const supabase = createClient(); // This is now safe to call here.
 
@@ -21,14 +22,15 @@ async function getCardAndReadingFromDB() {
 
 // This is the PUBLIC action that will be passed to useFormState.
 // Notice it does NOT call cookies() directly.
-export async function drawAndInterpretCard(previousState, formData) {
+export async function drawAndInterpretCard() {
+   const supabase = createClient();
   try {
     // 1. Call the private function to do the database work.
     const cardData = await getCardAndReadingFromDB();
 
     // 2. Call the Gemini API (this doesn't need cookies).
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = `You are a wise and empathetic Tarot reader. I have drawn the card "${cardData.name}". Its traditional meaning is: "${cardData.meaning}". Based on this, provide a short, one-paragraph guidance for my day in a mystical and encouraging tone. Speak in Burmese (Myanmar Language).`;
     
     const result = await model.generateContent(prompt);
