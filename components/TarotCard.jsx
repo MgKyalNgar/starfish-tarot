@@ -59,7 +59,7 @@ export default function TarotCard({ card }) {
           <AnimatePresence>
             {showMeaning && (
               <motion.div
-                className="absolute inset-0 bg-black bg-opacity-80 text-white p-4 overflow-y-auto"
+                className="absolute inset-0 rounded-lg p-4 flex flex-col justify-center items-center text-center text-white bg-gradient-to-t from-indigo-950/90 to-purple-800/70 backdrop-blur-sm overflow-y-auto"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
