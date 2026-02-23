@@ -1,13 +1,13 @@
 // actions/tarotActions.js
 "use server";
 
-import { createServerSupabaseClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // This is a "private" function within the file. It's not exported.
 // It contains the logic that needs cookies().
 async function getCardAndReadingFromDB() {
-  const supabase = createServerSupabaseClient(); // This is now safe to call here.
+  const supabase = createClient(); // This is now safe to call here.
 
   const { count, error: countError } = await supabase.from('TarotCard').select('*', { count: 'exact', head: true });
   if (countError) throw countError;
