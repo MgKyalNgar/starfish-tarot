@@ -4,7 +4,7 @@
 import { useFormState, useFormStatus } from 'react-dom'; 
 import TarotCard from '@/components/TarotCard';
 import ReadingBox from '@/components/ReadingBox';
-import { drawAndInterpretCard } from '@/tarotActions'; 
+import { drawAndInterpretCard } from '@/actions/tarotActions'; 
 import { useEffect, useState } from 'react';
 
 // A helper component to manage the button's pending state
