@@ -29,7 +29,7 @@ export async function drawAndInterpretCard() {
 
     // 4. Call Gemini API for interpretation
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `You are a wise and empathetic Tarot reader. I have drawn the card "${cardData.name}". Its traditional meaning is: "${cardData.meaning}". Based on this, provide a short, one-paragraph guidance for my day in a mystical and encouraging tone. Speak in Burmese (Myanmar Language).`;
     
