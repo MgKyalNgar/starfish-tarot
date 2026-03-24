@@ -1,9 +1,9 @@
 /* Color Palette - Techno Style (No purely black background) */
 :root {
-    --bg-dark: #0a1128;      /* Deep navy blue */
-    --bg-glow: #1c2541;      /* Slightly lighter blue for glow */
-    --accent-cyan: #00f0ff;  /* Techno neon cyan */
-    --text-main: #e0e1dd;    /* Off-white */
+    --bg-dark: #0a1128;
+    --bg-glow: #1c2541;
+    --accent-cyan: #00f0ff;
+    --text-main: #e0e1dd;
     --text-muted: #8d99ae;
 }
 
@@ -15,7 +15,6 @@
 
 body {
     background-color: var(--bg-dark);
-    /* အလယ်မှာ အလင်းရောင်လေး ပြထားတဲ့ Techno Vibe */
     background-image: radial-gradient(circle at 50% 30%, var(--bg-glow) 0%, transparent 60%);
     color: var(--text-main);
     font-family: 'Padauk', 'Orbitron', sans-serif;
@@ -25,60 +24,52 @@ body {
     overflow-x: hidden;
 }
 
-/* --- Navigation --- */
+/* --- Navigation (နဂိုအတိုင်း ထားပါ) --- */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem; /* Padding ကို နည်းနည်းလျှော့မည် */
 }
 
 .logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Mobile အတွက် logo သေးမည် */
     font-weight: 700;
     color: var(--accent-cyan);
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .nav-link {
     color: var(--text-main);
     text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease;
+    font-size: 0.9rem;
 }
 
-.nav-link:hover {
-    color: var(--accent-cyan);
-}
-
-/* --- Main Home Container --- */
-.home-container {
+/* --- Main Containers & Hero (ပြင်ဆင်ချက်) --- */
+.home-container, .library-container, .daily-draw-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 1.5rem; /* Padding ညီအောင် ညှိမည် */
     text-align: center;
-    padding: 2rem;
-}
-
-/* --- Hero Section --- */
-.hero {
-    margin-bottom: 4rem;
 }
 
 .glow-text {
     font-family: 'Orbitron', sans-serif;
-    font-size: 4rem;
+    /* Responsive font size: ဖုန်းမှာ သေးပြီး Desktop မှာ ကြီးပါမည် */
+    font-size: clamp(2rem, 8vw, 4rem); 
     color: #ffffff;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .subtitle {
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
     color: var(--text-muted);
+    margin-bottom: 2rem;
 }
 
 /* --- CTA Link Group --- */
@@ -220,14 +211,22 @@ footer {
 
 .card-info h3 {
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+     margin-bottom: 0.5rem;
+     margin-bottom: 0.5rem;
     color: #fff;
-}
-
+    line-height: 1.2;
+ }
+ }
+ 
+ 
 .card-info p {
+.subtitle {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+     color: var(--text-muted);
+     color: var(--text-muted);
     font-family: 'Padauk', sans-serif;
+    margin-bottom: 2rem;
 }
 
 /* --- Daily Draw Styles --- */
@@ -237,17 +236,24 @@ footer {
     align-items: center;
     padding: 2rem;
     flex: 1;
-}
+ }
 
-/* 3D Scene Setup */
+/* --- 3D Flip Card Animation (အဓိက ပြင်ဆင်ချက်) --- */
 .card-scene {
     perspective: 1000px;
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Scene က နေရာအပြည့်ယူမည် */
 }
 
 .flip-card {
-    width: 250px;
-    height: 420px;
+    /* Fixed px များ ဖယ်ရှားမည်။ Responsive Width သုံးမည် */
+    width: 80vw; /* မျက်နှာပြင်အကျယ်ရဲ့ ၈၀% */
+    max-width: 300px; /* ဒါပေမယ့် 300px ထက် မကြီးရ */
+    
+    /* Tarot ကတ်ရဲ့ စံ aspect ratio ကို သတ်မှတ်ခြင်းဖြင့် ပုံမပျက်တော့ပါ */
+    aspect-ratio: 300 / 520; 
     cursor: pointer;
 }
 
@@ -255,12 +261,10 @@ footer {
     position: relative;
     width: 100%;
     height: 100%;
-    text-align: center;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* ခပ်ဆတ်ဆတ်လေး လှန်သွားမည့် Animation */
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
 }
 
-/* JavaScript က .flipped class ထည့်ပေးလိုက်ရင် လှည့်သွားမည် */
 .flip-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
 }
@@ -272,18 +276,17 @@ footer {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* ကတ်ပုံတွေ ဘေးမထွက်အောင် ကာမည် */
 }
 
-/* ကတ်ကျောဘက် ဒီဇိုင်း (Techno Pattern) */
+/* ကတ်ကျောဘက် ဒီဇိုင်း */
 .flip-card-front {
     background: linear-gradient(135deg, #1c2541, #0a1128);
     border: 2px solid rgba(0, 240, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
+    font-size: 2.5rem;
 }
 
 .flip-card-front:hover {
@@ -293,13 +296,12 @@ footer {
 
 .flip-card-back {
     transform: rotateY(180deg);
-    background-color: #fff;
 }
 
 .flip-card-back img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill; /* ပုံကို Frame ထဲ အပြည့်ဝင်အောင် ညှိမည် */
 }
 
 /* Result Section */
