@@ -229,3 +229,123 @@ footer {
     color: var(--text-muted);
     font-family: 'Padauk', sans-serif;
 }
+
+/* --- Daily Draw Styles --- */
+.daily-draw-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    flex: 1;
+}
+
+/* 3D Scene Setup */
+.card-scene {
+    perspective: 1000px;
+    margin-bottom: 2rem;
+}
+
+.flip-card {
+    width: 250px;
+    height: 420px;
+    cursor: pointer;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* ခပ်ဆတ်ဆတ်လေး လှန်သွားမည့် Animation */
+    transform-style: preserve-3d;
+}
+
+/* JavaScript က .flipped class ထည့်ပေးလိုက်ရင် လှည့်သွားမည် */
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ကတ်ကျောဘက် ဒီဇိုင်း (Techno Pattern) */
+.flip-card-front {
+    background: linear-gradient(135deg, #1c2541, #0a1128);
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.flip-card-front:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+    background-color: #fff;
+}
+
+.flip-card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Result Section */
+.result-section {
+    max-width: 600px;
+    text-align: center;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.result-section.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    display: none;
+}
+
+.result-section.fade-in {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.meaning-box {
+    background: rgba(28, 37, 65, 0.6);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+}
+
+.save-journal-btn {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.save-journal-btn:hover {
+    background: var(--accent-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--accent-cyan);
+}
