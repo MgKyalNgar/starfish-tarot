@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card of the Day - Starfish Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Starfish Tarot</a>
+        <div class="auth-links">
+            <a href="library.html" class="nav-link">Library</a>
+        </div>
+    </nav>
+
+    <main class="daily-draw-container">
+        <h1 class="glow-text text-center">Your Card of the Day</h1>
+        <p class="subtitle text-center" style="margin-bottom: 2rem;">ယနေ့အတွက် သင့်ရဲ့ လမ်းညွှန်ချက်ကို သိရှိရန် ကတ်ကို နှိပ်ပါ</p>
+
+        <div class="card-scene">
+            <div id="dailyCard" class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front card-pattern">
+                        <div class="pattern-glow">✨</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <img id="dailyCardImage" src="" alt="Tarot Card">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dailyResult" class="result-section hidden">
+            <h2 id="dailyCardName" style="color: #fff; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif;"></h2>
+            <span id="dailyCardType" style="color: var(--accent-cyan); font-size: 0.9rem; letter-spacing: 1px;"></span>
+            
+            <div class="meaning-box">
+                <p id="dailyCardMeaning" style="line-height: 1.6;"></p>
+            </div>
+            
+            <button onclick="window.location.href='login.html'" class="save-journal-btn">
+                Save to Journal
+            </button>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
