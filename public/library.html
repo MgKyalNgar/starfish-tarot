@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Library - Starfish Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Starfish Tarot</a>
+        <div class="auth-links">
+            <a href="index.html" class="nav-link">Home</a>
+        </div>
+    </nav>
 
+    <main class="library-container">
+        <h1 class="glow-text text-center">Tarot Library</h1>
+        
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">All Cards</button>
+            <button class="filter-btn" data-filter="Major Arcana">Major</button>
+            <button class="filter-btn" data-filter="Wands">Wands</button>
+            <button class="filter-btn" data-filter="Cups">Cups</button>
+            <button class="filter-btn" data-filter="Swords">Swords</button>
+            <button class="filter-btn" data-filter="Pentacles">Pentacles</button>
+        </div>
+
+        <div id="loading" class="loading-text">Loading Cards...</div>
+
+        <div id="card-grid" class="card-grid"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Starfish Tarot. Created by Mg Kyal Ngar.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
