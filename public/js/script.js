@@ -118,7 +118,7 @@ function setupDailyCardAnimation(card) {
         setTimeout(() => {
             resultSection.classList.remove('hidden');
             resultSection.classList.add('fade-in');
-        }, 600);
+        }, 1800);
         
     }, { once: true }); // { once: true } ကြောင့် တစ်ခါပဲ နှိပ်လို့ရပါမည်
 }
