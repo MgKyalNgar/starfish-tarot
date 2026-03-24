@@ -127,3 +127,105 @@ footer {
     font-size: 0.9rem;
     color: var(--text-muted);
 }
+
+
+/* --- Library Page Styles --- (Techno Style)  */
+.library-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex: 1;
+}
+
+.text-center { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+
+/* Filter Buttons */
+.filter-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--text-main);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    color: #fff;
+}
+
+/* Loading Animation */
+.loading-text {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--accent-cyan);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* Card Grid Layout */
+.card-grid {
+    display: grid;
+    /* မျက်နှာပြင်အကျယ်ပေါ် မူတည်ပြီး ကတ်တွေကို အလိုအလျောက် စီပေးပါမည် */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+/* Individual Card Design */
+.tarot-card {
+    background: rgba(28, 37, 65, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.tarot-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+    border-color: var(--accent-cyan);
+}
+
+.tarot-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-info {
+    padding: 1rem;
+    text-align: center;
+}
+
+.card-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.card-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'Padauk', sans-serif;
+}
