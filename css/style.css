@@ -1,0 +1,129 @@
+/* Color Palette - Techno Style (No purely black background) */
+:root {
+    --bg-dark: #0a1128;      /* Deep navy blue */
+    --bg-glow: #1c2541;      /* Slightly lighter blue for glow */
+    --accent-cyan: #00f0ff;  /* Techno neon cyan */
+    --text-main: #e0e1dd;    /* Off-white */
+    --text-muted: #8d99ae;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    /* အလယ်မှာ အလင်းရောင်လေး ပြထားတဲ့ Techno Vibe */
+    background-image: radial-gradient(circle at 50% 30%, var(--bg-glow) 0%, transparent 60%);
+    color: var(--text-main);
+    font-family: 'Padauk', 'Orbitron', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* --- Navigation --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-cyan);
+}
+
+/* --- Main Home Container --- */
+.home-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* --- Hero Section --- */
+.hero {
+    margin-bottom: 4rem;
+}
+
+.glow-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+/* --- CTA Link Group --- */
+.cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.cta-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: rgba(28, 37, 65, 0.5);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.cta-link:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    transform: translateX(10px); /* Hover လုပ်ရင် ညာဘက်ကို နည်းနည်းရွေ့သွားမည် */
+}
+
+.cta-link:hover .arrow {
+    color: var(--accent-cyan);
+    transform: translateX(5px);
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
