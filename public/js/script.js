@@ -35,16 +35,19 @@ function displayCards(cards) {
     cardGrid.innerHTML = ''; // အဟောင်းတွေရှိရင် အရင်ရှင်းထုတ်မည်
     
     cards.forEach(card => {
-        // ကတ်တစ်ကတ်စာအတွက် HTML Element ဖန်တီးခြင်း
         const cardDiv = document.createElement('div');
         cardDiv.className = 'tarot-card';
+        
+        // ကတ်အမျိုးအစား စစ်ဆေးခြင်း (Suit က null ဖြစ်နေရင် 'Major Arcana' ကို အစားထိုးပြမည်)
+        const cardType = card.suit ? card.suit : card.arcana;
         
         // ကတ်ထဲတွင် ပုံနှင့် စာသားများ ထည့်သွင်းခြင်း
         cardDiv.innerHTML = `
             <img src="${card.imageUrl}" alt="${card.name}" loading="lazy">
             <div class="card-info">
                 <h3>${card.name}</h3>
-                <p>${card.short_meaning}</p>
+                <span style="color: var(--accent-cyan); font-size: 0.8rem; letter-spacing: 1px;">${cardType}</span>
+                <p style="margin-top: 8px; line-height: 1.4;">${card.short_meaning}</p>
             </div>
         `;
         
