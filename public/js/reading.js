@@ -93,20 +93,24 @@ function startShuffleAnimation() {
     }, 2500);
 }
 
-// ပြင်ဆင်ချက်: ကတ် ၇၈ ကတ်ကို အတန်းလိုက် ဘယ်/ညာ နှစ်တန်း ဖြန့်ခင်းခြင်း
+// ပြင်ဆင်ချက်: ကတ် ၇၈ ကတ်ကို အလျားလိုက် အတန်းလိုက် (Horizontal Rows) ဖြန့်ခင်းခြင်း
 function spreadCardsOut() {
     const deckArea = document.getElementById('deck-area');
     const spreadContainer = document.createElement('div');
     spreadContainer.className = 'spread-area';
     
-    // ဖုန်းမျက်နှာပြင်နှင့် Desktop အတွက် အကွာအဝေးများကို ချိန်ညှိခြင်း
+    // ဖုန်းမျက်နှာပြင်နှင့် Desktop အတွက် ချိန်ညှိခြင်း (Mobile First)
     const isMobile = window.innerWidth <= 600;
-    const verticalOverlap = isMobile ? 25 : 35; // အောက်သို့ ထပ်မည့် အကွာအဝေး (Pixel)
-    const cardHeight = isMobile ? 120 : 150;
-    const totalRows = 39; // ၇၈ ကတ်ကို ၂ တန်းခွဲလျှင် ၃၉ တန်း
     
-    // Container ရဲ့ အမြင့်ကို သတ်မှတ်ပေးမှ အောက်ကို Scroll ဆွဲ၍ရမည်
-    spreadContainer.style.height = `${(totalRows * verticalOverlap) + cardHeight}px`;
+    // ၇၈ ကတ်ကို အချိုးကျ ခွဲဝေခြင်း (ဖုန်း: ၁၃ ကတ် x ၆ တန်း | Desktop: ၂၆ ကတ် x ၃ တန်း)
+    const cardsPerRow = isMobile ? 13 : 26; 
+    const xOverlap = isMobile ? 22 : 30; // ဘေးတိုက် ထပ်မည့် အကွာအဝေး (Pixel)
+    const ySpacing = isMobile ? 120 : 160; // အောက်တစ်တန်းနှင့် အကွာအဝေး (Pixel)
+    const cardHeight = isMobile ? 120 : 150;
+    const totalRows = Math.ceil(78 / cardsPerRow);
+    
+    // Container ရဲ့ အမြင့်ကို တွက်ချက်ပေးမှ အောက်ကို သေချာ Scroll ဆွဲ၍ရမည်
+    spreadContainer.style.height = `${(totalRows - 1) * ySpacing + cardHeight + 50}px`;
     
     const title = document.querySelector('#step-shuffle h2');
     title.innerText = `ကျေးဇူးပြု၍ သင့်စိတ်ကြိုက် ကတ် (${cardsToDraw}) ကတ်ကို ရွေးချယ်ပါ`;
@@ -124,18 +128,23 @@ function spreadCardsOut() {
         
         spreadContainer.appendChild(cardItem);
         
-        // ဘယ်၊ ညာ တစ်လှည့်စီ ဖြန့်ချသည့် Animation
+        // ကတ်တစ်ခုချင်းစီကို အလျားလိုက် အတန်းများအဖြစ် ဖြန့်ချသည့် Animation
         setTimeout(() => {
-            const isLeft = i % 2 === 0; // စုံဂဏန်းဆိုလျှင် ဘယ်ဘက်
-            const rowIndex = Math.floor(i / 2); // အောက်သို့ ဆင်းမည့် တန်းအမှတ်
+            const colIndex = i % cardsPerRow; // ဘယ်ရောက်နေသည့် ကတ်အမှတ်စဉ် (Column)
+            const rowIndex = Math.floor(i / cardsPerRow); // ဘယ်လောက်မြောက် တန်း (Row)
             
-            const xOffset = isMobile ? 45 : 80; // အလယ်ဗဟိုမှ ဘယ်ညာ ကွာဝေးမှု
-            const translateX = isLeft ? -xOffset : xOffset;
-            const translateY = rowIndex * verticalOverlap; // အောက်သို့ တဖြည်းဖြည်း ဆင်းမည်
+            // တစ်တန်းစာ အကျယ်ကို တွက်ချက်ပြီး အလယ်ဗဟို (Center) ကျအောင် ညှိခြင်း
+            const rowWidth = (cardsPerRow - 1) * xOverlap;
+            const startX = -rowWidth / 2;
+            
+            const translateX = startX + (colIndex * xOverlap);
+            const translateY = rowIndex * ySpacing;
             
             // CSS တွင် Hover လုပ်သည့်အခါ မူလနေရာ မခုန်သွားစေရန် Variable ဖြင့် သိမ်းပေးခြင်း
             cardItem.style.setProperty('--tx', `${translateX}px`);
             cardItem.style.setProperty('--ty', `${translateY}px`);
+            
+            // နေရာချထားခြင်း 
             cardItem.style.transform = `translate(var(--tx), var(--ty))`;
             
         }, i * 15); // ကတ်တစ်ခုချင်းစီကို ၁၅ မီလီစက္ကန့်စီ ခြားပြီး ဖြန့်ချမည်
