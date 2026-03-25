@@ -520,3 +520,89 @@ footer {
     color: var(--bg-dark);
     box-shadow: 0 0 15px var(--accent-cyan);
 }
+
+/* =========================================
+   Step 2: Shuffle & Spread Animations
+========================================= */
+
+/* ကတ်ထုတ်ကြီး နေရာချထားခြင်း */
+.deck-area {
+    position: relative;
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    margin-bottom: 2rem;
+}
+
+/* ကတ်ထုတ်ကြီး (Deck Stack) */
+.deck-stack {
+    position: relative;
+    width: 120px;
+    height: 200px;
+}
+
+.deck-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1c2541, #0a1128);
+    border: 2px solid rgba(0, 240, 255, 0.4);
+    border-radius: 8px;
+    box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
+    /* ကတ်ကျောဘက် ဒီဇိုင်း အစက်အပြောက်များ */
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 240, 255, 0.1) 10px, rgba(0, 240, 255, 0.1) 20px);
+    transition: transform 0.5s ease;
+}
+
+/* ကတ်မွှေသည့် Animation (ဘယ်၊ ညာ ခွဲထွက်ခြင်း) */
+@keyframes shuffleLeft {
+    0%, 100% { transform: translateX(0) rotate(0); z-index: 1; }
+    50% { transform: translateX(-70px) rotate(-15deg); z-index: 10; }
+}
+@keyframes shuffleRight {
+    0%, 100% { transform: translateX(0) rotate(0); z-index: 1; }
+    50% { transform: translateX(70px) rotate(15deg); z-index: 10; }
+}
+
+.deck-stack.shuffling .deck-card:nth-child(odd) {
+    animation: shuffleLeft 0.6s ease-in-out infinite;
+}
+.deck-stack.shuffling .deck-card:nth-child(even) {
+    animation: shuffleRight 0.6s ease-in-out infinite reverse;
+}
+
+/* ဖြန့်ခင်းထားသော ကတ်များ (The Spread) */
+.spread-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px 10px;
+    max-width: 100%;
+    opacity: 0; /* ပထမတော့ ဖျောက်ထားမည် */
+    transform: scale(0.9);
+    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.spread-area.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.spread-card-item {
+    width: 50px;  /* ဖုန်းအတွက် ကတ်အရွယ်အစား သေးမည် */
+    height: 85px;
+    background: linear-gradient(135deg, #1c2541, #0a1128);
+    border: 1px solid rgba(0, 240, 255, 0.5);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, margin 0.3s ease;
+    margin-left: -25px; /* ကတ်များကို တစ်ခုနဲ့တစ်ခု ထပ်နေစေရန် (Overlap) */
+    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+/* မျက်နှာပြင်ကြီးလျှင် ကတ်ကို နည်းနည်း ကြီးမည် */
+@media (min-width: 600px) {
+    .spread-card-item { width: 70px; height: 120px; margin-left: -40px; }
