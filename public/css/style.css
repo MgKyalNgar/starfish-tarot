@@ -281,12 +281,26 @@ footer {
 }
 
 .flip-card-front {
-    background: linear-gradient(135deg, #1c2541, #0a1128);
-    border: 2px solid rgba(0, 240, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2.5rem;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.flip-card-front, .deck-card, .spread-card-item {
+    background-color: #0a1128; /* ပုံမပေါ်ခင်ယာယီပြမည့်အရောင် */
+    background-image: url('/Tarot Card/card_back.jpg'); /* သင့်ကတ်ကျောဘက်ပုံလမ်းကြောင်း */
+    background-size: cover;
+    background-position: center;
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
 .flip-card-front:hover {
@@ -296,7 +310,6 @@ footer {
 
 .flip-card-back {
     transform: rotateY(180deg);
-    background-color: #fff;
 }
 
 .flip-card-back img {
@@ -534,6 +547,8 @@ footer {
     align-items: center;
     perspective: 1000px;
     margin-bottom: 2rem;
+    width: 100%;
+    overflow: visible; /* Hover effect မြင်ရစေရန် */
 }
 
 /* ကတ်ထုတ်ကြီး (Deck Stack) */
@@ -547,12 +562,6 @@ footer {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1c2541, #0a1128);
-    border: 2px solid rgba(0, 240, 255, 0.4);
-    border-radius: 8px;
-    box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
-    /* ကတ်ကျောဘက် ဒီဇိုင်း အစက်အပြောက်များ */
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 240, 255, 0.1) 10px, rgba(0, 240, 255, 0.1) 20px);
     transition: transform 0.5s ease;
 }
 
@@ -573,14 +582,15 @@ footer {
     animation: shuffleRight 0.6s ease-in-out infinite reverse;
 }
 
-/* ဖြန့်ခင်းထားသော ကတ်များ (The Spread) */
+/* ဖြန့်ခင်းထားသော ကတ်များ (The Spread - Horizontal Overlap) */
 .spread-area {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    padding: 20px 10px;
-    max-width: 100%;
-    opacity: 0; /* ပထမတော့ ဖျောက်ထားမည် */
+    align-items: center;
+    width: 100%;
+    height: 200px;
+    position: relative;
+    opacity: 0;
     transform: scale(0.9);
     transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -590,19 +600,28 @@ footer {
     transform: scale(1);
 }
 
+/* ပြင်ဆင်ချက်: ကတ်များကို တစ်ခုနဲ့တစ်ခု ထပ်နေစေရန် (Overlap) */
 .spread-card-item {
-    width: 50px;  /* ဖုန်းအတွက် ကတ်အရွယ်အစား သေးမည် */
-    height: 85px;
-    background: linear-gradient(135deg, #1c2541, #0a1128);
-    border: 1px solid rgba(0, 240, 255, 0.5);
-    border-radius: 5px;
+    width: 70px;
+    height: 120px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, margin 0.3s ease;
-    margin-left: -25px; /* ကတ်များကို တစ်ခုနဲ့တစ်ခု ထပ်နေစေရန် (Overlap) */
-    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
-    position: relative;
+    position: absolute; /* အချင်းချင်း ထပ်နေစေရန် absolute သုံးမည် */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.8s ease, z-index 0s;
+    transform-origin: center bottom;
 }
 
-/* မျက်နှာပြင်ကြီးလျှင် ကတ်ကို နည်းနည်း ကြီးမည် */
-@media (min-width: 600px) {
-    .spread-card-item { width: 70px; height: 120px; margin-left: -40px; }
+/* Hover လုပ်လျှင် အပေါ်သို့ ကြွတက်လာစေရန် (ပြင်ဆင်ချက်) */
+.spread-card-item:hover {
+    transform: translateY(-30px) scale(1.1) rotate(0deg) !important;
+    z-index: 1000 !important; /* Hover လုပ်သောကတ်ကို အပေါ်ဆုံးတင်မည် */
+    box-shadow: 0 10px 20px rgba(0, 240, 255, 0.5);
+    border-color: #fff;
+}
+
+/* ပြင်ဆင်ချက်: နှိပ်လိုက်ရင် ဘောင်အပြင်ကို ပျံထွက်သွားမည့် Animation (.selected class) */
+.spread-card-item.selected {
+    transform: translate(-100vw, -100px) rotate(-90deg) scale(0.5) !important;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000 !important;
+}
