@@ -18,7 +18,7 @@ body {
     background-image: radial-gradient(circle at 50% 30%, var(--bg-glow) 0%, transparent 60%);
     color: var(--text-main);
     font-family: 'Padauk', 'Orbitron', sans-serif;
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -114,7 +114,8 @@ body {
 .arrow {
     transition: transform 0.3s ease;
 }
-
+
+
 /* --- Footer --- */
 footer {
     width: 100%; 
