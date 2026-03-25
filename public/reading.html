@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Reading - Starfish Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Starfish Tarot</a>
+        <div class="auth-links">
+            <a href="library.html" class="nav-link">Library</a>
+            <a href="#" class="nav-link" id="navLoginBtn">Login</a>
+        </div>
+    </nav>
 
+    <main class="reading-container">
+        
+        <section id="step-selection" class="step-section active">
+            <h1 class="glow-text text-center" style="font-size: clamp(1.8rem, 5vw, 3rem);">Choose Your Spread</h1>
+            <p class="subtitle text-center">သင်သိချင်သော အကြောင်းအရာနှင့် ကိုက်ညီမည့် ဟောစာတမ်း ပုံစံကို ရွေးချယ်ပါ</p>
+
+            <div class="spread-grid">
+                <div class="spread-card free-spread" onclick="selectSpread('one-card', 1)">
+                    <div class="spread-icon">🃏</div>
+                    <h3>၁-ကတ် ဟောစာတမ်း</h3>
+                    <p>တိကျမြန်ဆန်သော အဖြေ (Quick Answer / Yes or No) လိုချင်သူများအတွက်။</p>
+                </div>
+
+                <div class="spread-card free-spread" onclick="selectSpread('three-card-time', 3)">
+                    <div class="spread-icon">⏳</div>
+                    <h3>အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်</h3>
+                    <p>အခြေခံအကျဆုံးနှင့် လူကြိုက်အများဆုံး ၃-ကတ် ဟောစာတမ်း။</p>
+                </div>
+
+                <div class="spread-card free-spread" onclick="selectSpread('three-card-action', 3)">
+                    <div class="spread-icon">🎯</div>
+                    <h3>အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်</h3>
+                    <p>လက်တွေ့ ပြဿနာတစ်ခုခုကို ဖြေရှင်းရန် အကြံဉာဏ်တောင်းခံလိုသူများအတွက်။</p>
+                </div>
+
+                <div class="spread-card premium-spread locked" onclick="handlePremiumClick()">
+                    <div class="lock-icon">🔒</div>
+                    <div class="spread-icon">✝️</div>
+                    <h3>Celtic Cross (၁၀-ကတ်)</h3>
+                    <p>ဘဝတစ်ခုလုံးစာ အသေးစိတ် လေ့လာသုံးသပ်သည့် ဟောစာတမ်း။</p>
+                </div>
+
+                <div class="spread-card premium-spread locked" onclick="handlePremiumClick()">
+                    <div class="lock-icon">🔒</div>
+                    <div class="spread-icon">❤️</div>
+                    <h3>အချစ်ရေး သီးသန့် (၅-ကတ်)</h3>
+                    <p>နှလုံးသားရေးရာ ပြဿနာများနှင့် အနာဂတ်အတွက် အထူးဟောစာတမ်း။</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="premiumModal" class="modal-overlay hidden">
+            <div class="modal-box">
+                <h2>Premium Feature</h2>
+                <p>ဤအသေးစိတ် ဟောစာတမ်းကို ဖတ်ရှုရန် Starfish Tarot ၏ Member အဖြစ် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။</p>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeModal()">နောက်ဆုတ်မည်</button>
+                    <button class="btn-login" onclick="alert('Login Page သို့ သွားမည်')">Login ဝင်ရန်</button>
+                </div>
+            </div>
+        </div>
+
+        <section id="step-shuffle" class="step-section hidden">
+            <h2 class="text-center" style="color: var(--accent-cyan); margin-bottom: 2rem;">Tarot Deck</h2>
+            <div id="deck-area" class="deck-area"></div>
+            <div class="text-center" style="margin-top: 2rem;">
+                 <button id="shuffleBtn" class="action-btn">ကတ်မွှေရန် နှိပ်ပါ</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/reading.js"></script> 
+</body>
+</html>
