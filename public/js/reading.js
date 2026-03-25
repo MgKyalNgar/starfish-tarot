@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// --- Step 1: Selection ---
+// --- Step 1: Selection Room ---
 function selectSpread(type, count) {
     currentSpreadType = type;
     cardsToDraw = count;
@@ -46,7 +46,7 @@ function closeModal() {
     document.getElementById('premiumModal').classList.add('hidden');
 }
 
-// --- Step 2: Shuffle & Spread ---
+// --- Step 2: Shuffle & Spread (အလျားလိုက် ခင်းခြင်း) ---
 function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     deckArea.innerHTML = ''; 
@@ -134,9 +134,8 @@ function selectIndividualCard(cardElement) {
     
     cardElement.classList.add('selected');
     
-    // Database မှ ကတ်တစ်ကတ်ကို Random ယူပြီး မှတ်သားမည်
     const randIndex = Math.floor(Math.random() * fullDeck.length);
-    const selectedCard = fullDeck.splice(randIndex, 1)[0]; // ရွေးပြီးသား ထပ်မရွေးမိအောင် ဖယ်ထုတ်မည်
+    const selectedCard = fullDeck.splice(randIndex, 1)[0]; 
     drawnCardDetails.push(selectedCard);
     
     if (drawnCardDetails.length === cardsToDraw) {
@@ -146,9 +145,8 @@ function selectIndividualCard(cardElement) {
     }
 }
 
-// --- Step 3: The Reveal (ကတ်လှန်ခြင်း နှင့် အဖြေ) ---
+// --- Step 3: The Reveal & The Box ---
 function goToRevealStep() {
-    // Step 2 ကို ဖျောက်ပြီး Step 3 ကို ပြမည်
     document.getElementById('step-shuffle').classList.remove('active');
     document.getElementById('step-shuffle').classList.add('hidden');
     
@@ -159,14 +157,11 @@ function goToRevealStep() {
     const revealArea = document.getElementById('reveal-area');
     revealArea.innerHTML = '';
     
-    // ရွေးထားသော ကတ်များကို မျက်နှာပြင် အလယ်သို့ ပျံဝင်လာစေမည်
     drawnCardDetails.forEach((card, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'reveal-card-wrapper flip-card';
-        // တစ်ကတ်ချင်းစီ အချိန်ခြားပြီး ပျံဝင်လာစေရန် (0.3s delay)
         wrapper.style.animationDelay = `${index * 0.3}s`;
         
-        // 3D Flip DOM တည်ဆောက်ခြင်း
         wrapper.innerHTML = `
             <div class="flip-card-inner">
                 <div class="flip-card-front card-pattern"></div>
@@ -176,19 +171,12 @@ function goToRevealStep() {
             </div>
         `;
         
-        // ကတ်ကို Click နှိပ်သည့် Logic (Click 1: လှန်မည်, Click 2: ဖတ်မည်)
+        // Click Logic (Click 1: လှန်မည်, Click 2: Modal ပြမည်)
         wrapper.addEventListener('click', function() {
             if (!this.classList.contains('flipped')) {
-                // Click 1
                 this.classList.add('flipped');
-                
-                // Pop-up အရမ်းမြန်မနေအောင် ကတ်လှန်ပြီး ဝ.၈ စက္ကန့်အကြာမှ Modal အလိုအလျောက်ပြမည်
-                setTimeout(() => {
-                    openReadingModal(card);
-                }, 800);
             } else {
-                // Click 2
-                openReadingModal(card);
+                openReadingModal(card, index);
             }
         });
         
@@ -196,20 +184,32 @@ function goToRevealStep() {
     });
 }
 
-// ဟောစာတမ်း Modal Box ပြသခြင်း
-function openReadingModal(card) {
+function openReadingModal(card, index) {
+    let cardTitle = "";
+    
+    // Spread Type အပေါ်မူတည်ပြီး ခေါင်းစဉ်တပ်ခြင်း
+    if (currentSpreadType === 'three-card-time') {
+        const titles = ["Past (အတိတ်)", "Present (ပစ္စုပ္ပန်)", "Future (အနာဂတ်)"];
+        cardTitle = titles[index] ? titles[index] : "";
+    } else if (currentSpreadType === 'three-card-action') {
+        const titles = ["Situation (အခြေအနေ)", "Action (အကြံပြုချက်)", "Outcome (ရလဒ်)"];
+        cardTitle = titles[index] ? titles[index] : "";
+    } else if (currentSpreadType === 'one-card') {
+        cardTitle = "Quick Answer";
+    }
+    
     document.getElementById('modalCardImg').src = card.imageUrl;
-    document.getElementById('modalCardName').innerText = card.name;
+    
+    const modalHeader = document.getElementById('modalCardName');
+    modalHeader.innerText = cardTitle ? `${cardTitle} - ${card.name}` : card.name;
+    
     document.getElementById('modalCardType').innerText = card.suit ? card.suit : card.arcana;
     document.getElementById('modalCardKeywords').innerText = `Keywords: ${card.keywords}`;
-    
-    // Spread အမျိုးအစားပေါ်မူတည်ပြီး အတိတ်/အနာဂတ် ခေါင်းစဉ်များ ထပ်တပ်ပေးနိုင်ပါသည်
     document.getElementById('modalCardMeaning').innerText = card.upright_meaning;
     
     document.getElementById('readingModal').classList.remove('hidden');
 }
 
-// ဟောစာတမ်း Modal Box ပိတ်ခြင်း
 function closeReadingModal() {
     document.getElementById('readingModal').classList.add('hidden');
 }
