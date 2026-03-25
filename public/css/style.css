@@ -656,21 +656,50 @@ footer {
 ========================================= */
 
 /* Placeholders & Reveal Area */
+/* Reveal Area Layout (အတန်းလိုက် ၃ ကတ်ဖြစ်စေရန်) */
 .reveal-area {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
+    justify-content: center; /* အလယ်ဗဟိုမှာ ထားမည် */
+    gap: 2rem; /* ကတ်တစ်ခုနဲ့တစ်ခုကြား ကွာဝေးမှု (ဖုန်းအတွက်) */
     flex-wrap: wrap;
     margin-top: 2rem;
-    min-height: 350px;
+    min-height: 250px; /* ကတ်တွေ သေးသွားလို့ scene ရဲ့ အမြင့်ကို လျှော့မည် */
 }
 
-/* ပျံဝင်လာမည့် Animation */
+/* ကတ်အရေအတွက်ပေါ်မူတည်ပြီး Desktop တွင် အတန်းလိုက် ဖြစ်စေရန် (Responsive Gap) */
+@media (min-width: 768px) {
+    .reveal-area {
+        gap: 3.5rem; /* Desktop မှာ ကတ်တွေကြား ကွက်လပ်ကို ပိုကျယ်စေမည် */
+    }
+}
+
+/* Reveal Area ထဲက ကတ် Wrapper (ကတ်အရွယ်အစားကို သေးရန်) */
+.reveal-card-wrapper.flip-card {
+    /* Fixed px များ သုံးမည်။ Responsive Width (80vw) ကို Step 2 အတွက်ပဲ ထားမည် */
+    width: 150px; /* ကတ်အရွယ်အစားကို နဂို ၃၀၀px မှ ၁၅၀px သို့ သေးလိုက်သည် */
+    max-width: 150px;
+    
+    /* Tarot ကတ်ရဲ့ စံ aspect ratio ကို သတ်မှတ်ခြင်းဖြင့် ပုံမပျက်တော့ပါ */
+    aspect-ratio: 150 / 260; 
+    
+    /* Step 2 က Hover style တွေ ဒီမှာ မပေါ်စေရန် background ပြန်ရှင်းမည် */
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Step 3 DOM တည်ဆောက်တဲ့အချိန်မှာ inner structure က `style.css` က responsive aspect ratio ကို မသုံးမိအောင် placeholder aspect ratio ကို ချိန်ညှိသည် */
+.reveal-card-wrapper .flip-card-inner {
+    aspect-ratio: 150 / 260; 
+}
+
+/* ပျံဝင်လာမည့် Animation (နဂိုအတိုင်းထားပါ) */
 .reveal-card-wrapper {
     opacity: 0;
     transform: translateY(-50px);
     animation: flyInFromTop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+
 
 @keyframes flyInFromTop {
     to { opacity: 1; transform: translateY(0); }
