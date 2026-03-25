@@ -128,7 +128,9 @@ footer {
     overflow-wrap: break-word; 
 }
 
-/* --- Library Page Styles --- */
+/* =========================================
+   Library Page Styles 
+========================================= */
 .library-container {
     padding: 2rem;
     max-width: 1200px;
@@ -229,7 +231,9 @@ footer {
     font-family: 'Padauk', sans-serif;
 }
 
-/* --- Daily Draw Styles --- */
+/* =========================================
+   Daily Draw Styles 
+========================================= */
 .daily-draw-container {
     display: flex;
     flex-direction: column;
@@ -344,6 +348,174 @@ footer {
 }
 
 .save-journal-btn:hover {
+    background: var(--accent-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px var(--accent-cyan);
+}
+
+/* =========================================
+   Reading Page Styles
+========================================= */
+.reading-container {
+    padding: 2rem 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+}
+
+/* Step Sections */
+.step-section {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.step-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Spread Selection Grid */
+.spread-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.spread-card {
+    background: rgba(28, 37, 65, 0.4);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.spread-card:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-cyan);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
+}
+
+.spread-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.spread-card h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.spread-card p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Premium Spread Styles */
+.premium-spread {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255, 215, 0, 0.3); /* Gold border */
+}
+
+.premium-spread.locked {
+    opacity: 0.7;
+}
+
+.premium-spread.locked:hover {
+    border-color: rgba(255, 215, 0, 0.6);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
+}
+
+.lock-icon {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    filter: grayscale(100%);
+}
+
+/* Modal Box (Pop-up) */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-box {
+    background: var(--bg-glow);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.modal-box h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.modal-box p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.btn-cancel, .btn-login, .action-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--text-muted);
+}
+
+.btn-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+.btn-login, .action-btn {
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+}
+
+.btn-login:hover, .action-btn:hover {
     background: var(--accent-cyan);
     color: var(--bg-dark);
     box-shadow: 0 0 15px var(--accent-cyan);
