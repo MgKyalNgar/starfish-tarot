@@ -650,3 +650,82 @@ footer {
     pointer-events: none;
     z-index: 2000 !important;
 }
+
+/* =========================================
+   Step 3: Reveal Area & Reading Box
+========================================= */
+
+/* Placeholders & Reveal Area */
+.reveal-area {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    min-height: 350px;
+}
+
+/* ပျံဝင်လာမည့် Animation */
+.reveal-card-wrapper {
+    opacity: 0;
+    transform: translateY(-50px);
+    animation: flyInFromTop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes flyInFromTop {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Reading Box Modal (အသေးစိတ် ဟောစာတမ်း) */
+.reading-modal-box {
+    background: var(--bg-dark);
+    background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.1), transparent 40%);
+    border: 1px solid var(--accent-cyan);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 800px; /* ရိုးရိုး Modal ထက် ပိုကျယ်မည် */
+    width: 95%;
+    max-height: 90dvh;
+    overflow-y: auto; /* စာရှည်လျှင် Scroll ဆွဲနိုင်ရန် */
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.reading-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+/* Desktop တွင် ပုံကို ဘယ်၊ စာကို ညာ ထားမည် */
+@media (min-width: 768px) {
+    .reading-content {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    .reading-image { flex: 0 0 250px; }
+    .reading-text { flex: 1; }
+}
+
+.reading-image img {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal-btn:hover { color: var(--accent-cyan); }
