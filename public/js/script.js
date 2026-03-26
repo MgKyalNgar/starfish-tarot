@@ -411,3 +411,114 @@ function closeReadingModal(shouldGoBack = true) {
         history.back(); 
     }
 }
+
+
+// =========================================
+// Authentication & User State Logic
+// =========================================
+
+// လက်ရှိ User Login ဝင်ထားသလား စစ်ဆေးခြင်း (Local Storage ဖြင့် ယာယီစစ်ဆေးမည်)
+const currentUser = localStorage.getItem('tarot_user'); 
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateAuthUI();
+    initAuthPage();
+});
+
+// Navigation Bar ကို User အခြေအနေပေါ်မူတည်ပြီး ပြောင်းလဲခြင်း
+function updateAuthUI() {
+    const navLoginBtns = document.querySelectorAll('#navLoginBtn, .nav-login-btn');
+    
+    navLoginBtns.forEach(btn => {
+        if (currentUser) {
+            btn.innerText = "Logout";
+            btn.href = "#";
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('tarot_user'); // Logout လုပ်သည်
+                window.location.reload();
+            });
+        } else {
+            btn.innerText = "Login";
+            btn.href = "login.html";
+        }
+    });
+}
+
+// Login Page ရဲ့ Logic (Toggle & Submit)
+function initAuthPage() {
+    const authForm = document.getElementById('authForm');
+    if (!authForm) return;
+
+    let isLogin = true;
+    const authTitle = document.getElementById('authTitle');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authSwitchText = document.getElementById('authSwitchText');
+    const authSwitchLink = document.getElementById('authSwitchLink');
+    const nameGroup = document.getElementById('nameGroup');
+    const nameInput = document.getElementById('userName');
+
+    // Login နဲ့ Sign Up အကြား ပြောင်းလဲခြင်း
+    authSwitchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLogin = !isLogin;
+
+        if (isLogin) {
+            authTitle.innerText = "Login";
+            authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+            authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
+            authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
+            nameGroup.style.display = "none";
+            nameInput.removeAttribute('required');
+        } else {
+            authTitle.innerText = "Sign Up";
+            authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
+            authSwitchText.innerText = "အကောင့်ရှိပြီးသားလား?";
+            authSwitchLink.innerText = "Login ဝင်မည်";
+            nameGroup.style.display = "block";
+            nameInput.setAttribute('required', 'true');
+        }
+    });
+
+    // Form Submit လုပ်သောအခါ (Backend သို့ ပို့မည့်အပိုင်း)
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const name = nameInput.value;
+
+        // မှတ်ချက် - လက်ရှိတွင် Frontend မှ ယာယီ Login ဝင်ခွင့်ပေးထားပါမည်။ 
+        // နောက်အဆင့်တွင် Supabase Backend API သို့ ချိတ်ဆက်ရပါမည်။
+        authSubmitBtn.innerText = "လုပ်ဆောင်နေပါသည်...";
+        
+        setTimeout(() => {
+            // အောင်မြင်သွားပါက Local Storage တွင် ယာယီမှတ်ထားမည်
+            localStorage.setItem('tarot_user', JSON.stringify({ email: email, name: isLogin ? "Member" : name }));
+            alert(isLogin ? "အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!" : "အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်!");
+            
+            // ဝင်ပြီးပါက Home Page သို့မဟုတ် ယခင် Page သို့ ပြန်လွှဲမည်
+            window.location.href = 'index.html'; 
+        }, 1000);
+    });
+}
+
+// =========================================
+// Journal / Saving Logic (Daily Draw)
+// =========================================
+
+// Daily Draw ၏ "Save to Journal" ခလုတ်ကို နှိပ်သောအခါ
+function saveDailyDrawToJournal(cardData) {
+    if (!currentUser) {
+        // Guest ဖြစ်နေလျှင် Login Page သို့ လွှဲမည်
+        alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Member ဖြစ်နေလျှင် Database (သို့) Local Storage တွင် သိမ်းမည်
+    alert(`"${cardData.name}" ကတ်ကို သင့်၏ Journal တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!`);
+    
+    // မှတ်ချက်: Backend Supabase ချိတ်ဆက်သည့်အခါ API ကို ဤနေရာမှ လှမ်းခေါ်ရပါမည်။
+    // ဥပမာ: fetch('/api/journal/save', { method: 'POST', body: JSON.stringify(cardData) });
+}
