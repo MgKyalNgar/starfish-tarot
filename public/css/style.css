@@ -1,4 +1,6 @@
-/* Color Palette - Techno Style (No purely black background) */
+/* =========================================
+   Base Styles & Color Palette
+========================================= */
 :root {
     --bg-dark: #0a1128;
     --bg-glow: #1c2541;
@@ -19,13 +21,13 @@ body {
     color: var(--text-main);
     font-family: 'Padauk', 'Orbitron', sans-serif;
     min-height: 100vh;
-    min-height: 100dvh; 
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
 }
 
-/* Navigation */
+/* --- Navigation --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -48,9 +50,11 @@ body {
     transition: color 0.3s ease;
 }
 
-.nav-link:hover { color: var(--accent-cyan); }
+.nav-link:hover {
+    color: var(--accent-cyan);
+}
 
-/* Main Containers */
+/* --- Common UI Elements --- */
 .home-container, .library-container, .daily-draw-container, .reading-container {
     flex: 1;
     display: flex;
@@ -65,7 +69,7 @@ body {
 
 .glow-text {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.8rem, 5vw, 3rem); 
+    font-size: clamp(2rem, 8vw, 4rem); 
     color: #ffffff;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
     margin-bottom: 0.5rem;
@@ -78,8 +82,13 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Common Buttons */
-.action-btn, .btn-login {
+.text-center { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+
+/* Buttons */
+.action-btn, .btn-login, .save-journal-btn {
     background: rgba(0, 240, 255, 0.1);
     color: var(--accent-cyan);
     border: 1px solid var(--accent-cyan);
@@ -91,7 +100,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.action-btn:hover, .btn-login:hover {
+.action-btn:hover, .btn-login:hover, .save-journal-btn:hover {
     background: var(--accent-cyan);
     color: var(--bg-dark);
     box-shadow: 0 0 15px var(--accent-cyan);
@@ -126,11 +135,214 @@ body {
 
 .modal-overlay.hidden { display: none; opacity: 0; }
 
+/* Footer */
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 1.5rem 1rem 1rem 1rem; 
+    margin-top: auto; 
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    overflow-wrap: break-word; 
+    color: var(--text-muted);
+}
+
+/* =========================================
+   Home Page Styles
+========================================= */
+.cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.cta-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: rgba(28, 37, 65, 0.5);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.cta-link:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    transform: translateX(10px);
+}
+
+.cta-link:hover .arrow {
+    color: var(--accent-cyan);
+    transform: translateX(5px);
+}
+
+.arrow { transition: transform 0.3s ease; }
+
+/* =========================================
+   Library Page Styles 
+========================================= */
+.filter-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--text-main);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    color: #fff;
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--accent-cyan);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.tarot-card {
+    background: rgba(28, 37, 65, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.tarot-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+    border-color: var(--accent-cyan);
+}
+
+.tarot-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-info { padding: 1rem; text-align: center; }
+.card-info h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #fff; line-height: 1.2; }
+.card-info p { font-size: 0.85rem; color: var(--text-muted); font-family: 'Padauk', sans-serif; }
+
+
+/* =========================================
+   Card Backs & 3D Flip Mechanics (Shared)
+========================================= */
+.flip-card-front, .deck-card, .spread-card-item {
+    background-color: #0a1128;
+    background-image: url('/Tarot Card/card_back.jpg');
+    background-size: cover;
+    background-position: center;
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.flip-card-front:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flip-card-back { transform: rotateY(180deg); background-color: #fff; }
+.flip-card-back img { width: 100%; height: 100%; object-fit: fill; }
+
+/* =========================================
+   Daily Draw Styles 
+========================================= */
+.card-scene {
+    perspective: 1000px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.daily-draw-container .flip-card {
+    width: 80vw;
+    max-width: 250px;
+    aspect-ratio: 300 / 520; 
+    cursor: pointer;
+}
+
+.daily-draw-container .flip-card-inner {
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.result-section {
+    max-width: 600px;
+    text-align: center;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.result-section.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    display: none;
+}
+
+.result-section.fade-in {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
 /* =========================================
    Reading Page Styles
 ========================================= */
-
-/* Step Sections */
 .step-section {
     display: none;
     width: 100%;
@@ -139,12 +351,7 @@ body {
 
 .step-section.active { display: block; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Step 1: Spread Selection Grid */
+/* Reading Step 1: Selection */
 .spread-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -168,6 +375,7 @@ body {
     background: rgba(0, 240, 255, 0.1);
     border-color: var(--accent-cyan);
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
 }
 
 .spread-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -178,7 +386,6 @@ body {
 .premium-spread.locked { opacity: 0.7; }
 .lock-icon { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; filter: grayscale(100%); }
 
-/* Selection Modal */
 .modal-box {
     background: var(--bg-glow);
     border: 1px solid var(--accent-cyan);
@@ -187,22 +394,11 @@ body {
     max-width: 400px;
     width: 90%;
     text-align: center;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
 }
-
 .modal-actions { display: flex; justify-content: space-around; gap: 1rem; }
 
-/* Card Back (Common for Deck & Spread) */
-.deck-card, .spread-card-item {
-    background-color: #0a1128;
-    background-image: url('/Tarot Card/card_back.jpg');
-    background-size: cover;
-    background-position: center;
-    border: 2px solid rgba(0, 240, 255, 0.3);
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-
-/* Step 2: Shuffle & Spread */
+/* Reading Step 2: Shuffle & Spread */
 .deck-area {
     position: relative;
     min-height: 250px;
@@ -212,6 +408,7 @@ body {
     perspective: 1000px;
     margin-bottom: 2rem;
     width: 100%;
+    overflow: visible; 
 }
 
 .deck-stack { position: relative; width: 120px; height: 200px; }
@@ -229,17 +426,17 @@ body {
 .deck-stack.shuffling .deck-card:nth-child(odd) { animation: shuffleLeft 0.6s ease-in-out infinite; }
 .deck-stack.shuffling .deck-card:nth-child(even) { animation: shuffleRight 0.6s ease-in-out infinite reverse; }
 
-/* Step 2 Spread Area (The Gathering - အလျားလိုက် ထပ်လျက်သား) */
+/* The Spread - Horizontal Overlap */
 .spread-area {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-    height: 200px;
     position: relative;
     opacity: 0;
     transform: scale(0.9);
     transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: 1rem;
 }
 
 .spread-area.visible { opacity: 1; transform: scale(1); }
@@ -249,79 +446,59 @@ body {
     height: 120px;
     cursor: pointer;
     position: absolute;
+    top: 0; 
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.8s ease, z-index 0s;
-    transform-origin: center bottom;
+    transform: translate(var(--tx, 0), var(--ty, 0)); 
+}
+
+@media (min-width: 600px) {
+    .spread-card-item { width: 90px; height: 150px; }
 }
 
 .spread-card-item:hover {
-    transform: translateY(-30px) scale(1.1) rotate(0deg) !important;
-    z-index: 1000 !important;
+    transform: translate(var(--tx), calc(var(--ty) - 15px)) scale(1.1) !important;
+    z-index: 1000 !important; 
     box-shadow: 0 10px 20px rgba(0, 240, 255, 0.5);
     border-color: #fff;
 }
 
 .spread-card-item.selected {
-    transform: translate(-100vw, -100px) rotate(-90deg) scale(0.5) !important;
+    transform: translate(-100vw, var(--ty)) rotate(-90deg) scale(0.5) !important;
     opacity: 0;
     pointer-events: none;
     z-index: 2000 !important;
 }
 
-/* Media Query for Desktop Spread Item */
-@media (min-width: 600px) {
-    .spread-card-item { width: 90px; height: 150px; }
-}
-
-/* =========================================
-   Step 3: Reveal Area & Reading Box
-========================================= */
-
+/* Reading Step 3: Reveal Area & Reading Box */
 .reveal-area {
     display: flex;
-    justify-content: center;
-    gap: 1.5rem; /* ကတ်တွေကြား gap ကို ချိန်ညှိသည် */
+    justify-content: center; 
+    gap: 2rem; 
     flex-wrap: wrap;
     margin-top: 2rem;
-    min-height: 250px;
+    min-height: 250px; 
     width: 100%;
 }
 
-/* Reveal Area ထဲက ကတ် Wrapper (ကတ်အရွယ်အစားကို သေးရန်) */
+@media (min-width: 768px) {
+    .reveal-area { gap: 3.5rem; }
+}
+
+/* ၃ ကတ်ကို အတန်းလိုက် သေးသေးလေးဖြစ်အောင် ထိန်းချုပ်ခြင်း */
 .reveal-card-wrapper.flip-card {
-    width: 130px; /* ကတ်အရွယ်အစားကို ဖုန်းအတွက် သေးလိုက်သည် */
+    width: 150px; 
     max-width: 150px;
-    aspect-ratio: 130 / 220; 
+    aspect-ratio: 150 / 260; 
     cursor: pointer;
     background-image: none !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-/* 3D Flip DOM Structure */
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
+.reveal-card-wrapper .flip-card-inner {
+    aspect-ratio: 150 / 260; 
 }
 
-.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.flip-card-back { transform: rotateY(180deg); }
-.flip-card-back img { width: 100%; height: 100%; object-fit: fill; }
-
-/* ပျံဝင်လာမည့် Animation */
 .reveal-card-wrapper {
     opacity: 0;
     transform: translateY(-50px);
@@ -332,23 +509,17 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Media Query for Desktop Reveal Items (3-Card in a row) */
-@media (min-width: 768px) {
-    .reveal-area { gap: 3rem; }
-    .reveal-card-wrapper.flip-card { width: 180px; aspect-ratio: 180 / 300; }
-}
-
-/* Reading Box Modal (အသေးစိတ် ဟောစာတမ်း) */
+/* Result Modal (Pop-up Box) */
 .reading-modal-box {
     background: var(--bg-dark);
     background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.1), transparent 40%);
     border: 1px solid var(--accent-cyan);
     border-radius: 12px;
     padding: 2rem;
-    max-width: 800px;
+    max-width: 800px; 
     width: 95%;
     max-height: 90dvh;
-    overflow-y: auto;
+    overflow-y: auto; 
     position: relative;
     box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
 }
@@ -356,12 +527,15 @@ body {
 .reading-content {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: center;
 }
 
 @media (min-width: 768px) {
-    .reading-content { flex-direction: row; align-items: flex-start; }
+    .reading-content {
+        flex-direction: row;
+        align-items: flex-start;
+    }
     .reading-image { flex: 0 0 250px; }
     .reading-text { flex: 1; }
 }
@@ -388,12 +562,12 @@ body {
 
 .close-modal-btn:hover { color: var(--accent-cyan); }
 
-/* Meaning Box Inside Modal */
 .meaning-box {
     background: rgba(28, 37, 65, 0.6);
     border: 1px solid rgba(0, 240, 255, 0.2);
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    margin-bottom: 1.0rem;
     color: var(--text-main);
-    font-family: 'Padauk', sans-serif;
 }
