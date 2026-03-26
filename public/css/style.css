@@ -309,14 +309,15 @@ footer {
 }
 
 .daily-draw-container .flip-card {
-    width: 80vw;
+    width: 100%;
     max-width: 250px;
-    aspect-ratio: 300 / 520; 
+    height: 430px; /* <--- ဒီ Height လေး ကျန်ခဲ့လို့ အပြားကြီးဖြစ်သွားတာပါ */
     cursor: pointer;
 }
 
 .daily-draw-container .flip-card-inner {
     transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 430px;
 }
 
 .result-section {
