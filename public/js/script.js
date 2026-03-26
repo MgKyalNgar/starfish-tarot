@@ -282,3 +282,29 @@ function closeReadingModal(shouldGoBack = true) {
         history.back(); // Hash ကို #reveal သို့ ပြန်ပို့ရန်
     }
 }
+
+function setupDailyCardAnimation(card) {
+    const cardElement = document.getElementById('dailyCard');
+    const resultSection = document.getElementById('dailyResult');
+    
+    // နောက်ကွယ်မှာ ပုံနဲ့ စာသားတွေကို ကြိုတင် ထည့်သွင်းထားမည် (မပြသေးပါ)
+    document.getElementById('dailyCardImage').src = card.imageUrl;
+    document.getElementById('dailyCardName').innerText = card.name;
+    document.getElementById('dailyCardType').innerText = card.suit ? card.suit : card.arcana;
+    // တစ်နေ့တာ ဟောစာတမ်းဖြစ်လို့ Upright Meaning (အကောင်းဘက်) ကို အဓိက ပြမည်
+    document.getElementById('dailyCardMeaning').innerText = card.upright_meaning;
+
+    // ကတ်ကို Click နှိပ်လိုက်လျှင် လှန်မည့် အပိုင်း
+    cardElement.addEventListener('click', () => {
+        // .flipped class ထည့်လိုက်ခြင်းဖြင့် 3D လှန်သွားမည်
+        cardElement.classList.add('flipped');
+        cardElement.style.cursor = 'default'; // ထပ်နှိပ်လို့မရအောင် cursor ပြင်မည်
+        
+        // ကတ်လှန်ပြီး ဝ.၆ စက္ကန့် အကြာမှ ဟောစာတမ်းကို ဖြည်းဖြည်းချင်း ပေါ်လာစေမည်
+        setTimeout(() => {
+            resultSection.classList.remove('hidden');
+            resultSection.classList.add('fade-in');
+        }, 1800);
+        
+    }, { once: true }); // { once: true } ကြောင့် တစ်ခါပဲ နှိပ်လို့ရပါမည်
+}
