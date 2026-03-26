@@ -283,6 +283,23 @@ function closeReadingModal(shouldGoBack = true) {
     }
 }
 
+// --- Daily Draw Logic ---
+async function initDailyDraw() {
+    try {
+        const response = await fetch('/api/cards');
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const cards = result.data;
+            // ကတ် ၇၈ ကတ်ထဲမှ တစ်ကတ်ကို ကျပန်း (Random) ရွေးချယ်ခြင်း
+            const randomCard = cards[Math.floor(Math.random() * cards.length)];
+            setupDailyCardAnimation(randomCard);
+        }
+    } catch (error) {
+        console.error("Error fetching daily card:", error);
+    }
+}
+
 function setupDailyCardAnimation(card) {
     const cardElement = document.getElementById('dailyCard');
     const resultSection = document.getElementById('dailyResult');
