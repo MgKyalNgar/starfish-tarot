@@ -277,8 +277,7 @@ footer {
 
 .flip-card-inner {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100%;    
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
 }
@@ -473,10 +472,9 @@ footer {
 .reveal-area {
     display: flex;
     justify-content: center; 
-    gap: 2rem; 
+    gap: 0.5rem; 
     flex-wrap: wrap;
-    margin-top: 2rem;
-    min-height: 250px; 
+    margin-top: 2rem;     
     width: 100%;
 }
 
@@ -486,9 +484,9 @@ footer {
 
 /* ၃ ကတ်ကို အတန်းလိုက် သေးသေးလေးဖြစ်အောင် ထိန်းချုပ်ခြင်း */
 .reveal-card-wrapper.flip-card {
-    width: 150px; 
-    max-width: 150px;
-    aspect-ratio: 150 / 260; 
+    width: 130px; 
+    max-width: 130px;
+    aspect-ratio: 130 / 210; 
     cursor: pointer;
     background-image: none !important;
     border: none !important;
@@ -496,7 +494,7 @@ footer {
 }
 
 .reveal-card-wrapper .flip-card-inner {
-    aspect-ratio: 150 / 260; 
+    aspect-ratio: 130 / 210; 
 }
 
 .reveal-card-wrapper {
