@@ -298,28 +298,87 @@ footer {
 .flip-card-back img { width: 100%; height: 100%; object-fit: fill; }
 
 /* =========================================
-   Daily Draw Styles 
+   Daily Draw Styles
 ========================================= */
-.card-scene {
-    perspective: 1000px;
+.daily-draw-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    flex: 1;
+}
+
+/* --- 3D Flip Card Animation --- */
+.daily-draw-container .card-scene {
+    perspective: 1000px; /* 3D အနက် ပုံဖော်ပေးခြင်း */
     margin-bottom: 1rem;
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
+/* THE FLIP CARD - THE CONTAINER THAT CAPTURES CLICKS AND SETS THE SIZE */
 .daily-draw-container .flip-card {
     width: 100%;
-    max-width: 250px;
-    height: 430px; /* <--- ဒီ Height လေး ကျန်ခဲ့လို့ အပြားကြီးဖြစ်သွားတာပါ */
+    max-width: 250px; /* ကတ်အကျယ်ကို ထိန်းချုပ်သည် */
+    height: 430px; /* SET EXPLICIT HEIGHT HERE FOR CLICKS! */
     cursor: pointer;
+    position: relative; /* Base for absolutely positioned children */
 }
 
+/* THE FLIP CARD INNER - THIS ONE FLIPS */
 .daily-draw-container .flip-card-inner {
-    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    height: 430px;
+    position: absolute; /* Take up full space of .flip-card */
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* လှန်မည့်ကြာချိန် */
+    transform-style: preserve-3d; /* CRUCIAL FOR 3D */
 }
 
+/* JS Class applied on click - .flipped class ထည့်လိုက်လျှင် လှည့်သွားမည် */
+.daily-draw-container .flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* The faces - ကတ်မျက်နှာပြင်များ (shared styles) */
+.daily-draw-container .flip-card-front,
+.daily-draw-container .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* လှန်ထားစဉ် အနောက်ဘက်ပုံ မမြင်ရစေရန် */
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(0, 240, 255, 0.3);
+}
+
+/* Back of the card (pattern from card_back.jpg) - ကတ်ကျောဘက် */
+.daily-draw-container .flip-card-front {
+    background-color: #0a1128;
+    background-image: url('/Tarot Card/card_back.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 2; /* အပေါ်မှာ ရှိနေစေရန် */
+    transform: rotateY(0deg); /* Start normal */
+}
+
+/* Front of the card (the actual tarot image) - ကတ်ပုံ */
+.daily-draw-container .flip-card-back {
+    background-color: #fff;
+    transform: rotateY(180deg); /* Start pre-rotated */
+    z-index: 1;
+}
+
+.daily-draw-container .flip-card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+/* Result Section & Others (နဂို Code အောက်ဆုံးထိ ဆက်ထားပါ) */
 .result-section {
     max-width: 600px;
     text-align: center;
