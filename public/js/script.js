@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (document.getElementById('dailyCard')) {
                 initDailyDrawLocally(); 
             }
+            
+            // Library Page ရောက်နေလျှင် Library ကို စတင်မည် (အသစ်ထည့်ထားသောအပိုင်း)
+            if (document.querySelector('.card-grid') || document.getElementById('card-grid')) {
+                initLibraryLocally();
+            }
         }
     } catch (error) {
         console.error("Error fetching tarot cards:", error);
@@ -70,6 +75,115 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
+
+// =========================================
+// Library Page Logic (အသစ်ထည့်ထားသောအပိုင်း)
+// =========================================
+
+function initLibraryLocally() {
+    const loadingText = document.querySelector('.loading-text') || document.getElementById('loading-text');
+    
+    // Loading စာသားကို ဖျောက်မည်
+    if (loadingText) loadingText.style.display = 'none';
+    
+    // ကတ်အားလုံးကို အစပိုင်းတွင် ပြသမည်
+    renderLibraryCards(fullDeck);
+    
+    // Filter ခလုတ်များကို အလုပ်လုပ်စေရန်
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Active ဖြစ်နေသော အရောင်ကို ပြောင်းမည်
+            filterBtns.forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            const filterText = e.target.innerText.trim().toLowerCase();
+            let filteredCards = [];
+            
+            // ရွေးချယ်မှုအလိုက် ကတ်များကို စစ်ထုတ်မည်
+            if (filterText === 'all cards') {
+                filteredCards = fullDeck;
+            } else if (filterText === 'major') {
+                filteredCards = fullDeck.filter(c => c.arcana === 'Major Arcana');
+            } else {
+                // Wands, Cups, Swords, Pentacles
+                filteredCards = fullDeck.filter(c => c.suit && c.suit.toLowerCase().includes(filterText));
+            }
+            
+            renderLibraryCards(filteredCards);
+        });
+    });
+}
+
+function renderLibraryCards(cards) {
+    const cardGrid = document.querySelector('.card-grid') || document.getElementById('card-grid');
+    if (!cardGrid) return;
+    
+    cardGrid.innerHTML = ''; // ယခင်ကတ်များကို ရှင်းလင်းမည်
+    
+    cards.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'tarot-card';
+        
+        cardEl.innerHTML = `
+            <img src="${card.imageUrl}" alt="${card.name}" loading="lazy">
+            <div class="card-info">
+                <h3>${card.name}</h3>
+                <p>${card.suit ? card.suit : card.arcana}</p>
+            </div>
+        `;
+        
+        // ကတ်ကို နှိပ်လျှင် အသေးစိတ် Modal ပြမည်
+        cardEl.addEventListener('click', () => {
+            currentSpreadType = ''; // Library မှဖြစ်ကြောင်း သိစေရန်
+            openReadingModal(card, 0); 
+        });
+        
+        cardGrid.appendChild(cardEl);
+    });
+}
+
+// =========================================
+// Daily Draw Logic
+// =========================================
+
+function initDailyDrawLocally() {
+    if (fullDeck.length > 0) {
+        const randomCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
+        setupDailyCardAnimation(randomCard);
+    }
+}
+
+function setupDailyCardAnimation(card) {
+    const cardElement = document.getElementById('dailyCard');
+    const resultSection = document.getElementById('dailyResult');
+    
+    if (!cardElement) return; 
+    
+    const imgEl = document.getElementById('dailyCardImage');
+    if(imgEl) imgEl.src = card.imageUrl;
+    
+    const nameEl = document.getElementById('dailyCardName');
+    if(nameEl) nameEl.innerText = card.name;
+    
+    const typeEl = document.getElementById('dailyCardType');
+    if(typeEl) typeEl.innerText = card.suit ? card.suit : card.arcana;
+    
+    const meaningEl = document.getElementById('dailyCardMeaning');
+    if(meaningEl) meaningEl.innerText = card.upright_meaning;
+
+    cardElement.addEventListener('click', () => {
+        cardElement.classList.add('flipped');
+        cardElement.style.cursor = 'default'; 
+        
+        if (resultSection) {
+            setTimeout(() => {
+                resultSection.classList.remove('hidden');
+                resultSection.classList.add('fade-in');
+            }, 1800);
+        }
+    }, { once: true }); 
+}
 
 // =========================================
 // Reading Page Logic (Step 1, 2, 3)
@@ -162,7 +276,6 @@ function spreadCardsOut() {
     const title = document.querySelector('#step-shuffle h2');
     if(title) title.innerText = `ကျေးဇူးပြု၍ သင့်စိတ်ကြိုက် ကတ် (${cardsToDraw}) ကတ်ကို ရွေးချယ်ပါ`;
     
-    // Copy for local manipulation
     let availableDeck = [...fullDeck];
     
     for (let i = 0; i < 78; i++) {
@@ -278,11 +391,14 @@ function openReadingModal(card, index) {
     const meaningEl = document.getElementById('modalCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
     
+    // Check if the reading modal exists (Library page might need this HTML added if it's not there)
     const modal = document.getElementById('readingModal');
     if(modal) {
         modal.classList.remove('hidden');
         isModalOpen = true;
         history.pushState({modal: true}, '', '#reading');
+    } else {
+        console.warn("readingModal not found on this page.");
     }
 }
 
@@ -294,48 +410,4 @@ function closeReadingModal(shouldGoBack = true) {
     if (shouldGoBack && window.location.hash === '#reading') {
         history.back(); 
     }
-}
-
-// =========================================
-// Daily Draw Logic
-// =========================================
-
-function initDailyDrawLocally() {
-    if (fullDeck.length > 0) {
-        const randomCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
-        setupDailyCardAnimation(randomCard);
-    }
-}
-
-function setupDailyCardAnimation(card) {
-    const cardElement = document.getElementById('dailyCard');
-    const resultSection = document.getElementById('dailyResult');
-    
-    if (!cardElement) return; // Error မတက်စေရန် စစ်ဆေးခြင်း
-    
-    // HTML ထဲတွင် ID ရှိမှသာ စာသားထည့်ပါမည် (Error ကင်းစေရန် `if` ဖြင့် စစ်ထားသည်)
-    const imgEl = document.getElementById('dailyCardImage');
-    if(imgEl) imgEl.src = card.imageUrl;
-    
-    const nameEl = document.getElementById('dailyCardName');
-    if(nameEl) nameEl.innerText = card.name;
-    
-    const typeEl = document.getElementById('dailyCardType');
-    if(typeEl) typeEl.innerText = card.suit ? card.suit : card.arcana;
-    
-    const meaningEl = document.getElementById('dailyCardMeaning');
-    if(meaningEl) meaningEl.innerText = card.upright_meaning;
-
-    // ကတ်ကို Click နှိပ်လိုက်လျှင် လှန်မည့် အပိုင်း
-    cardElement.addEventListener('click', () => {
-        cardElement.classList.add('flipped');
-        cardElement.style.cursor = 'default'; 
-        
-        if (resultSection) {
-            setTimeout(() => {
-                resultSection.classList.remove('hidden');
-                resultSection.classList.add('fade-in');
-            }, 1800);
-        }
-    }, { once: true }); 
 }
