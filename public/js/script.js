@@ -4,25 +4,25 @@
 
 let currentSpreadType = '';
 let cardsToDraw = 0;
-let fullDeck = []; // Database မှ ကတ်အားလုံး သိမ်းရန်
-let drawnCardDetails = []; // User ရွေးလိုက်သော ကတ်အချက်အလက်များ
+let fullDeck = []; 
+let drawnCardDetails = []; 
 let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Database မှ ကတ် ၇၈ ကတ်လုံးကို ကြိုတင် လှမ်းယူထားမည် (Page တိုင်းအတွက်)
+    // UI တွင် Login အခြေအနေကို အရင်စစ်ဆေးပြီး User Name ပြမည်
+    updateAuthUI();
+    // Journal အတွက် Modal Box ကို HTML တွင် အလိုအလျောက် ဖန်တီးမည်
+    createJournalModal();
+
     try {
         const response = await fetch('/api/cards');
         const result = await response.json();
         if (result.status === 'success') {
             fullDeck = result.data;
             
-            // --- Page အလိုက် Function များ ခွဲခြားခေါ်ယူခြင်း ---
-            // Daily Draw Page ရောက်နေလျှင် Daily Draw ကို စတင်မည်
             if (document.getElementById('dailyCard')) {
                 initDailyDrawLocally(); 
             }
-            
-            // Library Page ရောက်နေလျှင် Library ကို စတင်မည် (အသစ်ထည့်ထားသောအပိုင်း)
             if (document.querySelector('.card-grid') || document.getElementById('card-grid')) {
                 initLibraryLocally();
             }
@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Error fetching tarot cards:", error);
     }
 
-    // 2. Reading Page အတွက် ကတ်မွှေခလုတ် (Shuffle Button)
     const shuffleBtn = document.getElementById('shuffleBtn');
     if (shuffleBtn) {
         createDeckStack();
@@ -40,7 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. Back ခလုတ် ပြဿနာဖြေရှင်းခြင်း (History API Listener)
+    if (document.getElementById('authForm')) {
+        initAuthPage();
+    }
+
     window.addEventListener('popstate', (event) => {
         const hash = window.location.hash;
 
@@ -77,39 +79,182 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =========================================
-// Library Page Logic (အသစ်ထည့်ထားသောအပိုင်း)
+// Authentication & Navbar UI Logic
+// =========================================
+
+function updateAuthUI() {
+    const userStr = localStorage.getItem('tarot_user');
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const authLinksContainers = document.querySelectorAll('.auth-links');
+    
+    authLinksContainers.forEach(container => {
+        if (currentUser) {
+            container.innerHTML = `
+                <a href="library.html" class="nav-link">Library</a>
+                <a href="#" class="nav-profile-btn" style="color: var(--accent-cyan); text-decoration: none; margin-left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;">
+                    👤 ${currentUser.name}
+                </a>
+                <a href="#" class="nav-logout-btn" style="margin-left: 15px; color: #ff4d4d; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;">Logout</a>
+            `;
+            
+            // Logout Function
+            const logoutBtn = container.querySelector('.nav-logout-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('tarot_user');
+                    window.location.reload(); 
+                });
+            }
+
+            // Profile နာမည်ကို နှိပ်လျှင် Journal ပေါ်စေရန်
+            const profileBtn = container.querySelector('.nav-profile-btn');
+            if(profileBtn) {
+                profileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openJournalModal();
+                });
+            }
+
+        } else {
+            container.innerHTML = `
+                <a href="library.html" class="nav-link">Library</a>
+                <a href="login.html" class="nav-link" style="margin-left: 15px;">Login</a>
+            `;
+        }
+    });
+}
+
+function initAuthPage() {
+    const authForm = document.getElementById('authForm');
+    if (!authForm) return;
+
+    let isLogin = true;
+    const authTitle = document.getElementById('authTitle');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authSwitchText = document.getElementById('authSwitchText');
+    const authSwitchLink = document.getElementById('authSwitchLink');
+    const nameGroup = document.getElementById('nameGroup');
+    const nameInput = document.getElementById('userName');
+
+    authSwitchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLogin = !isLogin;
+
+        if (isLogin) {
+            authTitle.innerText = "Login";
+            authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+            authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
+            authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
+            nameGroup.style.display = "none";
+            nameInput.removeAttribute('required');
+        } else {
+            authTitle.innerText = "Sign Up";
+            authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
+            authSwitchText.innerText = "အကောင့်ရှိပြီးသားလား?";
+            authSwitchLink.innerText = "Login ဝင်မည်";
+            nameGroup.style.display = "block";
+            nameInput.setAttribute('required', 'true');
+        }
+    });
+
+    authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const defaultName = email.split('@')[0];
+        const name = nameInput.value || defaultName;
+
+        authSubmitBtn.innerText = "လုပ်ဆောင်နေပါသည်...";
+        
+        setTimeout(() => {
+            localStorage.setItem('tarot_user', JSON.stringify({ email: email, name: name }));
+            alert(isLogin ? `ကြိုဆိုပါတယ် 👤 ${name}!` : "အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်!");
+            window.location.href = 'index.html'; 
+        }, 800);
+    });
+}
+
+// =========================================
+// Journal / History Logic (Dynamic Modal)
+// =========================================
+
+// HTML တွင် Journal Modal ကို အလိုအလျောက် ထည့်သွင်းခြင်း
+function createJournalModal() {
+    if (document.getElementById('journalModalWrapper')) return;
+    
+    const modalHtml = `
+        <div id="journalModalWrapper" class="modal-overlay hidden" style="z-index: 2000;">
+            <div class="reading-modal-box" style="max-width: 500px; text-align: left;">
+                <button class="close-modal-btn" onclick="document.getElementById('journalModalWrapper').classList.add('hidden')">✕</button>
+                <h2 class="glow-text text-center" style="font-size: 1.8rem; margin-bottom: 1.5rem;">My Journal 📝</h2>
+                <div id="journalContent" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+                    </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// User Profile ကို နှိပ်လျှင် Journal List ပြသခြင်း
+function openJournalModal() {
+    const modal = document.getElementById('journalModalWrapper');
+    const content = document.getElementById('journalContent');
+    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
+
+    if (journal.length === 0) {
+        content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
+    } else {
+        // အသစ်သိမ်းထားသောအရာများ အပေါ်ဆုံးမှပေါ်စေရန် ပြောင်းပြန်လှန်မည်
+        journal.reverse(); 
+        
+        let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
+        journal.forEach((entry, index) => {
+            listHtml += `
+                <li style="background: rgba(28, 37, 65, 0.4); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; transition: all 0.3s;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family: 'Orbitron', sans-serif;">📅 ${entry.date}</span>
+                        <span style="background: rgba(0, 240, 255, 0.1); color: var(--text-main); font-size: 0.75rem; padding: 3px 8px; border-radius: 12px;">${entry.type}</span>
+                    </div>
+                    <div style="color: #fff; font-size: 1.05rem; letter-spacing: 0.5px;">
+                        <span style="color: var(--text-muted); margin-right: 5px;">${index + 1}.</span> 
+                        ${entry.card.name}
+                    </div>
+                </li>
+            `;
+        });
+        listHtml += `</ul>`;
+        content.innerHTML = listHtml;
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+// =========================================
+// Library Page Logic
 // =========================================
 
 function initLibraryLocally() {
     const loadingText = document.querySelector('.loading-text') || document.getElementById('loading-text');
-    
-    // Loading စာသားကို ဖျောက်မည်
     if (loadingText) loadingText.style.display = 'none';
     
-    // ကတ်အားလုံးကို အစပိုင်းတွင် ပြသမည်
     renderLibraryCards(fullDeck);
     
-    // Filter ခလုတ်များကို အလုပ်လုပ်စေရန်
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Active ဖြစ်နေသော အရောင်ကို ပြောင်းမည်
             filterBtns.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             
             const filterText = e.target.innerText.trim().toLowerCase();
             let filteredCards = [];
             
-            // ရွေးချယ်မှုအလိုက် ကတ်များကို စစ်ထုတ်မည်
             if (filterText === 'all cards') {
                 filteredCards = fullDeck;
             } else if (filterText === 'major') {
                 filteredCards = fullDeck.filter(c => c.arcana === 'Major Arcana');
             } else {
-                // Wands, Cups, Swords, Pentacles
                 filteredCards = fullDeck.filter(c => c.suit && c.suit.toLowerCase().includes(filterText));
             }
-            
             renderLibraryCards(filteredCards);
         });
     });
@@ -118,13 +263,11 @@ function initLibraryLocally() {
 function renderLibraryCards(cards) {
     const cardGrid = document.querySelector('.card-grid') || document.getElementById('card-grid');
     if (!cardGrid) return;
-    
-    cardGrid.innerHTML = ''; // ယခင်ကတ်များကို ရှင်းလင်းမည်
+    cardGrid.innerHTML = ''; 
     
     cards.forEach(card => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
-        
         cardEl.innerHTML = `
             <img src="${card.imageUrl}" alt="${card.name}" loading="lazy">
             <div class="card-info">
@@ -132,19 +275,16 @@ function renderLibraryCards(cards) {
                 <p>${card.suit ? card.suit : card.arcana}</p>
             </div>
         `;
-        
-        // ကတ်ကို နှိပ်လျှင် အသေးစိတ် Modal ပြမည်
         cardEl.addEventListener('click', () => {
-            currentSpreadType = ''; // Library မှဖြစ်ကြောင်း သိစေရန်
+            currentSpreadType = ''; 
             openReadingModal(card, 0); 
         });
-        
         cardGrid.appendChild(cardEl);
     });
 }
 
 // =========================================
-// Daily Draw Logic
+// Daily Draw & Journal Logic
 // =========================================
 
 function initDailyDrawLocally() {
@@ -157,7 +297,6 @@ function initDailyDrawLocally() {
 function setupDailyCardAnimation(card) {
     const cardElement = document.getElementById('dailyCard');
     const resultSection = document.getElementById('dailyResult');
-    
     if (!cardElement) return; 
     
     const imgEl = document.getElementById('dailyCardImage');
@@ -172,6 +311,11 @@ function setupDailyCardAnimation(card) {
     const meaningEl = document.getElementById('dailyCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
 
+    const saveBtn = document.querySelector('.save-journal-btn');
+    if(saveBtn) {
+        saveBtn.onclick = () => saveDailyDrawToJournal(card);
+    }
+
     cardElement.addEventListener('click', () => {
         cardElement.classList.add('flipped');
         cardElement.style.cursor = 'default'; 
@@ -183,6 +327,43 @@ function setupDailyCardAnimation(card) {
             }, 1800);
         }
     }, { once: true }); 
+}
+
+// Journal သိမ်းသည့် Function
+function saveDailyDrawToJournal(cardData) {
+    const userStr = localStorage.getItem('tarot_user');
+    
+    if (!userStr) {
+        alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။");
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const currentUser = JSON.parse(userStr);
+    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
+    const today = new Date().toLocaleDateString('en-GB'); 
+
+    const alreadySaved = journal.find(entry => entry.date === today && entry.card.name === cardData.name);
+    if (alreadySaved) {
+        alert("ဒီကတ်ကို ဒီနေ့အတွက် မှတ်စုထဲမှာ သိမ်းပြီးသားပါဗျာ။ 📝");
+        return;
+    }
+
+    // Journal အသစ်ကို Array ထဲ ထည့်မည် (type: 'Daily Draw' ဟု ကြိုတင် သတ်မှတ်ထားမည်)
+    journal.push({
+        date: today,
+        timestamp: Date.now(),
+        type: 'Daily Draw', // ဤနေရာတွင် Reading အမျိုးအစားကို ထည့်ပါသည်
+        card: {
+            name: cardData.name,
+            suit: cardData.suit || cardData.arcana,
+            imageUrl: cardData.imageUrl,
+            meaning: cardData.upright_meaning
+        }
+    });
+
+    localStorage.setItem('tarot_journal', JSON.stringify(journal));
+    alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို သင့်ရဲ့ Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
 }
 
 // =========================================
@@ -391,14 +572,11 @@ function openReadingModal(card, index) {
     const meaningEl = document.getElementById('modalCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
     
-    // Check if the reading modal exists (Library page might need this HTML added if it's not there)
     const modal = document.getElementById('readingModal');
     if(modal) {
         modal.classList.remove('hidden');
         isModalOpen = true;
         history.pushState({modal: true}, '', '#reading');
-    } else {
-        console.warn("readingModal not found on this page.");
     }
 }
 
@@ -410,115 +588,4 @@ function closeReadingModal(shouldGoBack = true) {
     if (shouldGoBack && window.location.hash === '#reading') {
         history.back(); 
     }
-}
-
-
-// =========================================
-// Authentication & User State Logic
-// =========================================
-
-// လက်ရှိ User Login ဝင်ထားသလား စစ်ဆေးခြင်း (Local Storage ဖြင့် ယာယီစစ်ဆေးမည်)
-const currentUser = localStorage.getItem('tarot_user'); 
-
-document.addEventListener('DOMContentLoaded', () => {
-    updateAuthUI();
-    initAuthPage();
-});
-
-// Navigation Bar ကို User အခြေအနေပေါ်မူတည်ပြီး ပြောင်းလဲခြင်း
-function updateAuthUI() {
-    const navLoginBtns = document.querySelectorAll('#navLoginBtn, .nav-login-btn');
-    
-    navLoginBtns.forEach(btn => {
-        if (currentUser) {
-            btn.innerText = "Logout";
-            btn.href = "#";
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('tarot_user'); // Logout လုပ်သည်
-                window.location.reload();
-            });
-        } else {
-            btn.innerText = "Login";
-            btn.href = "login.html";
-        }
-    });
-}
-
-// Login Page ရဲ့ Logic (Toggle & Submit)
-function initAuthPage() {
-    const authForm = document.getElementById('authForm');
-    if (!authForm) return;
-
-    let isLogin = true;
-    const authTitle = document.getElementById('authTitle');
-    const authSubmitBtn = document.getElementById('authSubmitBtn');
-    const authSwitchText = document.getElementById('authSwitchText');
-    const authSwitchLink = document.getElementById('authSwitchLink');
-    const nameGroup = document.getElementById('nameGroup');
-    const nameInput = document.getElementById('userName');
-
-    // Login နဲ့ Sign Up အကြား ပြောင်းလဲခြင်း
-    authSwitchLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        isLogin = !isLogin;
-
-        if (isLogin) {
-            authTitle.innerText = "Login";
-            authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
-            authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
-            authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
-            nameGroup.style.display = "none";
-            nameInput.removeAttribute('required');
-        } else {
-            authTitle.innerText = "Sign Up";
-            authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
-            authSwitchText.innerText = "အကောင့်ရှိပြီးသားလား?";
-            authSwitchLink.innerText = "Login ဝင်မည်";
-            nameGroup.style.display = "block";
-            nameInput.setAttribute('required', 'true');
-        }
-    });
-
-    // Form Submit လုပ်သောအခါ (Backend သို့ ပို့မည့်အပိုင်း)
-    authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const name = nameInput.value;
-
-        // မှတ်ချက် - လက်ရှိတွင် Frontend မှ ယာယီ Login ဝင်ခွင့်ပေးထားပါမည်။ 
-        // နောက်အဆင့်တွင် Supabase Backend API သို့ ချိတ်ဆက်ရပါမည်။
-        authSubmitBtn.innerText = "လုပ်ဆောင်နေပါသည်...";
-        
-        setTimeout(() => {
-            // အောင်မြင်သွားပါက Local Storage တွင် ယာယီမှတ်ထားမည်
-            localStorage.setItem('tarot_user', JSON.stringify({ email: email, name: isLogin ? "Member" : name }));
-            alert(isLogin ? "အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!" : "အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်!");
-            
-            // ဝင်ပြီးပါက Home Page သို့မဟုတ် ယခင် Page သို့ ပြန်လွှဲမည်
-            window.location.href = 'index.html'; 
-        }, 1000);
-    });
-}
-
-// =========================================
-// Journal / Saving Logic (Daily Draw)
-// =========================================
-
-// Daily Draw ၏ "Save to Journal" ခလုတ်ကို နှိပ်သောအခါ
-function saveDailyDrawToJournal(cardData) {
-    if (!currentUser) {
-        // Guest ဖြစ်နေလျှင် Login Page သို့ လွှဲမည်
-        alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
-        window.location.href = 'login.html';
-        return;
-    }
-
-    // Member ဖြစ်နေလျှင် Database (သို့) Local Storage တွင် သိမ်းမည်
-    alert(`"${cardData.name}" ကတ်ကို သင့်၏ Journal တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!`);
-    
-    // မှတ်ချက်: Backend Supabase ချိတ်ဆက်သည့်အခါ API ကို ဤနေရာမှ လှမ်းခေါ်ရပါမည်။
-    // ဥပမာ: fetch('/api/journal/save', { method: 'POST', body: JSON.stringify(cardData) });
 }
