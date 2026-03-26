@@ -19,13 +19,13 @@ body {
     color: var(--text-main);
     font-family: 'Padauk', 'Orbitron', sans-serif;
     min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100dvh; 
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
 }
 
-/* --- Navigation --- */
+/* Navigation */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -48,23 +48,24 @@ body {
     transition: color 0.3s ease;
 }
 
-.nav-link:hover {
-    color: var(--accent-cyan);
-}
+.nav-link:hover { color: var(--accent-cyan); }
 
-/* --- Main Containers & Hero --- */
-.home-container, .library-container, .daily-draw-container {
+/* Main Containers */
+.home-container, .library-container, .daily-draw-container, .reading-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 1.5rem;
     text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .glow-text {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(2rem, 8vw, 4rem); 
+    font-size: clamp(1.8rem, 5vw, 3rem); 
     color: #ffffff;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
     margin-bottom: 0.5rem;
@@ -77,278 +78,8 @@ body {
     margin-bottom: 2rem;
 }
 
-/* --- CTA Link Group --- */
-.cta-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 400px;
-}
-
-.cta-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: rgba(28, 37, 65, 0.5);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--text-main);
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-}
-
-.cta-link:hover {
-    background: rgba(0, 240, 255, 0.1);
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-    transform: translateX(10px);
-}
-
-.cta-link:hover .arrow {
-    color: var(--accent-cyan);
-    transform: translateX(5px);
-}
-
-.arrow {
-    transition: transform 0.3s ease;
-}
-
-
-/* --- Footer --- */
-footer {
-    width: 100%;
-    text-align: center;
-    /* ပြင်ဆင်ချက်: အောက်ဘက်ကို 2rem ထိ ပိုချန်ပေးပြီး၊ အမြဲအောက်ကပ်နေအောင် margin-top: auto ထည့်ခြင်း */
-    padding: 1.5rem 1rem 1rem 1rem; 
-    margin-top: auto; 
-    font-size: clamp(0.75rem, 3vw, 0.9rem);
-    overflow-wrap: break-word; 
-}
-
-/* =========================================
-   Library Page Styles 
-========================================= */
-.library-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex: 1;
-}
-
-.text-center { 
-    text-align: center; 
-    margin-bottom: 2rem; 
-}
-
-/* Filter Buttons */
-.filter-group {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 3rem;
-}
-
-.filter-btn {
-    background: transparent;
-    border: 1px solid var(--accent-cyan);
-    color: var(--text-main);
-    padding: 0.5rem 1.5rem;
-    border-radius: 20px;
-    cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover, .filter-btn.active {
-    background: rgba(0, 240, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
-    color: #fff;
-}
-
-/* Loading Animation */
-.loading-text {
-    text-align: center;
-    font-size: 1.2rem;
-    color: var(--accent-cyan);
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-
-/* Card Grid Layout */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2rem;
-}
-
-/* Individual Card Design */
-.tarot-card {
-    background: rgba(28, 37, 65, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.tarot-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
-    border-color: var(--accent-cyan);
-}
-
-.tarot-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.card-info {
-    padding: 1rem;
-    text-align: center;
-}
-
-.card-info h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    color: #fff;
-    line-height: 1.2;
-}
-
-.card-info p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-family: 'Padauk', sans-serif;
-}
-
-/* =========================================
-   Daily Draw Styles 
-========================================= */
-.daily-draw-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    flex: 1;
-}
-
-/* --- 3D Flip Card Animation --- */
-.card-scene {
-    perspective: 1000px;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.flip-card {
-    width: 80vw;
-    max-width: 200px;
-    aspect-ratio: 300 / 520; 
-    cursor: pointer;
-}
-
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 2.0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
-}
-
-.flip-card.flipped .flip-card-inner {
-    transform: rotateY(180deg);
-}
-
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.flip-card-front {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-.flip-card-front, .deck-card, .spread-card-item {
-    background-color: #0a1128; /* ပုံမပေါ်ခင်ယာယီပြမည့်အရောင် */
-    background-image: url('/Tarot Card/card_back.jpg'); /* သင့်ကတ်ကျောဘက်ပုံလမ်းကြောင်း */
-    background-size: cover;
-    background-position: center;
-    border: 2px solid rgba(0, 240, 255, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-.flip-card-front:hover {
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-}
-
-.flip-card-back {
-    transform: rotateY(180deg);
-}
-
-.flip-card-back img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-}
-
-/* Result Section */
-.result-section {
-    max-width: 600px;
-    text-align: center;
-    transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.result-section.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(20px);
-    display: none;
-}
-
-.result-section.fade-in {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.meaning-box {
-    background: rgba(28, 37, 65, 0.6);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-top: 0.5rem;
-    margin-bottom: 1.0rem;
-    color: var(--text-main);
-}
-
-.save-journal-btn {
+/* Common Buttons */
+.action-btn, .btn-login {
     background: rgba(0, 240, 255, 0.1);
     color: var(--accent-cyan);
     border: 1px solid var(--accent-cyan);
@@ -360,44 +91,66 @@ footer {
     transition: all 0.3s ease;
 }
 
-.save-journal-btn:hover {
+.action-btn:hover, .btn-login:hover {
     background: var(--accent-cyan);
     color: var(--bg-dark);
     box-shadow: 0 0 15px var(--accent-cyan);
 }
 
+.btn-cancel {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--text-muted);
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+/* Modal Basics */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden { display: none; opacity: 0; }
+
 /* =========================================
    Reading Page Styles
 ========================================= */
-.reading-container {
-    padding: 2rem 1rem;
-    max-width: 1000px;
-    margin: 0 auto;
-    width: 100%;
-    flex: 1;
-}
 
 /* Step Sections */
 .step-section {
     display: none;
+    width: 100%;
     animation: fadeIn 0.5s ease;
 }
 
-.step-section.active {
-    display: block;
-}
+.step-section.active { display: block; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Spread Selection Grid */
+/* Step 1: Spread Selection Grid */
 .spread-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
+    width: 100%;
 }
 
 .spread-card {
@@ -405,7 +158,6 @@ footer {
     border: 1px solid rgba(0, 240, 255, 0.2);
     border-radius: 12px;
     padding: 1.5rem;
-    text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
@@ -416,65 +168,17 @@ footer {
     background: rgba(0, 240, 255, 0.1);
     border-color: var(--accent-cyan);
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
 }
 
-.spread-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
+.spread-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.spread-card h3 { color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem; }
+.spread-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; }
 
-.spread-card h3 {
-    color: #fff;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-}
+.premium-spread { background: rgba(20, 20, 20, 0.6); border-color: rgba(255, 215, 0, 0.3); }
+.premium-spread.locked { opacity: 0.7; }
+.lock-icon { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; filter: grayscale(100%); }
 
-.spread-card p {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    line-height: 1.4;
-}
-
-/* Premium Spread Styles */
-.premium-spread {
-    background: rgba(20, 20, 20, 0.6);
-    border-color: rgba(255, 215, 0, 0.3); /* Gold border */
-}
-
-.premium-spread.locked {
-    opacity: 0.7;
-}
-
-.premium-spread.locked:hover {
-    border-color: rgba(255, 215, 0, 0.6);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
-}
-
-.lock-icon {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.2rem;
-    filter: grayscale(100%);
-}
-
-/* Modal Box (Pop-up) */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-overlay.hidden {
-    display: none;
-}
-
+/* Selection Modal */
 .modal-box {
     background: var(--bg-glow);
     border: 1px solid var(--accent-cyan);
@@ -483,62 +187,22 @@ footer {
     max-width: 400px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
 }
 
-.modal-box h2 {
-    color: #fff;
-    margin-bottom: 1rem;
-    font-family: 'Orbitron', sans-serif;
+.modal-actions { display: flex; justify-content: space-around; gap: 1rem; }
+
+/* Card Back (Common for Deck & Spread) */
+.deck-card, .spread-card-item {
+    background-color: #0a1128;
+    background-image: url('/Tarot Card/card_back.jpg');
+    background-size: cover;
+    background-position: center;
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-.modal-box p {
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: space-around;
-    gap: 1rem;
-}
-
-.btn-cancel, .btn-login, .action-btn {
-    padding: 0.8rem 1.5rem;
-    border-radius: 20px;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.btn-cancel {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--text-muted);
-}
-
-.btn-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-
-.btn-login, .action-btn {
-    background: rgba(0, 240, 255, 0.1);
-    color: var(--accent-cyan);
-    border: 1px solid var(--accent-cyan);
-}
-
-.btn-login:hover, .action-btn:hover {
-    background: var(--accent-cyan);
-    color: var(--bg-dark);
-    box-shadow: 0 0 15px var(--accent-cyan);
-}
-
-/* =========================================
-   Step 2: Shuffle & Spread Animations
-========================================= */
-
-/* ကတ်ထုတ်ကြီး နေရာချထားခြင်း */
+/* Step 2: Shuffle & Spread */
 .deck-area {
     position: relative;
     min-height: 250px;
@@ -548,24 +212,11 @@ footer {
     perspective: 1000px;
     margin-bottom: 2rem;
     width: 100%;
-    overflow: visible; /* Hover effect မြင်ရစေရန် */
 }
 
-/* ကတ်ထုတ်ကြီး (Deck Stack) */
-.deck-stack {
-    position: relative;
-    width: 120px;
-    height: 200px;
-}
+.deck-stack { position: relative; width: 120px; height: 200px; }
+.deck-card { position: absolute; width: 100%; height: 100%; transition: transform 0.5s ease; }
 
-.deck-card {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.5s ease;
-}
-
-/* ကတ်မွှေသည့် Animation (ဘယ်၊ ညာ ခွဲထွက်ခြင်း) */
 @keyframes shuffleLeft {
     0%, 100% { transform: translateX(0) rotate(0); z-index: 1; }
     50% { transform: translateX(-70px) rotate(-15deg); z-index: 10; }
@@ -575,14 +226,10 @@ footer {
     50% { transform: translateX(70px) rotate(15deg); z-index: 10; }
 }
 
-.deck-stack.shuffling .deck-card:nth-child(odd) {
-    animation: shuffleLeft 0.6s ease-in-out infinite;
-}
-.deck-stack.shuffling .deck-card:nth-child(even) {
-    animation: shuffleRight 0.6s ease-in-out infinite reverse;
-}
+.deck-stack.shuffling .deck-card:nth-child(odd) { animation: shuffleLeft 0.6s ease-in-out infinite; }
+.deck-stack.shuffling .deck-card:nth-child(even) { animation: shuffleRight 0.6s ease-in-out infinite reverse; }
 
-/* ဖြန့်ခင်းထားသော ကတ်များ (The Spread - Horizontal Overlap) */
+/* Step 2 Spread Area (The Gathering - အလျားလိုက် ထပ်လျက်သား) */
 .spread-area {
     display: flex;
     justify-content: center;
@@ -595,114 +242,100 @@ footer {
     transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.spread-area.visible {
-    opacity: 1;
-    transform: scale(1);
-}
+.spread-area.visible { opacity: 1; transform: scale(1); }
 
-/* ဖြန့်ခင်းထားသော ကတ်များ (Vertical Two-Column Spread) */
-.spread-area {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* ကတ်များကို အပေါ်ဆုံးမှ စတင်ချထားမည် */
-    width: 100%;
-    position: relative;
-    opacity: 0;
-    transform: scale(0.9);
-    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-top: 1rem;
-}
-
-.spread-area.visible {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* ပြင်ဆင်ချက်: ကတ်များကို အပေါ်မှအောက်သို့ စီရန် Top: 0 ထားမည် */
 .spread-card-item {
     width: 70px;
     height: 120px;
     cursor: pointer;
     position: absolute;
-    top: 0; 
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.8s ease, z-index 0s;
-    /* JS မှ ထည့်ပေးမည့် --tx (X ဝင်ရိုး), --ty (Y ဝင်ရိုး) ကို အသုံးပြုမည် */
-    transform: translate(var(--tx, 0), var(--ty, 0)); 
+    transform-origin: center bottom;
 }
 
-/* Desktop အတွက် ကတ်အရွယ်အစား နည်းနည်း ကြီးမည် */
-@media (min-width: 600px) {
-    .spread-card-item { width: 90px; height: 150px; }
-}
-
-/* Hover လုပ်လျှင် အပေါ်သို့ ကြွတက်လာစေရန် (JS transform ကို မထိခိုက်စေရန် calc သုံးသည်) */
 .spread-card-item:hover {
-    transform: translate(var(--tx), calc(var(--ty) - 15px)) scale(1.1) !important;
-    z-index: 1000 !important; 
+    transform: translateY(-30px) scale(1.1) rotate(0deg) !important;
+    z-index: 1000 !important;
     box-shadow: 0 10px 20px rgba(0, 240, 255, 0.5);
     border-color: #fff;
 }
 
-/* နှိပ်လိုက်ရင် ဘောင်အပြင်ကို ပျံထွက်သွားမည့် Animation */
 .spread-card-item.selected {
-    transform: translate(-100vw, var(--ty)) rotate(-90deg) scale(0.5) !important;
+    transform: translate(-100vw, -100px) rotate(-90deg) scale(0.5) !important;
     opacity: 0;
     pointer-events: none;
     z-index: 2000 !important;
+}
+
+/* Media Query for Desktop Spread Item */
+@media (min-width: 600px) {
+    .spread-card-item { width: 90px; height: 150px; }
 }
 
 /* =========================================
    Step 3: Reveal Area & Reading Box
 ========================================= */
 
-/* Placeholders & Reveal Area */
-/* Reveal Area Layout (အတန်းလိုက် ၃ ကတ်ဖြစ်စေရန်) */
 .reveal-area {
     display: flex;
-    justify-content: center; /* အလယ်ဗဟိုမှာ ထားမည် */
-    gap: 2rem; /* ကတ်တစ်ခုနဲ့တစ်ခုကြား ကွာဝေးမှု (ဖုန်းအတွက်) */
+    justify-content: center;
+    gap: 1.5rem; /* ကတ်တွေကြား gap ကို ချိန်ညှိသည် */
     flex-wrap: wrap;
     margin-top: 2rem;
-    min-height: 250px; /* ကတ်တွေ သေးသွားလို့ scene ရဲ့ အမြင့်ကို လျှော့မည် */
-}
-
-/* ကတ်အရေအတွက်ပေါ်မူတည်ပြီး Desktop တွင် အတန်းလိုက် ဖြစ်စေရန် (Responsive Gap) */
-@media (min-width: 768px) {
-    .reveal-area {
-        gap: 3.5rem; /* Desktop မှာ ကတ်တွေကြား ကွက်လပ်ကို ပိုကျယ်စေမည် */
-    }
+    min-height: 250px;
+    width: 100%;
 }
 
 /* Reveal Area ထဲက ကတ် Wrapper (ကတ်အရွယ်အစားကို သေးရန်) */
 .reveal-card-wrapper.flip-card {
-    /* Fixed px များ သုံးမည်။ Responsive Width (80vw) ကို Step 2 အတွက်ပဲ ထားမည် */
-    width: 150px; /* ကတ်အရွယ်အစားကို နဂို ၃၀၀px မှ ၁၅၀px သို့ သေးလိုက်သည် */
+    width: 130px; /* ကတ်အရွယ်အစားကို ဖုန်းအတွက် သေးလိုက်သည် */
     max-width: 150px;
-    
-    /* Tarot ကတ်ရဲ့ စံ aspect ratio ကို သတ်မှတ်ခြင်းဖြင့် ပုံမပျက်တော့ပါ */
-    aspect-ratio: 150 / 260; 
-    
-    /* Step 2 က Hover style တွေ ဒီမှာ မပေါ်စေရန် background ပြန်ရှင်းမည် */
+    aspect-ratio: 130 / 220; 
+    cursor: pointer;
     background-image: none !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-/* Step 3 DOM တည်ဆောက်တဲ့အချိန်မှာ inner structure က `style.css` က responsive aspect ratio ကို မသုံးမိအောင် placeholder aspect ratio ကို ချိန်ညှိသည် */
-.reveal-card-wrapper .flip-card-inner {
-    aspect-ratio: 150 / 260; 
+/* 3D Flip DOM Structure */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
 }
 
-/* ပျံဝင်လာမည့် Animation (နဂိုအတိုင်းထားပါ) */
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.flip-card-back { transform: rotateY(180deg); }
+.flip-card-back img { width: 100%; height: 100%; object-fit: fill; }
+
+/* ပျံဝင်လာမည့် Animation */
 .reveal-card-wrapper {
     opacity: 0;
     transform: translateY(-50px);
     animation: flyInFromTop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-
 @keyframes flyInFromTop {
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Query for Desktop Reveal Items (3-Card in a row) */
+@media (min-width: 768px) {
+    .reveal-area { gap: 3rem; }
+    .reveal-card-wrapper.flip-card { width: 180px; aspect-ratio: 180 / 300; }
 }
 
 /* Reading Box Modal (အသေးစိတ် ဟောစာတမ်း) */
@@ -712,10 +345,10 @@ footer {
     border: 1px solid var(--accent-cyan);
     border-radius: 12px;
     padding: 2rem;
-    max-width: 800px; /* ရိုးရိုး Modal ထက် ပိုကျယ်မည် */
+    max-width: 800px;
     width: 95%;
     max-height: 90dvh;
-    overflow-y: auto; /* စာရှည်လျှင် Scroll ဆွဲနိုင်ရန် */
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
 }
@@ -723,16 +356,12 @@ footer {
 .reading-content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
 }
 
-/* Desktop တွင် ပုံကို ဘယ်၊ စာကို ညာ ထားမည် */
 @media (min-width: 768px) {
-    .reading-content {
-        flex-direction: row;
-        align-items: flex-start;
-    }
+    .reading-content { flex-direction: row; align-items: flex-start; }
     .reading-image { flex: 0 0 250px; }
     .reading-text { flex: 1; }
 }
@@ -758,3 +387,13 @@ footer {
 }
 
 .close-modal-btn:hover { color: var(--accent-cyan); }
+
+/* Meaning Box Inside Modal */
+.meaning-box {
+    background: rgba(28, 37, 65, 0.6);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: 'Padauk', sans-serif;
+}
