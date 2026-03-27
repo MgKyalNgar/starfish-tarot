@@ -15,7 +15,7 @@
     </nav>
 
     <main class="auth-container" style="flex-direction: column; align-items: center; padding-top: 5rem;">
-        <div class="auth-box" style="max-width: 500px; width: 100%;">
+        <div class="auth-box" style="max-width: 600px; width: 100%;">
             <h2 class="glow-text text-center" style="font-size: 2rem; margin-bottom: 1rem;">My Profile 👤</h2>
             
             <div style="background: rgba(10, 17, 40, 0.6); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 2rem;">
@@ -24,13 +24,18 @@
             </div>
 
             <h3 style="color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1.2rem;">စကားဝှက် ပြောင်းရန် 🔐</h3>
-            <form id="passwordForm">
+            <form id="passwordForm" style="margin-bottom: 2.5rem;">
                 <div class="input-group">
-                    <label for="newPassword">စကားဝှက်အသစ် (New Password)</label>
-                    <input type="password" id="newPassword" required placeholder="အနည်းဆုံး ၆ လုံး ထည့်ပါ">
+                    <input type="password" id="newPassword" required placeholder="စကားဝှက်အသစ် (အနည်းဆုံး ၆ လုံး ထည့်ပါ)">
                 </div>
                 <button type="submit" class="action-btn" style="width: 100%;" id="updatePassBtn">စကားဝှက် ပြောင်းမည်</button>
             </form>
+
+            <hr style="border-color: rgba(255, 255, 255, 0.1); margin-bottom: 2rem;">
+
+            <h3 class="glow-text text-center" style="font-size: 1.5rem; margin-bottom: 1.5rem;">My Journal 📝</h3>
+            <div id="profileHistoryContainer" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                </div>
         </div>
     </main>
 
