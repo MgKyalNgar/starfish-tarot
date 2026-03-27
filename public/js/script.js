@@ -556,7 +556,7 @@ function selectIndividualCard(cardElement, availableDeck) {
 }
 
 function goToRevealStep() {
-    history.pushState({step: 'reveal'}, '', '#reveal');
+    history.replaceState({step: 'reveal'}, '', '#reveal');
     showStep('step-reveal');
     
     const shuffleStep = document.getElementById('step-shuffle');
