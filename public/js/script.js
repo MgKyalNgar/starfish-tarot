@@ -289,12 +289,33 @@ function renderLibraryCards(cards) {
 
 function initDailyDrawLocally() {
     if (fullDeck.length > 0) {
-        const randomCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
-        setupDailyCardAnimation(randomCard);
+        const userStr = localStorage.getItem('tarot_user');
+        const today = new Date().toLocaleDateString('en-GB');
+        let cardToUse = null;
+        let isAlreadySaved = false;
+
+        // Login ဝင်ထားလျှင် ယနေ့အတွက် သိမ်းထားသော Daily Draw ရှိ/မရှိ စစ်ဆေးမည်
+        if (userStr) {
+            const journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
+            const todayDraw = journal.find(entry => entry.date === today && entry.type === 'Daily Draw');
+            
+            if (todayDraw) {
+                // သိမ်းထားတာရှိရင် Random မရွေးတော့ဘဲ အဲဒီကတ်ကိုပဲ ပြန်ယူသုံးမည်
+                cardToUse = fullDeck.find(c => c.name === todayDraw.card.name);
+                isAlreadySaved = true;
+            }
+        }
+
+        // သိမ်းထားတာမရှိရင် (သို့) Guest ဖြစ်နေရင် Random အသစ်တစ်ခု ယူမည်
+        if (!cardToUse) {
+            cardToUse = fullDeck[Math.floor(Math.random() * fullDeck.length)];
+        }
+
+        setupDailyCardAnimation(cardToUse, isAlreadySaved);
     }
 }
 
-function setupDailyCardAnimation(card) {
+function setupDailyCardAnimation(card, isAlreadySaved = false) {
     const cardElement = document.getElementById('dailyCard');
     const resultSection = document.getElementById('dailyResult');
     if (!cardElement) return; 
@@ -311,9 +332,25 @@ function setupDailyCardAnimation(card) {
     const meaningEl = document.getElementById('dailyCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
 
+    // Save ခလုတ်ကို အခြေအနေပေါ်မူတည်ပြီး ပြင်ဆင်မည်
     const saveBtn = document.querySelector('.save-journal-btn');
     if(saveBtn) {
-        saveBtn.onclick = () => saveDailyDrawToJournal(card);
+        if (isAlreadySaved) {
+            // သိမ်းပြီးသားဆိုလျှင် ခလုတ်ကို ပိတ်ထားမည်
+            saveBtn.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
+            saveBtn.disabled = true;
+            saveBtn.style.opacity = "0.5";
+            saveBtn.style.cursor = "not-allowed";
+            
+            // စာသားလေး ပြောင်းပေးမည်
+            const subtitle = document.querySelector('.daily-draw-container .subtitle');
+            if (subtitle) {
+                subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
+                subtitle.style.color = "var(--accent-cyan)";
+            }
+        } else {
+            saveBtn.onclick = () => saveDailyDrawToJournal(card, saveBtn);
+        }
     }
 
     cardElement.addEventListener('click', () => {
@@ -330,7 +367,7 @@ function setupDailyCardAnimation(card) {
 }
 
 // Journal သိမ်းသည့် Function
-function saveDailyDrawToJournal(cardData) {
+function saveDailyDrawToJournal(cardData, saveBtnElement) {
     const userStr = localStorage.getItem('tarot_user');
     
     if (!userStr) {
@@ -343,17 +380,17 @@ function saveDailyDrawToJournal(cardData) {
     let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
     const today = new Date().toLocaleDateString('en-GB'); 
 
-    const alreadySaved = journal.find(entry => entry.date === today && entry.card.name === cardData.name);
+    // ဒီနေ့အတွက် Daily Draw သိမ်းပြီးသား ရှိမရှိ ထပ်စစ်မည်
+    const alreadySaved = journal.find(entry => entry.date === today && entry.type === 'Daily Draw');
     if (alreadySaved) {
-        alert("ဒီကတ်ကို ဒီနေ့အတွက် မှတ်စုထဲမှာ သိမ်းပြီးသားပါဗျာ။ 📝");
+        alert("ဒီနေ့အတွက် Daily Draw ကို သိမ်းပြီးသားပါဗျာ။ 📝");
         return;
     }
 
-    // Journal အသစ်ကို Array ထဲ ထည့်မည် (type: 'Daily Draw' ဟု ကြိုတင် သတ်မှတ်ထားမည်)
     journal.push({
         date: today,
         timestamp: Date.now(),
-        type: 'Daily Draw', // ဤနေရာတွင် Reading အမျိုးအစားကို ထည့်ပါသည်
+        type: 'Daily Draw', 
         card: {
             name: cardData.name,
             suit: cardData.suit || cardData.arcana,
@@ -364,7 +401,23 @@ function saveDailyDrawToJournal(cardData) {
 
     localStorage.setItem('tarot_journal', JSON.stringify(journal));
     alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို သင့်ရဲ့ Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
+    
+    // သိမ်းပြီးသွားလျှင် ခလုတ်ကို ချက်ချင်း ပိတ်မည် (Page Refresh လုပ်စရာမလိုအောင်)
+    if (saveBtnElement) {
+        saveBtnElement.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
+        saveBtnElement.disabled = true;
+        saveBtnElement.style.opacity = "0.5";
+        saveBtnElement.style.cursor = "not-allowed";
+        
+        const subtitle = document.querySelector('.daily-draw-container .subtitle');
+        if (subtitle) {
+            subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
+            subtitle.style.color = "var(--accent-cyan)";
+        }
+    }
 }
+
+
 
 // =========================================
 // Reading Page Logic (Step 1, 2, 3)
