@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Starfish Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Starfish Tarot</a>
+        <div class="auth-links">
+            </div>
+    </nav>
+
+    <main class="auth-container" style="flex-direction: column; align-items: center; padding-top: 5rem;">
+        <div class="auth-box" style="max-width: 500px; width: 100%;">
+            <h2 class="glow-text text-center" style="font-size: 2rem; margin-bottom: 1rem;">My Profile 👤</h2>
+            
+            <div style="background: rgba(10, 17, 40, 0.6); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 2rem;">
+                <p style="color: var(--text-muted); margin-bottom: 0.5rem;">အမည်: <strong id="profileName" style="color: #fff; font-size: 1.1rem; margin-left: 10px;"></strong></p>
+                <p style="color: var(--text-muted);">အီးမေးလ်: <strong id="profileEmail" style="color: #fff; font-size: 1.1rem; margin-left: 10px;"></strong></p>
+            </div>
+
+            <h3 style="color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1.2rem;">စကားဝှက် ပြောင်းရန် 🔐</h3>
+            <form id="passwordForm">
+                <div class="input-group">
+                    <label for="newPassword">စကားဝှက်အသစ် (New Password)</label>
+                    <input type="password" id="newPassword" required placeholder="အနည်းဆုံး ၆ လုံး ထည့်ပါ">
+                </div>
+                <button type="submit" class="action-btn" style="width: 100%;" id="updatePassBtn">စကားဝှက် ပြောင်းမည်</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        © 2026 Starfish Tarot. Created by Mg Kyal Ngar.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
