@@ -1,6 +1,11 @@
 // =========================================
-// Starfish Tarot - Global App Logic
+// Starfish Tarot - Global App Logic & Superbase
 // =========================================
+
+const SUPABASE_URL = 'https://vyzujedlllcuqroovorz.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_A14SbpAcDtb6jzVioImb6A_L7Hv6dhL';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentSpreadType = '';
 let cardsToDraw = 0;
@@ -160,21 +165,69 @@ function initAuthPage() {
         }
     });
 
-    authForm.addEventListener('submit', (e) => {
+    authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value;
-        const defaultName = email.split('@')[0];
-        const name = nameInput.value || defaultName;
+        const password = document.getElementById('password').value;
+        const name = nameInput.value || email.split('@')[0];
 
         authSubmitBtn.innerText = "လုပ်ဆောင်နေပါသည်...";
-        
-        setTimeout(() => {
-            localStorage.setItem('tarot_user', JSON.stringify({ email: email, name: name }));
-            alert(isLogin ? `ကြိုဆိုပါတယ် 👤 ${name}!` : "အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်!");
-            window.location.href = 'index.html'; 
-        }, 800);
+        authSubmitBtn.disabled = true;
+
+        if (isLogin) {
+            // --- တကယ့် Supabase Login ---
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+                authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+                authSubmitBtn.disabled = false;
+            } else {
+                // အောင်မြင်ပါက (Supabase မှ User Data ကို ယူပြီး LocalStorage တွင် မှတ်မည်)
+                const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
+                localStorage.setItem('tarot_user', JSON.stringify({ 
+                    email: data.user.email, 
+                    name: displayName,
+                    id: data.user.id 
+                }));
+                alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
+                window.location.href = 'index.html'; 
+            }
+        } else {
+            // --- တကယ့် Supabase Sign Up ---
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { display_name: name } // နာမည်ကိုပါ တွဲသိမ်းထားမည်
+                }
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+                authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
+                authSubmitBtn.disabled = false;
+            } else {
+                alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
+                // Sign up ပြီးရင် Form ကို Login ဘက်သို့ ပြန်လှည့်ပေးမည်
+                isLogin = true;
+                authTitle.innerText = "Login";
+                authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+                authSubmitBtn.disabled = false;
+                authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
+                authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
+                nameGroup.style.display = "none";
+                nameInput.removeAttribute('required');
+                document.getElementById('password').value = ''; // Password ရှင်းမည်
+            }
+        }
     });
 }
+
+
 
 // =========================================
 // Journal / History Logic (Dynamic Modal)
