@@ -117,20 +117,11 @@ function updateAuthUI() {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
-                    // Supabase မှပါ Logout လုပ်မည်
                     if(supabaseClient) supabaseClient.auth.signOut();
                     window.location.reload(); 
                 });
             }
-
-            const profileBtn = container.querySelector('.nav-profile-btn');
-            if(profileBtn) {
-                profileBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openJournalModal();
-                });
-            }
-
+            // မှတ်ချက်: profileBtn အတွက် addEventListener ဖြုတ်လိုက်ပါပြီ။ href="profile.html" က တိုက်ရိုက်အလုပ်လုပ်ပါမည်။
         } else {
             container.innerHTML = `
                 <a href="library.html" class="nav-link">Library</a>
@@ -222,6 +213,26 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
                 authSubmitBtn.disabled = false;
             } else {
+                // --- Database (User Table) သို့ Data များ ထည့်သွင်းခြင်း ---
+                if (data.user) {
+                    const { error: dbError } = await supabaseClient
+                        .from('User')
+                        .insert([
+                            { 
+                                id: data.user.id, 
+                                email: email, 
+                                name: name,
+                                role: 'user', // Default အနေဖြင့် user ဟု ပေးမည်
+                                isSubscribed: false
+                            }
+                        ]);
+                        
+                    if (dbError) {
+                        console.error("Database Save Error:", dbError);
+                        // RLS Policy ကြောင့် Error တက်နိုင်ပါသည်။ Supabase တွင် RLS ပိတ်ထားရန် လိုကောင်းလိုပါမည်။
+                    }
+                }
+                
                 alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
                 isLogin = true;
                 authTitle.innerText = "Login";
@@ -237,64 +248,6 @@ function initAuthPage() {
     });
 }
 
-// =========================================
-// Journal / History Logic (Dynamic Modal)
-// =========================================
-
-function createJournalModal() {
-    if (document.getElementById('journalModalWrapper')) return;
-
-    const modalHtml = `
-        <div id="journalModalWrapper" class="modal-overlay hidden" style="z-index: 2000;">
-            <div class="reading-modal-box" style="max-width: 500px; text-align: left;">
-                <button class="close-modal-btn" onclick="document.getElementById('journalModalWrapper').classList.add('hidden')">✕</button>
-                <h2 class="glow-text text-center" style="font-size: 1.8rem; margin-bottom: 1.5rem;">My Journal 📝</h2>
-                <div id="journalContent" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
-                    </div>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function openJournalModal() {
-    const modal = document.getElementById('journalModalWrapper');
-    const content = document.getElementById('journalContent');
-    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
-
-    if (journal.length === 0) {
-        content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
-    } else {
-        journal.reverse(); 
-
-        let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
-        journal.forEach((entry, index) => {
-            let cardNamesToDisplay = "";
-            if (entry.cards) {
-                cardNamesToDisplay = entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ');
-            } else if (entry.card) {
-                cardNamesToDisplay = entry.card.name;
-            }
-
-            listHtml += `
-                <li style="background: rgba(28, 37, 65, 0.4); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; transition: all 0.3s;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family: 'Orbitron', sans-serif;">📅 ${entry.date}</span>
-                        <span style="background: rgba(0, 240, 255, 0.1); color: var(--text-main); font-size: 0.75rem; padding: 3px 8px; border-radius: 12px;">${entry.type}</span>
-                    </div>
-                    <div style="color: #fff; font-size: 1.05rem; line-height: 1.4;">
-                        <span style="color: var(--text-muted); margin-right: 5px;">${index + 1}.</span> 
-                        ${cardNamesToDisplay}
-                    </div>
-                </li>
-            `;
-        });
-        listHtml += `</ul>`;
-        content.innerHTML = listHtml;
-    }
-
-    modal.classList.remove('hidden');
-}
 
 // =========================================
 // Library Page Logic
@@ -762,8 +715,6 @@ function closeReadingModal(shouldGoBack = true) {
 
 function initProfilePage() {
     const userStr = localStorage.getItem('tarot_user');
-    
-    // Login မဝင်ထားဘဲ Profile Page ရောက်လာရင် Login ကို ပြန်လွှဲမည်
     if (!userStr || !supabaseClient) {
         window.location.href = 'login.html';
         return;
@@ -771,11 +722,38 @@ function initProfilePage() {
 
     const currentUser = JSON.parse(userStr);
     
-    // နာမည်နှင့် အီးမေးလ်ကို HTML တွင် ဖော်ပြမည်
     document.getElementById('profileName').innerText = currentUser.name;
     document.getElementById('profileEmail').innerText = currentUser.email;
 
-    // Password ပြောင်းမည့် Form Submit
+    // --- Journal History ကို Profile ထဲတွင် ပြသခြင်း ---
+    const historyContainer = document.getElementById('profileHistoryContainer');
+    if (historyContainer) {
+        let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
+        if (journal.length === 0) {
+            historyContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
+        } else {
+            journal.reverse(); 
+            let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
+            journal.forEach((entry, index) => {
+                let cardNamesToDisplay = entry.cards ? entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ') : entry.card.name;
+                listHtml += `
+                    <li style="background: rgba(28, 37, 65, 0.4); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family: 'Orbitron', sans-serif;">📅 ${entry.date}</span>
+                            <span style="background: rgba(0, 240, 255, 0.1); color: var(--text-main); font-size: 0.75rem; padding: 3px 8px; border-radius: 12px;">${entry.type}</span>
+                        </div>
+                        <div style="color: #fff; font-size: 1.05rem; line-height: 1.4;">
+                            <span style="color: var(--text-muted); margin-right: 5px;">${index + 1}.</span> 
+                            ${cardNamesToDisplay}
+                        </div>
+                    </li>
+                `;
+            });
+            listHtml += `</ul>`;
+            historyContainer.innerHTML = listHtml;
+        }
+    }
+
     const passwordForm = document.getElementById('passwordForm');
     const updatePassBtn = document.getElementById('updatePassBtn');
 
@@ -791,16 +769,13 @@ function initProfilePage() {
         updatePassBtn.innerText = "ပြောင်းလဲနေပါသည်...";
         updatePassBtn.disabled = true;
 
-        // Supabase သို့ Password အသစ် လှမ်းပို့ခြင်း
-        const { data, error } = await supabaseClient.auth.updateUser({
-            password: newPassword
-        });
+        const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
 
         if (error) {
             alert("Error: " + error.message);
         } else {
-            alert("စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲသွားပါပြီ! 🔐 နောက်တစ်ခါ Login ဝင်လျှင် စကားဝှက်အသစ်ကို အသုံးပြုပါ။");
-            document.getElementById('newPassword').value = ''; // Input ကို ပြန်ရှင်းမည်
+            alert("စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲသွားပါပြီ! 🔐");
+            document.getElementById('newPassword').value = ''; 
         }
 
         updatePassBtn.innerText = "စကားဝှက် ပြောင်းမည်";
