@@ -1,0 +1,58 @@
+// =========================================
+// Journal / History Logic (Dynamic Modal)
+// =========================================
+
+function createJournalModal() {
+    if (document.getElementById('journalModalWrapper')) return;
+
+    const modalHtml = `
+        <div id="journalModalWrapper" class="modal-overlay hidden" style="z-index: 2000;">
+            <div class="reading-modal-box" style="max-width: 500px; text-align: left;">
+                <button class="close-modal-btn" onclick="document.getElementById('journalModalWrapper').classList.add('hidden')">✕</button>
+                <h2 class="glow-text text-center" style="font-size: 1.8rem; margin-bottom: 1.5rem;">My Journal 📝</h2>
+                <div id="journalContent" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+                    </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function openJournalModal() {
+    const modal = document.getElementById('journalModalWrapper');
+    const content = document.getElementById('journalContent');
+    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
+
+    if (journal.length === 0) {
+        content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
+    } else {
+        journal.reverse(); 
+
+        let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
+        journal.forEach((entry, index) => {
+            let cardNamesToDisplay = "";
+            if (entry.cards) {
+                cardNamesToDisplay = entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ');
+            } else if (entry.card) {
+                cardNamesToDisplay = entry.card.name;
+            }
+
+            listHtml += `
+                <li style="background: rgba(28, 37, 65, 0.4); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; transition: all 0.3s;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family: 'Orbitron', sans-serif;">📅 ${entry.date}</span>
+                        <span style="background: rgba(0, 240, 255, 0.1); color: var(--text-main); font-size: 0.75rem; padding: 3px 8px; border-radius: 12px;">${entry.type}</span>
+                    </div>
+                    <div style="color: #fff; font-size: 1.05rem; line-height: 1.4;">
+                        <span style="color: var(--text-muted); margin-right: 5px;">${index + 1}.</span> 
+                        ${cardNamesToDisplay}
+                    </div>
+                </li>
+            `;
+        });
+        listHtml += `</ul>`;
+        content.innerHTML = listHtml;
+    }
+
+    modal.classList.remove('hidden');
+}
