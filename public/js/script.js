@@ -1,15 +1,16 @@
-// Starfish Tarot - Global App Logic & 
+// =========================================
+// Starfish Tarot - Global App Logic & Supabase
 // =========================================
 
 const SUPABASE_URL = 'https://vyzujedlllcuqroovorz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_A14SbpAcDtb6jzVioImb6A_L7Hv6dhL';
 
-// ပြင်ဆင်ချက်: Supabase Link မပါလာပါက JS တစ်ခုလုံး Error မတက်စေရန် ကာကွယ်ထားခြင်း
-let supabase = null;
+// ပြင်ဆင်ချက်: နာမည်တိုက်သည့် ပြဿနာကို ဖြေရှင်းရန် 'supabaseClient' ဟု ပြောင်းလိုက်ပါသည်
+let supabaseClient = null;
 if (window.supabase) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
-    console.warn("Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
+    console.warn(" Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
 }
 
 let currentSpreadType = '';
@@ -113,8 +114,8 @@ function updateAuthUI() {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
-                    // တကယ့် Supabase ကနေပါ Logout လုပ်မည်
-                    if(supabase) supabase.auth.signOut();
+                    // Supabase မှပါ Logout လုပ်မည်
+                    if(supabaseClient) supabaseClient.auth.signOut();
                     window.location.reload(); 
                 });
             }
@@ -172,8 +173,7 @@ function initAuthPage() {
     authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Supabase ချိတ်ဆက်မှု မရှိပါက တားမည်
-        if (!supabase) {
+        if (!supabaseClient) {
             alert("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။");
             return;
         }
@@ -186,7 +186,7 @@ function initAuthPage() {
         authSubmitBtn.disabled = true;
 
         if (isLogin) {
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
@@ -206,7 +206,7 @@ function initAuthPage() {
                 window.location.href = 'index.html'; 
             }
         } else {
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
                 options: {
