@@ -1,5 +1,4 @@
-// =========================================
-// Starfish Tarot - Global App Logic & Supabase
+// Starfish Tarot - Global App Logic & 
 // =========================================
 
 const SUPABASE_URL = 'https://vyzujedlllcuqroovorz.supabase.co';
