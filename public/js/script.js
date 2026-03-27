@@ -1,11 +1,17 @@
 // =========================================
-// Starfish Tarot - Global App Logic & Superbase
+// Starfish Tarot - Global App Logic & Supabase
 // =========================================
 
-const SUPABASE_URL = 'https://vyzujedlllcuqroovorz.supabase.co'
+const SUPABASE_URL = 'https://vyzujedlllcuqroovorz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_A14SbpAcDtb6jzVioImb6A_L7Hv6dhL';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ပြင်ဆင်ချက်: Supabase Link မပါလာပါက JS တစ်ခုလုံး Error မတက်စေရန် ကာကွယ်ထားခြင်း
+let supabase = null;
+if (window.supabase) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.warn("⚠️ Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
+}
 
 let currentSpreadType = '';
 let cardsToDraw = 0;
@@ -14,9 +20,7 @@ let drawnCardDetails = [];
 let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // UI တွင် Login အခြေအနေကို အရင်စစ်ဆေးပြီး User Name ပြမည်
     updateAuthUI();
-    // Journal အတွက် Modal Box ကို HTML တွင် အလိုအလျောက် ဖန်တီးမည်
     createJournalModal();
 
     try {
@@ -24,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const result = await response.json();
         if (result.status === 'success') {
             fullDeck = result.data;
-            
+
             if (document.getElementById('dailyCard')) {
                 initDailyDrawLocally(); 
             }
@@ -72,11 +76,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const revealArea = document.getElementById('reveal-area');
             if(revealArea) revealArea.innerHTML = '';
             createDeckStack();
-            
-            // Remove the save button if going back to selection
+
             const saveBtnContainer = document.getElementById('readingSaveBtnContainer');
             if (saveBtnContainer) saveBtnContainer.remove();
-            
+
             if(shuffleBtn) {
                 shuffleBtn.style.display = 'inline-block';
                 shuffleBtn.disabled = false;
@@ -95,7 +98,7 @@ function updateAuthUI() {
     const userStr = localStorage.getItem('tarot_user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
     const authLinksContainers = document.querySelectorAll('.auth-links');
-    
+
     authLinksContainers.forEach(container => {
         if (currentUser) {
             container.innerHTML = `
@@ -105,12 +108,14 @@ function updateAuthUI() {
                 </a>
                 <a href="#" class="nav-logout-btn" style="margin-left: 15px; color: #ff4d4d; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;">Logout</a>
             `;
-            
+
             const logoutBtn = container.querySelector('.nav-logout-btn');
             if(logoutBtn) {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
+                    // တကယ့် Supabase ကနေပါ Logout လုပ်မည်
+                    if(supabase) supabase.auth.signOut();
                     window.location.reload(); 
                 });
             }
@@ -167,6 +172,13 @@ function initAuthPage() {
 
     authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Supabase ချိတ်ဆက်မှု မရှိပါက တားမည်
+        if (!supabase) {
+            alert("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။");
+            return;
+        }
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const name = nameInput.value || email.split('@')[0];
@@ -175,7 +187,6 @@ function initAuthPage() {
         authSubmitBtn.disabled = true;
 
         if (isLogin) {
-            // --- တကယ့် Supabase Login ---
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -186,7 +197,6 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
                 authSubmitBtn.disabled = false;
             } else {
-                // အောင်မြင်ပါက (Supabase မှ User Data ကို ယူပြီး LocalStorage တွင် မှတ်မည်)
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
                 localStorage.setItem('tarot_user', JSON.stringify({ 
                     email: data.user.email, 
@@ -197,12 +207,11 @@ function initAuthPage() {
                 window.location.href = 'index.html'; 
             }
         } else {
-            // --- တကယ့် Supabase Sign Up ---
             const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password,
                 options: {
-                    data: { display_name: name } // နာမည်ကိုပါ တွဲသိမ်းထားမည်
+                    data: { display_name: name } 
                 }
             });
 
@@ -212,7 +221,6 @@ function initAuthPage() {
                 authSubmitBtn.disabled = false;
             } else {
                 alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
-                // Sign up ပြီးရင် Form ကို Login ဘက်သို့ ပြန်လှည့်ပေးမည်
                 isLogin = true;
                 authTitle.innerText = "Login";
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
@@ -221,13 +229,11 @@ function initAuthPage() {
                 authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
                 nameGroup.style.display = "none";
                 nameInput.removeAttribute('required');
-                document.getElementById('password').value = ''; // Password ရှင်းမည်
+                document.getElementById('password').value = ''; 
             }
         }
     });
 }
-
-
 
 // =========================================
 // Journal / History Logic (Dynamic Modal)
@@ -235,7 +241,7 @@ function initAuthPage() {
 
 function createJournalModal() {
     if (document.getElementById('journalModalWrapper')) return;
-    
+
     const modalHtml = `
         <div id="journalModalWrapper" class="modal-overlay hidden" style="z-index: 2000;">
             <div class="reading-modal-box" style="max-width: 500px; text-align: left;">
@@ -258,15 +264,13 @@ function openJournalModal() {
         content.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
     } else {
         journal.reverse(); 
-        
+
         let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
         journal.forEach((entry, index) => {
             let cardNamesToDisplay = "";
             if (entry.cards) {
-                // Reading (Spread) ဖြစ်လျှင် ကတ်အများကြီးကို ပေါင်းပြမည်
                 cardNamesToDisplay = entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ');
             } else if (entry.card) {
-                // Daily Draw ဖြစ်လျှင်
                 cardNamesToDisplay = entry.card.name;
             }
 
@@ -286,7 +290,7 @@ function openJournalModal() {
         listHtml += `</ul>`;
         content.innerHTML = listHtml;
     }
-    
+
     modal.classList.remove('hidden');
 }
 
@@ -297,18 +301,18 @@ function openJournalModal() {
 function initLibraryLocally() {
     const loadingText = document.querySelector('.loading-text') || document.getElementById('loading-text');
     if (loadingText) loadingText.style.display = 'none';
-    
+
     renderLibraryCards(fullDeck);
-    
+
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             filterBtns.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
-            
+
             const filterText = e.target.innerText.trim().toLowerCase();
             let filteredCards = [];
-            
+
             if (filterText === 'all cards') {
                 filteredCards = fullDeck;
             } else if (filterText === 'major') {
@@ -325,7 +329,7 @@ function renderLibraryCards(cards) {
     const cardGrid = document.querySelector('.card-grid') || document.getElementById('card-grid');
     if (!cardGrid) return;
     cardGrid.innerHTML = ''; 
-    
+
     cards.forEach(card => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
@@ -376,16 +380,16 @@ function setupDailyCardAnimation(card, isAlreadySaved = false) {
     const cardElement = document.getElementById('dailyCard');
     const resultSection = document.getElementById('dailyResult');
     if (!cardElement) return; 
-    
+
     const imgEl = document.getElementById('dailyCardImage');
     if(imgEl) imgEl.src = card.imageUrl;
-    
+
     const nameEl = document.getElementById('dailyCardName');
     if(nameEl) nameEl.innerText = card.name;
-    
+
     const typeEl = document.getElementById('dailyCardType');
     if(typeEl) typeEl.innerText = card.suit ? card.suit : card.arcana;
-    
+
     const meaningEl = document.getElementById('dailyCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
 
@@ -396,7 +400,7 @@ function setupDailyCardAnimation(card, isAlreadySaved = false) {
             saveBtn.disabled = true;
             saveBtn.style.opacity = "0.5";
             saveBtn.style.cursor = "not-allowed";
-            
+
             const subtitle = document.querySelector('.daily-draw-container .subtitle');
             if (subtitle) {
                 subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
@@ -410,7 +414,7 @@ function setupDailyCardAnimation(card, isAlreadySaved = false) {
     cardElement.addEventListener('click', () => {
         cardElement.classList.add('flipped');
         cardElement.style.cursor = 'default'; 
-        
+
         if (resultSection) {
             setTimeout(() => {
                 resultSection.classList.remove('hidden');
@@ -422,7 +426,7 @@ function setupDailyCardAnimation(card, isAlreadySaved = false) {
 
 function saveDailyDrawToJournal(cardData, saveBtnElement) {
     const userStr = localStorage.getItem('tarot_user');
-    
+
     if (!userStr) {
         alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။");
         window.location.href = 'login.html';
@@ -453,13 +457,13 @@ function saveDailyDrawToJournal(cardData, saveBtnElement) {
 
     localStorage.setItem('tarot_journal', JSON.stringify(journal));
     alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို သင့်ရဲ့ Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
-    
+
     if (saveBtnElement) {
         saveBtnElement.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
         saveBtnElement.disabled = true;
         saveBtnElement.style.opacity = "0.5";
         saveBtnElement.style.cursor = "not-allowed";
-        
+
         const subtitle = document.querySelector('.daily-draw-container .subtitle');
         if (subtitle) {
             subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
@@ -506,12 +510,12 @@ function closeModal() {
 function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
-    
+
     deckArea.innerHTML = ''; 
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
-    
+
     for (let i = 0; i < 10; i++) {
         const card = document.createElement('div');
         card.className = 'deck-card';
@@ -526,12 +530,12 @@ function startShuffleAnimation() {
     const shuffleBtn = document.getElementById('shuffleBtn');
     const deckStack = document.getElementById('deckStack');
     if(!shuffleBtn || !deckStack) return;
-    
+
     shuffleBtn.disabled = true;
     shuffleBtn.innerText = "ကတ်မွှေနေပါသည်... 🔮";
     shuffleBtn.style.opacity = "0.7";
     deckStack.classList.add('shuffling');
-    
+
     setTimeout(() => {
         deckStack.classList.remove('shuffling');
         deckStack.style.display = 'none'; 
@@ -543,49 +547,49 @@ function startShuffleAnimation() {
 function spreadCardsOut() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
-    
+
     const spreadContainer = document.createElement('div');
     spreadContainer.className = 'spread-area';
-    
+
     const isMobile = window.innerWidth <= 600;
     const cardsPerRow = isMobile ? 13 : 26; 
     const xOverlap = isMobile ? 22 : 30; 
     const ySpacing = isMobile ? 120 : 160; 
     const cardHeight = isMobile ? 120 : 150;
     const totalRows = Math.ceil(78 / cardsPerRow);
-    
+
     spreadContainer.style.height = `${(totalRows - 1) * ySpacing + cardHeight + 50}px`;
-    
+
     const title = document.querySelector('#step-shuffle h2');
     if(title) title.innerText = `ကျေးဇူးပြု၍ သင့်စိတ်ကြိုက် ကတ် (${cardsToDraw}) ကတ်ကို ရွေးချယ်ပါ`;
-    
+
     let availableDeck = [...fullDeck];
-    
+
     for (let i = 0; i < 78; i++) {
         const cardItem = document.createElement('div');
         cardItem.className = 'spread-card-item';
         cardItem.id = `spread-card-${i}`;
         cardItem.style.zIndex = i; 
-        
+
         cardItem.addEventListener('click', function() {
             selectIndividualCard(this, availableDeck);
         });
-        
+
         spreadContainer.appendChild(cardItem);
-        
+
         setTimeout(() => {
             const colIndex = i % cardsPerRow; 
             const rowIndex = Math.floor(i / cardsPerRow); 
             const rowWidth = (cardsPerRow - 1) * xOverlap;
             const startX = -rowWidth / 2;
-            
+
             const translateX = startX + (colIndex * xOverlap);
             const translateY = rowIndex * ySpacing;
-            
+
             cardItem.style.setProperty('--tx', `${translateX}px`);
             cardItem.style.setProperty('--ty', `${translateY}px`);
             cardItem.style.transform = `translate(var(--tx), var(--ty))`;
-            
+
         }, i * 15); 
     }
     deckArea.appendChild(spreadContainer);
@@ -594,13 +598,13 @@ function spreadCardsOut() {
 
 function selectIndividualCard(cardElement, availableDeck) {
     if (drawnCardDetails.length >= cardsToDraw) return;
-    
+
     cardElement.classList.add('selected');
-    
+
     const randIndex = Math.floor(Math.random() * availableDeck.length);
     const selectedCard = availableDeck.splice(randIndex, 1)[0]; 
     drawnCardDetails.push(selectedCard);
-    
+
     if (drawnCardDetails.length === cardsToDraw) {
         setTimeout(() => {
             goToRevealStep();
@@ -611,20 +615,20 @@ function selectIndividualCard(cardElement, availableDeck) {
 function goToRevealStep() {
     history.replaceState({step: 'reveal'}, '', '#reveal');
     showStep('step-reveal');
-    
+
     const shuffleStep = document.getElementById('step-shuffle');
     if(shuffleStep) shuffleStep.classList.add('hidden');
-    
+
     const revealArea = document.getElementById('reveal-area');
     if(!revealArea) return;
-    
+
     revealArea.innerHTML = '';
-    
+
     drawnCardDetails.forEach((card, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'reveal-card-wrapper flip-card';
         wrapper.style.animationDelay = `${index * 0.3}s`;
-        
+
         wrapper.innerHTML = `
             <div class="flip-card-inner">
                 <div class="flip-card-front card-pattern"></div>
@@ -633,7 +637,7 @@ function goToRevealStep() {
                 </div>
             </div>
         `;
-        
+
         wrapper.addEventListener('click', function() {
             if (!this.classList.contains('flipped')) {
                 this.classList.add('flipped');
@@ -641,11 +645,10 @@ function goToRevealStep() {
                 openReadingModal(card, index);
             }
         });
-        
+
         revealArea.appendChild(wrapper);
     });
 
-    // Reveal Area အောက်တွင် Save Button အသစ် ထည့်ခြင်း
     let saveBtnContainer = document.getElementById('readingSaveBtnContainer');
     if (!saveBtnContainer) {
         saveBtnContainer = document.createElement('div');
@@ -655,9 +658,9 @@ function goToRevealStep() {
         saveBtnContainer.style.width = '100%';
         revealArea.parentNode.appendChild(saveBtnContainer); 
     }
-    
+
     saveBtnContainer.innerHTML = `<button class="save-journal-btn" id="saveReadingBtn" style="padding: 1rem 2rem; font-size: 1.1rem; width: auto; min-width: 250px;">ဒီဟောစာတမ်းကို သိမ်းမည် 📝</button>`;
-    
+
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
         saveReadingToJournal(drawnCardDetails, currentSpreadType);
     });
@@ -665,7 +668,7 @@ function goToRevealStep() {
 
 function saveReadingToJournal(cardsArray, spreadType) {
     const userStr = localStorage.getItem('tarot_user');
-    
+
     if (!userStr) {
         alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။");
         window.location.href = 'login.html';
@@ -695,7 +698,7 @@ function saveReadingToJournal(cardsArray, spreadType) {
 
     localStorage.setItem('tarot_journal', JSON.stringify(journal));
     alert(`👤 ${currentUser.name} ရေ... ဟောစာတမ်းကို Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
-    
+
     const saveBtn = document.getElementById('saveReadingBtn');
     if (saveBtn) {
         saveBtn.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
@@ -707,7 +710,7 @@ function saveReadingToJournal(cardsArray, spreadType) {
 
 function openReadingModal(card, index) {
     let cardTitle = "";
-    
+
     if (currentSpreadType === 'three-card-time') {
         const titles = ["Past (အတိတ်)", "Present (ပစ္စုပ္ပန်)", "Future (အနာဂတ်)"];
         cardTitle = titles[index] ? titles[index] : "";
@@ -717,22 +720,22 @@ function openReadingModal(card, index) {
     } else if (currentSpreadType === 'one-card') {
         cardTitle = "Quick Answer";
     }
-    
+
     const imgEl = document.getElementById('modalCardImg');
     if(imgEl) imgEl.src = card.imageUrl;
-    
+
     const nameEl = document.getElementById('modalCardName');
     if(nameEl) nameEl.innerText = cardTitle ? `${cardTitle} - ${card.name}` : card.name;
-    
+
     const typeEl = document.getElementById('modalCardType');
     if(typeEl) typeEl.innerText = card.suit ? card.suit : card.arcana;
-    
+
     const keywordsEl = document.getElementById('modalCardKeywords');
     if(keywordsEl) keywordsEl.innerText = `Keywords: ${card.keywords}`;
-    
+
     const meaningEl = document.getElementById('modalCardMeaning');
     if(meaningEl) meaningEl.innerText = card.upright_meaning;
-    
+
     const modal = document.getElementById('readingModal');
     if(modal) {
         modal.classList.remove('hidden');
