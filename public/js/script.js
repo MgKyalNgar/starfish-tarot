@@ -21,8 +21,7 @@ let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     updateAuthUI();
-    createJournalModal();
-
+    
     try {
         const response = await fetch('/api/cards');
         const result = await response.json();
@@ -143,7 +142,8 @@ function initAuthPage() {
     const nameGroup = document.getElementById('nameGroup');
     const nameInput = document.getElementById('userName');
 
-    authSwitchLink.addEventListener('click', (e) => {
+    // ပြင်ဆင်ချက် ၁: addEventListener အစား onclick ကို သုံးထားပါသည် (ခလုတ် နှစ်ခါထပ်နှိပ်မိသလို ဖြစ်ခြင်းမှ ကာကွယ်ရန်)
+    authSwitchLink.onclick = (e) => {
         e.preventDefault();
         isLogin = !isLogin;
 
@@ -162,9 +162,10 @@ function initAuthPage() {
             nameGroup.style.display = "block";
             nameInput.setAttribute('required', 'true');
         }
-    });
+    };
 
-    authForm.addEventListener('submit', async (e) => {
+    // ပြင်ဆင်ချက် ၂: Form Submit ကိုလည်း onsubmit ဖြင့် ပြောင်းရေးထားပါသည်
+    authForm.onsubmit = async (e) => {
         e.preventDefault();
         
         if (!supabaseClient) {
@@ -213,7 +214,7 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
                 authSubmitBtn.disabled = false;
             } else {
-                // --- Database (User Table) သို့ Data များ ထည့်သွင်းခြင်း ---
+                // Database (User Table) သို့ Data များ ထည့်သွင်းခြင်း
                 if (data.user) {
                     const { error: dbError } = await supabaseClient
                         .from('User')
@@ -222,17 +223,16 @@ function initAuthPage() {
                                 id: data.user.id, 
                                 email: email, 
                                 name: name,
-                                role: 'user', // Default အနေဖြင့် user ဟု ပေးမည်
+                                role: 'user', 
                                 isSubscribed: false
                             }
                         ]);
                         
                     if (dbError) {
                         console.error("Database Save Error:", dbError);
-                        // RLS Policy ကြောင့် Error တက်နိုင်ပါသည်။ Supabase တွင် RLS ပိတ်ထားရန် လိုကောင်းလိုပါမည်။
                     }
                 }
-                
+
                 alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
                 isLogin = true;
                 authTitle.innerText = "Login";
@@ -245,7 +245,7 @@ function initAuthPage() {
                 document.getElementById('password').value = ''; 
             }
         }
-    });
+    };
 }
 
 
