@@ -51,6 +51,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (document.getElementById('authForm')) {
         initAuthPage();
     }
+    if (document.getElementById('passwordForm')) {
+        initProfilePage();
+    }
 
     window.addEventListener('popstate', (event) => {
         const hash = window.location.hash;
@@ -103,7 +106,7 @@ function updateAuthUI() {
         if (currentUser) {
             container.innerHTML = `
                 <a href="library.html" class="nav-link">Library</a>
-                <a href="#" class="nav-profile-btn" style="color: var(--accent-cyan); text-decoration: none; margin-left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;">
+                <a href="profile.html" class="nav-profile-btn" style="color: var(--accent-cyan); text-decoration: none; margin-left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;">
                     👤 ${currentUser.name}
                 </a>
                 <a href="#" class="nav-logout-btn" style="margin-left: 15px; color: #ff4d4d; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;">Logout</a>
@@ -751,4 +754,56 @@ function closeReadingModal(shouldGoBack = true) {
     if (shouldGoBack && window.location.hash === '#reading') {
         history.back(); 
     }
+}
+
+// =========================================
+// Profile Page Logic
+// =========================================
+
+function initProfilePage() {
+    const userStr = localStorage.getItem('tarot_user');
+    
+    // Login မဝင်ထားဘဲ Profile Page ရောက်လာရင် Login ကို ပြန်လွှဲမည်
+    if (!userStr || !supabaseClient) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const currentUser = JSON.parse(userStr);
+    
+    // နာမည်နှင့် အီးမေးလ်ကို HTML တွင် ဖော်ပြမည်
+    document.getElementById('profileName').innerText = currentUser.name;
+    document.getElementById('profileEmail').innerText = currentUser.email;
+
+    // Password ပြောင်းမည့် Form Submit
+    const passwordForm = document.getElementById('passwordForm');
+    const updatePassBtn = document.getElementById('updatePassBtn');
+
+    passwordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPassword = document.getElementById('newPassword').value;
+
+        if (newPassword.length < 6) {
+            alert("စကားဝှက်အသစ်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။");
+            return;
+        }
+
+        updatePassBtn.innerText = "ပြောင်းလဲနေပါသည်...";
+        updatePassBtn.disabled = true;
+
+        // Supabase သို့ Password အသစ် လှမ်းပို့ခြင်း
+        const { data, error } = await supabaseClient.auth.updateUser({
+            password: newPassword
+        });
+
+        if (error) {
+            alert("Error: " + error.message);
+        } else {
+            alert("စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲသွားပါပြီ! 🔐 နောက်တစ်ခါ Login ဝင်လျှင် စကားဝှက်အသစ်ကို အသုံးပြုပါ။");
+            document.getElementById('newPassword').value = ''; // Input ကို ပြန်ရှင်းမည်
+        }
+
+        updatePassBtn.innerText = "စကားဝှက် ပြောင်းမည်";
+        updatePassBtn.disabled = false;
+    });
 }
