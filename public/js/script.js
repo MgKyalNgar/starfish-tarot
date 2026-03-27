@@ -9,7 +9,7 @@ let supabase = null;
 if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
-    console.warn("⚠️ Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
+    console.warn("Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
 }
 
 let currentSpreadType = '';
