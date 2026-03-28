@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Starfish Tarot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; color: #fff; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid rgba(0, 240, 255, 0.2); text-align: left; }
+        .admin-table th { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; }
+        .admin-table tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .badge.admin { background: rgba(255, 215, 0, 0.2); color: #ffd700; border: 1px solid #ffd700; }
+        .badge.user { background: rgba(0, 240, 255, 0.1); color: var(--text-main); border: 1px solid var(--accent-cyan); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Starfish Tarot</a>
+        <div class="auth-links"></div>
+    </nav>
+
+    <main class="auth-container" style="flex-direction: column; align-items: center; padding-top: 5rem; justify-content: flex-start;">
+        <div class="auth-box" style="max-width: 800px; width: 100%;">
+            <h2 class="glow-text text-center" style="font-size: 2rem; margin-bottom: 0.5rem; color: #ffd700;">Admin Dashboard ⚙️</h2>
+            <p class="text-center" style="color: var(--text-muted); margin-bottom: 2rem;">User စာရင်းများကို ဤနေရာတွင် စီမံနိုင်ပါသည်။</p>
+            
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr><td colspan="4" class="text-center">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // စာမျက်နှာပွင့်သည်နှင့် Admin စနစ်ကို အသက်သွင်းမည်
+        document.addEventListener('DOMContentLoaded', () => {
+            if(typeof initAdminPage === 'function') initAdminPage();
+        });
+    </script>
+</body>
+</html>
