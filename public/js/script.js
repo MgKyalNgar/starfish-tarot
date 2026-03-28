@@ -320,7 +320,7 @@ function renderLibraryCards(cards) {
 // Daily Draw Logic
 // =========================================
 
-function initDailyDrawLocally() {
+async function initDailyDrawLocally() {
     if (fullDeck.length > 0) {
         const userStr = localStorage.getItem('tarot_user');
         const today = new Date().toLocaleDateString('en-GB');
@@ -328,10 +328,19 @@ function initDailyDrawLocally() {
         let isAlreadySaved = false;
 
         if (userStr) {
-            const journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
-            const todayDraw = journal.find(entry => entry.date === today && entry.type === 'Daily Draw');
-            if (todayDraw) {
-                cardToUse = fullDeck.find(c => c.name === todayDraw.card.name);
+            const currentUser = JSON.parse(userStr);
+            // Database မှ ဒီနေ့အတွက် Daily Draw ဆွဲထားတာ ရှိမရှိ စစ်ဆေးမည်
+            const { data, error } = await supabaseClient
+                .from('Journal')
+                .select('cards')
+                .eq('user_id', currentUser.id)
+                .eq('date', today)
+                .eq('type', 'Daily Draw')
+                .single();
+
+            if (data && data.cards && data.cards.length > 0) {
+                const savedCardName = data.cards[0].name;
+                cardToUse = fullDeck.find(c => c.name === savedCardName);
                 isAlreadySaved = true;
             }
         }
@@ -343,6 +352,7 @@ function initDailyDrawLocally() {
         setupDailyCardAnimation(cardToUse, isAlreadySaved);
     }
 }
+
 
 function setupDailyCardAnimation(card, isAlreadySaved = false) {
     const cardElement = document.getElementById('dailyCard');
@@ -392,7 +402,7 @@ function setupDailyCardAnimation(card, isAlreadySaved = false) {
     }, { once: true }); 
 }
 
-function saveDailyDrawToJournal(cardData, saveBtnElement) {
+async function saveDailyDrawToJournal(cardData, saveBtnElement) {
     const userStr = localStorage.getItem('tarot_user');
 
     if (!userStr) {
@@ -402,43 +412,52 @@ function saveDailyDrawToJournal(cardData, saveBtnElement) {
     }
 
     const currentUser = JSON.parse(userStr);
-    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
     const today = new Date().toLocaleDateString('en-GB'); 
 
-    const alreadySaved = journal.find(entry => entry.date === today && entry.type === 'Daily Draw');
-    if (alreadySaved) {
-        alert("ဒီနေ့အတွက် Daily Draw ကို သိမ်းပြီးသားပါဗျာ။ 📝");
+    // Button ကို Loading state ပြောင်းမည်
+    saveBtnElement.innerText = "သိမ်းဆည်းနေပါသည်... ⏳";
+    saveBtnElement.disabled = true;
+
+    // Database ထဲထည့်ရန် JSON Array အဖြစ် ပြင်ဆင်ခြင်း
+    const cardToSave = [{
+        name: cardData.name,
+        suit: cardData.suit || cardData.arcana,
+        imageUrl: cardData.imageUrl,
+        meaning: cardData.upright_meaning
+    }];
+
+    const { error } = await supabaseClient
+        .from('Journal')
+        .insert([{
+            user_id: currentUser.id,
+            date: today,
+            type: 'Daily Draw',
+            cards: cardToSave,
+            answer: null // AI အဖြေအတွက် နေရာချန်ထားသည်
+        }]);
+
+    if (error) {
+        console.error("Save Error:", error);
+        alert("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။");
+        saveBtnElement.innerText = "ဒီဟောစာတမ်းကို သိမ်းမည် 📝";
+        saveBtnElement.disabled = false;
         return;
     }
 
-    journal.push({
-        date: today,
-        timestamp: Date.now(),
-        type: 'Daily Draw', 
-        card: {
-            name: cardData.name,
-            suit: cardData.suit || cardData.arcana,
-            imageUrl: cardData.imageUrl,
-            meaning: cardData.upright_meaning
-        }
-    });
+    alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
 
-    localStorage.setItem('tarot_journal', JSON.stringify(journal));
-    alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို သင့်ရဲ့ Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
+    saveBtnElement.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
+    saveBtnElement.style.opacity = "0.5";
+    saveBtnElement.style.cursor = "not-allowed";
 
-    if (saveBtnElement) {
-        saveBtnElement.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
-        saveBtnElement.disabled = true;
-        saveBtnElement.style.opacity = "0.5";
-        saveBtnElement.style.cursor = "not-allowed";
-
-        const subtitle = document.querySelector('.daily-draw-container .subtitle');
-        if (subtitle) {
-            subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
-            subtitle.style.color = "var(--accent-cyan)";
-        }
+    const subtitle = document.querySelector('.daily-draw-container .subtitle');
+    if (subtitle) {
+        subtitle.innerText = "ယနေ့အတွက် သင်ရွေးချယ်ထားသော ကတ်ဖြစ်ပါသည်။";
+        subtitle.style.color = "var(--accent-cyan)";
     }
 }
+
+
 
 // =========================================
 // Reading Page Logic & Save Multiple Cards
@@ -726,7 +745,7 @@ function closeReadingModal(shouldGoBack = true) {
 // Profile Page Logic
 // =========================================
 
-function initProfilePage() {
+async function initProfilePage() {
     const userStr = localStorage.getItem('tarot_user');
     if (!userStr || !supabaseClient) {
         window.location.href = 'login.html';
@@ -738,17 +757,33 @@ function initProfilePage() {
     document.getElementById('profileName').innerText = currentUser.name;
     document.getElementById('profileEmail').innerText = currentUser.email;
 
-    // --- Journal History ကို Profile ထဲတွင် ပြသခြင်း ---
+    // --- Database မှ Journal History ကို ဆွဲထုတ်ပြခြင်း ---
     const historyContainer = document.getElementById('profileHistoryContainer');
     if (historyContainer) {
-        let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
-        if (journal.length === 0) {
+        historyContainer.innerHTML = `<p style="text-align: center; color: var(--accent-cyan);">မှတ်တမ်းများ ရှာဖွေနေပါသည်... ⏳</p>`;
+
+        // Database မှ ကိုယ့်မှတ်တမ်းများကို အသစ်ဆုံး အရင်ပေါ်အောင် ဆွဲထုတ်မည်
+        const { data: journal, error } = await supabaseClient
+            .from('Journal')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false }); 
+
+        if (error) {
+            historyContainer.innerHTML = `<p style="text-align: center; color: #ff4d4d;">မှတ်တမ်းများ ရယူရာတွင် အမှားရှိနေပါသည်။</p>`;
+        } else if (!journal || journal.length === 0) {
             historyContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem 0;">မှတ်စု သိမ်းဆည်းထားခြင်း မရှိသေးပါ။ 📭</p>`;
         } else {
-            journal.reverse(); 
             let listHtml = `<ul style="list-style: none; padding: 0; margin: 0;">`;
             journal.forEach((entry, index) => {
-                let cardNamesToDisplay = entry.cards ? entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ') : entry.card.name;
+                let cardNamesToDisplay = "";
+                if (entry.cards && Array.isArray(entry.cards)) {
+                    cardNamesToDisplay = entry.cards.map(c => c.name).join(' <span style="color:var(--accent-cyan);">+</span> ');
+                }
+
+                // AI Answer ပါလာခဲ့ရင် ဖော်ပြပေးရန် နေရာချန်ထားသည်
+                const answerPreview = entry.answer ? `<div style="margin-top: 8px; font-size: 0.85rem; color: #a0aec0; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px; border-left: 2px solid var(--accent-cyan);">${entry.answer.substring(0, 100)}...</div>` : '';
+
                 listHtml += `
                     <li style="background: rgba(28, 37, 65, 0.4); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -759,6 +794,7 @@ function initProfilePage() {
                             <span style="color: var(--text-muted); margin-right: 5px;">${index + 1}.</span> 
                             ${cardNamesToDisplay}
                         </div>
+                        ${answerPreview}
                     </li>
                 `;
             });
@@ -795,6 +831,8 @@ function initProfilePage() {
         updatePassBtn.disabled = false;
     });
 }
+
+
 
 // =========================================
 // Admin Dashboard Logic
