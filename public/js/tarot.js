@@ -374,9 +374,14 @@ function goToRevealStep() {
 
     revealArea.innerHTML = '';
 
+    // ပြင်ဆင်ချက် ၁: Spread အမျိုးအစားအလိုက် Parent Container ကို Class နာမည်ကပ်ပေးမည်
+    revealArea.className = `reveal-area spread-${currentSpreadType}`;
+
     drawnCardDetails.forEach((card, index) => {
         const wrapper = document.createElement('div');
-        wrapper.className = 'reveal-card-wrapper flip-card';
+        
+        // ပြင်ဆင်ချက် ၂: ကတ်တစ်ခုချင်းစီအတွက် နေရာသတ်မှတ်ရန် 'card-pos-1', 'card-pos-2' စသဖြင့် Class ထည့်မည်
+        wrapper.className = `reveal-card-wrapper flip-card card-pos-${index + 1}`;
         wrapper.style.animationDelay = `${index * 0.3}s`;
 
         wrapper.innerHTML = `
