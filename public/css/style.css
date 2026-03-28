@@ -255,7 +255,6 @@ footer {
 .card-info h3 { font-size: 0.9rem; margin-bottom: 0.3rem; color: #fff; line-height: 1.2; }
 .card-info p { font-size: 0.75rem; color: var(--text-muted); font-family: 'Padauk', sans-serif; }
 
-
 /* =========================================
    Card Backs & 3D Flip Mechanics (Shared)
 ========================================= */
@@ -278,6 +277,7 @@ footer {
 .flip-card-inner {
     position: relative;
     width: 100%;    
+    height: 100%; /* Ensure inner matches wrapper */
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
 }
@@ -286,6 +286,7 @@ footer {
 
 .flip-card-front, .flip-card-back {
     position: absolute;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
@@ -308,46 +309,41 @@ footer {
     flex: 1;
 }
 
-/* --- 3D Flip Card Animation --- */
 .daily-draw-container .card-scene {
-    perspective: 1000px; /* 3D အနက် ပုံဖော်ပေးခြင်း */
+    perspective: 1000px; 
     margin-bottom: 1rem;
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
-/* THE FLIP CARD - THE CONTAINER THAT CAPTURES CLICKS AND SETS THE SIZE */
 .daily-draw-container .flip-card {
     width: 100%;
-    max-width: 250px; /* ကတ်အကျယ်ကို ထိန်းချုပ်သည် */
-    height: 430px; /* SET EXPLICIT HEIGHT HERE FOR CLICKS! */
+    max-width: 250px; 
+    height: 430px; 
     cursor: pointer;
-    position: relative; /* Base for absolutely positioned children */
+    position: relative; 
 }
 
-/* THE FLIP CARD INNER - THIS ONE FLIPS */
 .daily-draw-container .flip-card-inner {
-    position: absolute; /* Take up full space of .flip-card */
+    position: absolute; 
     top: 0; left: 0;
     width: 100%;
     height: 100%;
-    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* လှန်မည့်ကြာချိန် */
-    transform-style: preserve-3d; /* CRUCIAL FOR 3D */
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    transform-style: preserve-3d; 
 }
 
-/* JS Class applied on click - .flipped class ထည့်လိုက်လျှင် လှည့်သွားမည် */
 .daily-draw-container .flip-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
 }
 
-/* The faces - ကတ်မျက်နှာပြင်များ (shared styles) */
 .daily-draw-container .flip-card-front,
 .daily-draw-container .flip-card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* လှန်ထားစဉ် အနောက်ဘက်ပုံ မမြင်ရစေရန် */
+    -webkit-backface-visibility: hidden; 
     backface-visibility: hidden;
     border-radius: 12px;
     overflow: hidden;
@@ -355,20 +351,18 @@ footer {
     border: 2px solid rgba(0, 240, 255, 0.3);
 }
 
-/* Back of the card (pattern from card_back.jpg) - ကတ်ကျောဘက် */
 .daily-draw-container .flip-card-front {
     background-color: #0a1128;
     background-image: url('/Tarot Card/card_back.jpg');
     background-size: cover;
     background-position: center;
-    z-index: 2; /* အပေါ်မှာ ရှိနေစေရန် */
-    transform: rotateY(0deg); /* Start normal */
+    z-index: 2; 
+    transform: rotateY(0deg); 
 }
 
-/* Front of the card (the actual tarot image) - ကတ်ပုံ */
 .daily-draw-container .flip-card-back {
     background-color: #fff;
-    transform: rotateY(180deg); /* Start pre-rotated */
+    transform: rotateY(180deg); 
     z-index: 1;
 }
 
@@ -378,7 +372,6 @@ footer {
     object-fit: fill;
 }
 
-/* Result Section & Others (နဂို Code အောက်ဆုံးထိ ဆက်ထားပါ) */
 .result-section {
     max-width: 600px;
     text-align: center;
@@ -397,7 +390,6 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
-
 
 /* =========================================
    Reading Page Styles
@@ -542,7 +534,7 @@ footer {
     .reveal-area { gap: 3.5rem; }
 }
 
-/* ၃ ကတ်ကို အတန်းလိုက် သေးသေးလေးဖြစ်အောင် ထိန်းချုပ်ခြင်း */
+/* ၃ ကတ်ကို အတန်းလိုက် သေးသေးလေးဖြစ်အောင် ထိန်းချုပ်ခြင်း (မူလအတိုင်း) */
 .reveal-card-wrapper.flip-card {
     width: 130px; 
     max-width: 130px;
@@ -560,6 +552,7 @@ footer {
 .reveal-card-wrapper {
     opacity: 0;
     transform: translateY(-50px);
+    /* ဒီ Animation က Custom Spreads တွေကို ဒုက္ခပေးနေတာပါ */
     animation: flyInFromTop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
@@ -684,10 +677,8 @@ footer {
 
 /* =========================================
    Mobile Optimization (ဖုန်းမျက်နှာပြင်အတွက် ပြင်ဆင်ချက်များ)
-   ========================================= */
-
+========================================= */
 @media (max-width: 768px) {
-    /* Admin Dashboard Title နှင့် စာသားများကို သေးစေရန် */
     .auth-container .glow-text {
         font-size: 1.5rem !important; 
         margin-bottom: 0.25rem !important;
@@ -701,7 +692,6 @@ footer {
         width: 95% !important;
     }
 
-    /* Navbar ထဲက စာသားများ Stacking မဖြစ်အောင် ပြင်ခြင်း */
     .navbar {
         flex-wrap: wrap !important; 
         height: auto !important; 
@@ -722,17 +712,13 @@ footer {
         font-size: 0.85rem !important;
     }
 
-    /* Admin Table ကို သပ်ရပ်စေရန် */
     .admin-table th, .admin-table td {
         padding: 8px !important; 
         font-size: 0.8rem !important; 
     }
-    
     .auth-box > div {
         overflow-x: auto; 
     }
-
-    /* Admin Panel ထဲက ခလုတ်များကို သေးစေရန် */
     .action-btn {
         padding: 4px 8px !important;
         font-size: 0.7rem !important;
@@ -744,52 +730,33 @@ footer {
 
 /* =========================================
    Toggle Switch (On/Off ခလုတ် ဒီဇိုင်း)
-   ========================================= */
+========================================= */
 .toggle-switch {
   position: relative;
   display: inline-block;
   width: 46px;
   height: 24px;
 }
-.toggle-switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
 .toggle-switch .slider {
-  position: absolute;
-  cursor: pointer;
+  position: absolute; cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(255, 255, 255, 0.2);
   transition: .4s;
 }
 .toggle-switch .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
+  position: absolute; content: "";
+  height: 18px; width: 18px; left: 3px; bottom: 3px;
+  background-color: white; transition: .4s;
 }
-.toggle-switch input:checked + .slider {
-  background-color: var(--accent-cyan);
-}
-.toggle-switch input:checked + .slider:before {
-  transform: translateX(22px);
-}
-.toggle-switch .slider.round {
-  border-radius: 24px;
-}
-.toggle-switch .slider.round:before {
-  border-radius: 50%;
-}
-
+.toggle-switch input:checked + .slider { background-color: var(--accent-cyan); }
+.toggle-switch input:checked + .slider:before { transform: translateX(22px); }
+.toggle-switch .slider.round { border-radius: 24px; }
+.toggle-switch .slider.round:before { border-radius: 50%; }
 
 /* =========================================
-   Custom Tarot Spread Layouts (ကတ်ခင်းကျင်းမှု ပုံစံများ) - အချိုးအစားအသစ် (Fixes)
-   ========================================= */
+   🌟 CUSTOM TAROT SPREAD LAYOUTS (FIXED) 🌟
+========================================= */
 
 /* (၁) ပုံမှန် ၃-ကတ်၊ ၁-ကတ် Spread များအတွက် */
 .spread-three-card-time, .spread-three-card-action, .spread-one-card {
@@ -802,80 +769,81 @@ footer {
     margin-top: 2rem;
 }
 
-/* (၂) THE CELTIC CROSS (၁၀-ကတ်) Layout */
-.spread-celtic-cross {
+/* (၂) Premium Spreads (Celtic Cross & Love Reading) */
+/* ဖွဲ့စည်းပုံအခြေခံ - flex အစား block ကို အတင်းပြောင်းမည် */
+.spread-celtic-cross, .spread-love-reading {
+    display: block !important; 
     position: relative;
+    margin: 2rem auto !important; /* အလယ်ဗဟို အတိအကျဖြစ်စေရန် */
+}
+
+.spread-celtic-cross {
     width: 100%;
     max-width: 450px;
     height: 600px;
-    /* အလယ်ဗဟို အတိအကျဖြစ်စေရန် Force Centering ပြုလုပ်ခြင်း */
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: 2rem;
 }
 
-.spread-celtic-cross .reveal-card-wrapper {
-    position: absolute;
-    width: 75px; 
-    height: 125px;
-    transform: translate(-50%, -50%);
-    margin: 0;
-}
-
-/* --- Celtic Cross နေရာချထားမှု --- */
-.spread-celtic-cross .card-pos-1 { top: 50%; left: 35%; z-index: 1; }
-/* ပြင်ဆင်ချက်: Card 2 ၏ အပြင်ခွံ (Wrapper) ကြီးတစ်ခုလုံးကို ၉၀ ဒီဂရီလှည့်မည်။ သို့မှသာ အောက်က Card 1 ကို နှိပ်၍ရမည်။ */
-.spread-celtic-cross .card-pos-2 { top: 50%; left: 35%; z-index: 10; transform: translate(-50%, -50%) rotate(90deg) !important; }
-
-.spread-celtic-cross .card-pos-3 { top: 78%; left: 35%; }
-.spread-celtic-cross .card-pos-4 { top: 50%; left: 10%; }
-.spread-celtic-cross .card-pos-5 { top: 22%; left: 35%; }
-.spread-celtic-cross .card-pos-6 { top: 50%; left: 60%; }
-
-/* Staff အပိုင်း (ညာဘက်တန်း) */
-.spread-celtic-cross .card-pos-7 { top: 88%; left: 88%; }
-.spread-celtic-cross .card-pos-8 { top: 65%; left: 88%; }
-.spread-celtic-cross .card-pos-9 { top: 42%; left: 88%; }
-.spread-celtic-cross .card-pos-10 { top: 19%; left: 88%; }
-
-
-/* (၃) RELATIONSHIP READING (H ပုံစံ - ၇ ကတ်) */
-.spread-relationship-reading, .spread-love-reading {
-    position: relative;
+.spread-love-reading {
     width: 100%;
     max-width: 400px;
     height: 550px;
-    /* အလယ်ဗဟို အတိအကျဖြစ်စေရန် Force Centering ပြုလုပ်ခြင်း */
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: 2rem;
 }
 
-.spread-relationship-reading .reveal-card-wrapper,
+/* ⚠️ အရေးကြီးဆုံးပြင်ဆင်ချက် ⚠️
+   နဂိုရှိနေသည့် Animation ကို Override လုပ်ပြီး Transform များကို ကာကွယ်ခြင်း */
+.spread-celtic-cross .reveal-card-wrapper,
 .spread-love-reading .reveal-card-wrapper {
-    position: absolute;
-    width: 80px;
-    height: 135px;
-    transform: translate(-50%, -50%);
-    margin: 0;
+    position: absolute !important;
+    aspect-ratio: unset !important; /* 130/210 ကို ပယ်ဖျက်မည် */
+    max-width: none !important;
+    margin: 0 !important;
+    animation: customFadeIn 0.8s ease-in-out forwards !important; /* အသစ်ပြောင်းမည် */
 }
 
-/* --- Relationship နေရာချထားမှု (ကွက်တိအချိုး) --- */
-.spread-love-reading .card-pos-1 { top: 20%; left: 20%; }
-.spread-love-reading .card-pos-2 { top: 50%; left: 20%; }
-.spread-love-reading .card-pos-3 { top: 80%; left: 20%; }
-.spread-love-reading .card-pos-4 { top: 20%; left: 80%; }
-.spread-love-reading .card-pos-5 { top: 50%; left: 80%; }
-.spread-love-reading .card-pos-6 { top: 80%; left: 80%; }
-.spread-love-reading .card-pos-7 { top: 50%; left: 50%; z-index: 5; }
+@keyframes customFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* --- THE CELTIC CROSS (၁၀-ကတ်) နေရာချထားမှု --- */
+.spread-celtic-cross .reveal-card-wrapper { width: 75px; height: 125px; }
+
+/* ကတ်များအားလုံးကို သက်ဆိုင်ရာနေရာ၌ အလယ်ဗဟိုချမည် */
+.spread-celtic-cross .card-pos-1 { top: 50%; left: 35%; transform: translate(-50%, -50%); z-index: 1; }
+/* ၉၀ ဒီဂရီ အတိအကျ လှည့်ထားခြင်း */
+.spread-celtic-cross .card-pos-2 { top: 50%; left: 35%; transform: translate(-50%, -50%) rotate(90deg); z-index: 10; }
+.spread-celtic-cross .card-pos-3 { top: 80%; left: 35%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-4 { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-5 { top: 20%; left: 35%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-6 { top: 50%; left: 60%; transform: translate(-50%, -50%); }
+
+/* Staff အပိုင်း (ညာဘက်တန်း) */
+.spread-celtic-cross .card-pos-7 { top: 88%; left: 88%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-8 { top: 65%; left: 88%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-9 { top: 42%; left: 88%; transform: translate(-50%, -50%); }
+.spread-celtic-cross .card-pos-10 { top: 19%; left: 88%; transform: translate(-50%, -50%); }
+
+
+/* --- RELATIONSHIP READING (H ပုံစံ - ၇ ကတ်) နေရာချထားမှု --- */
+.spread-love-reading .reveal-card-wrapper { width: 80px; height: 135px; }
+
+.spread-love-reading .card-pos-1 { top: 20%; left: 20%; transform: translate(-50%, -50%); }
+.spread-love-reading .card-pos-2 { top: 50%; left: 20%; transform: translate(-50%, -50%); }
+.spread-love-reading .card-pos-3 { top: 80%; left: 20%; transform: translate(-50%, -50%); }
+
+.spread-love-reading .card-pos-4 { top: 20%; left: 80%; transform: translate(-50%, -50%); }
+.spread-love-reading .card-pos-5 { top: 50%; left: 80%; transform: translate(-50%, -50%); }
+.spread-love-reading .card-pos-6 { top: 80%; left: 80%; transform: translate(-50%, -50%); }
+
+.spread-love-reading .card-pos-7 { top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5; }
 
 /* ဖုန်း Screen အသေးများအတွက် (Responsive) */
 @media (max-width: 768px) {
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 1rem; }
     
-    .spread-celtic-cross { max-width: 380px; height: 500px; margin-top: 1rem; }
+    .spread-celtic-cross { max-width: 380px; height: 500px; margin-top: 1rem !important; }
     .spread-celtic-cross .reveal-card-wrapper { width: 65px; height: 110px; }
     
-    .spread-love-reading { max-width: 320px; height: 450px; margin-top: 1rem; }
+    .spread-love-reading { max-width: 320px; height: 450px; margin-top: 1rem !important; }
     .spread-love-reading .reveal-card-wrapper { width: 65px; height: 110px; }
 }
