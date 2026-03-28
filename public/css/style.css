@@ -84,7 +84,7 @@ body {
 
 .text-center { 
     text-align: center; 
-    margin-bottom: 2rem; 
+    margin-bottom: 0rem; 
 }
 
 /* Buttons */
@@ -841,9 +841,11 @@ footer {
 @media (max-width: 768px) {
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 1rem; }
     
-    .spread-celtic-cross { max-width: 380px; height: 500px; margin-top: 1rem !important; }
-    .spread-celtic-cross .reveal-card-wrapper { width: 65px; height: 110px; }
+    /* Celtic Cross အတွက် Container ကို နည်းနည်းချဲ့ပြီး ကတ်ကို ကြီးပေးထားသည် */
+    .spread-celtic-cross { max-width: 390px; height: 530px; margin-top: 1rem !important; }
+    .spread-celtic-cross .reveal-card-wrapper { width: 72px; height: 120px; }
     
-    .spread-love-reading { max-width: 320px; height: 450px; margin-top: 1rem !important; }
-    .spread-love-reading .reveal-card-wrapper { width: 65px; height: 110px; }
+    /* Relationship Reading အတွက် ကတ်ကို သိသိသာသာ ကြီးပေးထားသည် */
+    .spread-love-reading { max-width: 350px; height: 480px; margin-top: 1rem !important; }
+    .spread-love-reading .reveal-card-wrapper { width: 75px; height: 125px; }
 }
