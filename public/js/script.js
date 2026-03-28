@@ -420,10 +420,7 @@ async function saveDailyDrawToJournal(cardData, saveBtnElement) {
 
     // Database ထဲထည့်ရန် JSON Array အဖြစ် ပြင်ဆင်ခြင်း
     const cardToSave = [{
-        name: cardData.name,
-        suit: cardData.suit || cardData.arcana,
-        imageUrl: cardData.imageUrl,
-        meaning: cardData.upright_meaning
+        name: cardData.name
     }];
 
     const { error } = await supabaseClient
@@ -653,7 +650,7 @@ function goToRevealStep() {
     });
 }
 
-function saveReadingToJournal(cardsArray, spreadType) {
+async function saveReadingToJournal(cardsArray, spreadType) {
     const userStr = localStorage.getItem('tarot_user');
 
     if (!userStr) {
@@ -663,7 +660,6 @@ function saveReadingToJournal(cardsArray, spreadType) {
     }
 
     const currentUser = JSON.parse(userStr);
-    let journal = JSON.parse(localStorage.getItem('tarot_journal')) || [];
     const today = new Date().toLocaleDateString('en-GB'); 
 
     let spreadName = "Tarot Reading";
@@ -671,29 +667,45 @@ function saveReadingToJournal(cardsArray, spreadType) {
     else if (spreadType === 'three-card-action') spreadName = 'အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်';
     else if (spreadType === 'one-card') spreadName = 'One Card Reading';
 
-    journal.push({
-        date: today,
-        timestamp: Date.now(),
-        type: spreadName, 
-        cards: cardsArray.map(c => ({
-            name: c.name,
-            suit: c.suit || c.arcana,
-            imageUrl: c.imageUrl,
-            meaning: c.upright_meaning
-        })) 
-    });
-
-    localStorage.setItem('tarot_journal', JSON.stringify(journal));
-    alert(`👤 ${currentUser.name} ရေ... ဟောစာတမ်းကို Journal ထဲမှာ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
-
     const saveBtn = document.getElementById('saveReadingBtn');
     if (saveBtn) {
-        saveBtn.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
+        saveBtn.innerText = "သိမ်းဆည်းနေပါသည်... ⏳";
         saveBtn.disabled = true;
+    }
+
+    const cardsToSave = cardsArray.map(c => ({
+        name: c.name
+    }));
+
+    const { error } = await supabaseClient
+        .from('Journal')
+        .insert([{
+            user_id: currentUser.id,
+            date: today,
+            type: spreadName,
+            cards: cardsToSave,
+            answer: null // AI အဖြေအတွက်
+        }]);
+
+    if (error) {
+        console.error("Save Error:", error);
+        alert("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။");
+        if (saveBtn) {
+            saveBtn.innerText = "ဒီဟောစာတမ်းကို သိမ်းမည် 📝";
+            saveBtn.disabled = false;
+        }
+        return;
+    }
+
+    alert(`👤 ${currentUser.name} ရေ... ဟောစာတမ်းကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
+
+    if (saveBtn) {
+        saveBtn.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
         saveBtn.style.opacity = "0.5";
         saveBtn.style.cursor = "not-allowed";
     }
 }
+
 
 function openReadingModal(card, index) {
     let cardTitle = "";
