@@ -38,6 +38,21 @@ function updateAuthUI() {
             `;
         }
     });
+    const isPremiumUser = currentUser && (currentUser.isSubscribed || currentUser.role === 'admin');
+    const premiumCards = document.querySelectorAll('.premium-spread');
+    
+    premiumCards.forEach(card => {
+        const lockIcon = card.querySelector('.lock-icon');
+        if (isPremiumUser) {
+            // Premium (သို့) Admin ဆိုလျှင် သော့ဖြုတ်၊ နောက်ခံအမဲဖြုတ်မည်
+            card.classList.remove('locked');
+            if (lockIcon) lockIcon.style.display = 'none';
+        } else {
+            // Normal user သို့မဟုတ် ဧည့်သည်ဆိုလျှင် သော့ခတ်ထားမည်
+            card.classList.add('locked');
+            if (lockIcon) lockIcon.style.display = 'block';
+        }
+    });
 }
 
 function initAuthPage() {
