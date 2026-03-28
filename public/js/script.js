@@ -134,7 +134,6 @@ function updateAuthUI() {
 }
 
 
-
 function initAuthPage() {
     const authForm = document.getElementById('authForm');
     if (!authForm) return;
@@ -183,7 +182,7 @@ function initAuthPage() {
                 alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
                 window.location.href = 'index.html'; 
             }
-        } else{
+        } else {
             authTitle.innerText = "Sign Up";
             authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
             authSwitchText.innerText = "အကောင့်ရှိပြီးသားလား?";
