@@ -19,6 +19,12 @@ let fullDeck = [];
 let drawnCardDetails = []; 
 let isModalOpen = false;
 
+// ပြင်ဆင်ချက်: Settings များကို Local Storage မှ ဆွဲထုတ်မည်
+let appSettings = JSON.parse(localStorage.getItem('tarot_settings')) || {
+    majorArcanaOnly: false,
+    useReversed: false
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     updateAuthUI();
 
