@@ -32,6 +32,29 @@
             </form>
 
             <hr style="border-color: rgba(255, 255, 255, 0.1); margin-bottom: 2rem;">
+            <h3 class="glow-text text-center" style="font-size: 1.5rem; margin-bottom: 1.5rem;">App Settings ⚙️</h3>
+            
+            <div style="background: rgba(10, 17, 40, 0.6); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.2); margin-bottom: 2rem;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="color: #fff; font-size: 0.95rem;">Major Arcana Only (၂၂ ကတ်တည်း သုံးမည်)</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleMajorArcana" onchange="saveAppSettings()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #fff; font-size: 0.95rem;">Reversed Cards (ပြောင်းပြန်ကတ်များ ထည့်မည်)</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleReversed" onchange="saveAppSettings()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+            </div>
+
+            <hr style="border-color: rgba(255, 255, 255, 0.1); margin-bottom: 2rem;">
 
             <h3 class="glow-text text-center" style="font-size: 1.5rem; margin-bottom: 1.5rem;">My Journal 📝</h3>
             <div id="profileHistoryContainer" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
