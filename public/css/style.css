@@ -785,3 +785,84 @@ footer {
 .toggle-switch .slider.round:before {
   border-radius: 50%;
 }
+
+
+/* =========================================
+   Custom Tarot Spread Layouts (ကတ်ခင်းကျင်းမှု ပုံစံများ)
+   ========================================= */
+
+/* (၁) ပုံမှန် ၃-ကတ်၊ ၁-ကတ် Spread များအတွက် (ဘေးတိုက်) */
+.spread-three-card-time, .spread-three-card-action, .spread-one-card {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: auto;
+}
+
+/* (၂) THE CELTIC CROSS (၁၀-ကတ်) Layout */
+.spread-celtic-cross {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 700px; /* မျက်နှာပြင်အမြင့် */
+    margin: 0 auto;
+}
+.spread-celtic-cross .reveal-card-wrapper {
+    position: absolute;
+    width: 90px; /* ကတ်အရွယ်အစား (Fixed) */
+    height: 150px;
+    transform: translate(-50%, -50%); /* အလယ်ဗဟိုမှ ချိန်ရန် */
+    margin: 0;
+}
+/* ကတ် (၁၀) ကတ် နေရာချထားမှု */
+.spread-celtic-cross .card-pos-1 { top: 50%; left: 35%; z-index: 1; } /* Center */
+.spread-celtic-cross .card-pos-2 { top: 50%; left: 35%; transform: translate(-50%, -50%) rotate(90deg); z-index: 2; } /* Crossing */
+.spread-celtic-cross .card-pos-3 { top: 78%; left: 35%; } /* Bottom (အတိတ်ရလဒ်) */
+.spread-celtic-cross .card-pos-4 { top: 50%; left: 10%; } /* Left (အတိတ်) */
+.spread-celtic-cross .card-pos-5 { top: 22%; left: 35%; } /* Top (ဖြစ်နိုင်ခြေ) */
+.spread-celtic-cross .card-pos-6 { top: 50%; left: 60%; } /* Right (အနာဂတ်) */
+/* Staff (ညာဘက်တန်း - အောက်မှအပေါ်သို့) */
+.spread-celtic-cross .card-pos-7 { top: 85%; left: 85%; } /* ကိုယ်တိုင် */
+.spread-celtic-cross .card-pos-8 { top: 62%; left: 85%; } /* ပတ်ဝန်းကျင် */
+.spread-celtic-cross .card-pos-9 { top: 39%; left: 85%; } /* မျှော်လင့်ချက်/ကြောက်ရွံ့မှု */
+.spread-celtic-cross .card-pos-10 { top: 16%; left: 85%; } /* နောက်ဆုံးရလဒ် */
+
+
+/* (၃) RELATIONSHIP READING (H ပုံစံ - ၇ ကတ်) 
+   မှတ်ချက် - ပုံအရ ၇ ကတ်ဖြစ်နေ၍ HTML တွင် 5 အစား 7 ဟု ပြင်ပေးပါ။ */
+.spread-relationship-reading, .spread-love-reading {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    margin: 0 auto;
+}
+.spread-relationship-reading .reveal-card-wrapper,
+.spread-love-reading .reveal-card-wrapper {
+    position: absolute;
+    width: 95px;
+    height: 155px;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+/* ဘယ်ဘက်တန်း (ကိုယ့်ဘက်) */
+.spread-love-reading .card-pos-1 { top: 20%; left: 20%; }
+.spread-love-reading .card-pos-2 { top: 50%; left: 20%; }
+.spread-love-reading .card-pos-3 { top: 80%; left: 20%; }
+/* ညာဘက်တန်း (သူ့ဘက်) */
+.spread-love-reading .card-pos-4 { top: 20%; left: 80%; }
+.spread-love-reading .card-pos-5 { top: 50%; left: 80%; }
+.spread-love-reading .card-pos-6 { top: 80%; left: 80%; }
+/* အလယ်ကတ် (ဆက်စပ်မှု / ရလဒ်) */
+.spread-love-reading .card-pos-7 { top: 50%; left: 50%; z-index: 5; }
+
+/* ဖုန်း Screen အသေးများအတွက် (Responsive) */
+@media (max-width: 500px) {
+    .spread-celtic-cross { height: 500px; }
+    .spread-celtic-cross .reveal-card-wrapper { width: 65px; height: 110px; }
+    
+    .spread-love-reading { height: 450px; }
+    .spread-love-reading .reveal-card-wrapper { width: 70px; height: 115px; }
+}
