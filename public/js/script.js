@@ -10,7 +10,7 @@ let supabaseClient = null;
 if (window.supabase) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
-    console.warn(" Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
+    console.warn("⚠️ Supabase script is missing! HTML တွင် script.js အပေါ်၌ Supabase CDN ထည့်ရန်မေ့နေပါသည်။");
 }
 
 let currentSpreadType = '';
@@ -21,7 +21,7 @@ let isModalOpen = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     updateAuthUI();
-    
+
     try {
         const response = await fetch('/api/cards');
         const result = await response.json();
@@ -133,7 +133,6 @@ function updateAuthUI() {
     });
 }
 
-
 function initAuthPage() {
     const authForm = document.getElementById('authForm');
     if (!authForm) return;
@@ -146,42 +145,18 @@ function initAuthPage() {
     const nameGroup = document.getElementById('nameGroup');
     const nameInput = document.getElementById('userName');
 
-    // ပြင်ဆင်ချက် ၁: addEventListener အစား onclick ကို သုံးထားပါသည် (ခလုတ် နှစ်ခါထပ်နှိပ်မိသလို ဖြစ်ခြင်းမှ ကာကွယ်ရန်)
+    // UI အသွင်ပြောင်းသည့်အပိုင်း သီးသန့် (Database Code များကို ဤနေရာမှ ဖယ်ရှားလိုက်ပါပြီ)
     authSwitchLink.onclick = (e) => {
         e.preventDefault();
         isLogin = !isLogin;
 
         if (isLogin) {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert("Error: " + error.message);
-                authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
-                authSubmitBtn.disabled = false;
-            } else {
-                // --- ပြင်ဆင်ချက်: Database မှ User Role ကိုပါ လှမ်းယူမည် ---
-                const { data: dbUser } = await supabaseClient
-                    .from('User')
-                    .select('role')
-                    .eq('id', data.user.id)
-                    .single();
-                    
-                const userRole = dbUser ? dbUser.role : 'user'; // မရှိလျှင် 'user' ဟု သတ်မှတ်မည်
-                const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
-                
-                localStorage.setItem('tarot_user', JSON.stringify({ 
-                    email: data.user.email, 
-                    name: displayName,
-                    id: data.user.id,
-                    role: userRole // ဤနေရာတွင် role ကို သိမ်းဆည်းလိုက်ပါပြီ
-                }));
-                
-                alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
-                window.location.href = 'index.html'; 
-            }
+            authTitle.innerText = "Login";
+            authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+            authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
+            authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
+            nameGroup.style.display = "none";
+            nameInput.removeAttribute('required');
         } else {
             authTitle.innerText = "Sign Up";
             authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
@@ -192,11 +167,10 @@ function initAuthPage() {
         }
     };
 
-
-    // ပြင်ဆင်ချက် ၂: Form Submit ကိုလည်း onsubmit ဖြင့် ပြောင်းရေးထားပါသည်
+    // Form Submit လုပ်မှသာလျှင် Database သို့ ချိတ်ဆက်မည်
     authForm.onsubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!supabaseClient) {
             alert("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။");
             return;
@@ -220,12 +194,23 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
                 authSubmitBtn.disabled = false;
             } else {
+                // Database မှ User Role ကိုပါ လှမ်းယူမည်
+                const { data: dbUser } = await supabaseClient
+                    .from('User')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single();
+
+                const userRole = dbUser ? dbUser.role : 'user'; 
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
+
                 localStorage.setItem('tarot_user', JSON.stringify({ 
                     email: data.user.email, 
                     name: displayName,
-                    id: data.user.id 
+                    id: data.user.id,
+                    role: userRole 
                 }));
+
                 alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
                 window.location.href = 'index.html'; 
             }
@@ -256,7 +241,7 @@ function initAuthPage() {
                                 isSubscribed: false
                             }
                         ]);
-                        
+
                     if (dbError) {
                         console.error("Database Save Error:", dbError);
                     }
@@ -276,7 +261,6 @@ function initAuthPage() {
         }
     };
 }
-
 
 // =========================================
 // Library Page Logic
@@ -750,7 +734,7 @@ function initProfilePage() {
     }
 
     const currentUser = JSON.parse(userStr);
-    
+
     document.getElementById('profileName').innerText = currentUser.name;
     document.getElementById('profileEmail').innerText = currentUser.email;
 
@@ -812,7 +796,6 @@ function initProfilePage() {
     });
 }
 
-
 // =========================================
 // Admin Dashboard Logic
 // =========================================
@@ -820,7 +803,7 @@ function initProfilePage() {
 async function initAdminPage() {
     const userStr = localStorage.getItem('tarot_user');
     const tableBody = document.getElementById('userTableBody');
-    
+
     // ၁။ လုံခြုံရေးအလွှာ (Admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
     if (!userStr || !supabaseClient) {
         window.location.href = 'login.html';
@@ -854,7 +837,7 @@ async function initAdminPage() {
             const roleBadge = u.role === 'admin' 
                 ? `<span class="badge admin">Admin</span>` 
                 : `<span class="badge user">User</span>`;
-                
+
             const row = `
                 <tr>
                     <td>${index + 1}</td>
@@ -867,4 +850,3 @@ async function initAdminPage() {
         });
     }
 }
-
