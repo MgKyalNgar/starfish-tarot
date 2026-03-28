@@ -82,9 +82,14 @@ body {
     margin-bottom: 2rem;
 }
 
-.text-center { 
+.step-reveal-card .text-center { 
     text-align: center; 
     margin-bottom: 0rem; 
+}
+
+.text-center { 
+    text-align: center; 
+    margin-bottom: 1rem; 
 }
 
 /* Buttons */
@@ -433,9 +438,23 @@ footer {
 .spread-card h3 { color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem; }
 .spread-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; }
 
-.premium-spread { background: rgba(20, 20, 20, 0.6); border-color: rgba(255, 215, 0, 0.3); }
-.premium-spread.locked { opacity: 0.7; }
-.lock-icon { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; filter: grayscale(100%); }
+.premium-spread { 
+    border-color: rgba(255, 215, 0, 0.5) !important; /* ရွှေရောင်ဘောင်ကို အမြဲထားမည် */
+}
+
+/* သော့ခတ်ထားချိန် (Free User) မှသာ နောက်ခံအမဲဖြစ်ပြီး မှိန်နေမည် */
+.premium-spread.locked { 
+    background: rgba(20, 20, 20, 0.6) !important; 
+    opacity: 0.8; 
+}
+
+.lock-icon { 
+    position: absolute; 
+    top: 10px; 
+    right: 15px; 
+    font-size: 1.2rem; 
+    filter: grayscale(100%); 
+}
 
 .modal-box {
     background: var(--bg-glow);
@@ -839,13 +858,14 @@ footer {
 
 /* ဖုန်း Screen အသေးများအတွက် (Responsive) */
 @media (max-width: 768px) {
-    .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 1rem; }
+    /* Title နှင့် ကပ်သွားစေရန် margin-top များကို 0rem ပြောင်းထားသည် */
+    .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
     
-    /* Celtic Cross အတွက် Container ကို နည်းနည်းချဲ့ပြီး ကတ်ကို ကြီးပေးထားသည် */
-    .spread-celtic-cross { max-width: 390px; height: 530px; margin-top: 1rem !important; }
-    .spread-celtic-cross .reveal-card-wrapper { width: 72px; height: 120px; }
+    /* Celtic Cross အတွက် ကတ်များကို Height 130px သို့ ချဲ့ထားသည် */
+    .spread-celtic-cross { max-width: 400px; height: 560px; margin-top: 0rem !important; }
+    .spread-celtic-cross .reveal-card-wrapper { width: 80px; height: 130px; }
     
-    /* Relationship Reading အတွက် ကတ်ကို သိသိသာသာ ကြီးပေးထားသည် */
-    .spread-love-reading { max-width: 350px; height: 480px; margin-top: 1rem !important; }
-    .spread-love-reading .reveal-card-wrapper { width: 75px; height: 125px; }
+    /* Relationship Reading အတွက် ကတ်များကို Height 130px သို့ ချဲ့ထားသည် */
+    .spread-love-reading { max-width: 360px; height: 520px; margin-top: 0rem !important; }
+    .spread-love-reading .reveal-card-wrapper { width: 80px; height: 130px; }
 }
