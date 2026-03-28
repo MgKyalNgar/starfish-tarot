@@ -867,5 +867,5 @@ footer {
     
     /* Relationship Reading အတွက် ကတ်များကို Height 130px သို့ ချဲ့ထားသည် */
     .spread-love-reading { max-width: 360px; height: 520px; margin-top: 0rem !important; }
-    .spread-love-reading .reveal-card-wrapper { width: 80px; height: 130px; }
+    .spread-love-reading .reveal-card-wrapper { width: 90px; height: 145px; }
 }
