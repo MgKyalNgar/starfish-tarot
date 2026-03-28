@@ -856,12 +856,9 @@ async function initAdminPage() {
                     <td style="color: var(--text-muted);">${u.email}</td>
                     <td>${roleBadge}</td>
                     <td>${subBadge}</td>
-                    <td>
-                        <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="action-btn" style="padding: 5px 10px; font-size: 0.75rem; margin-right: 5px;" ${disableSelfAction}>
-                            ${roleActionText}
-                        </button>
-                        <button onclick="toggleSubscription('${u.id}', ${u.isSubscribed})" class="action-btn" style="padding: 5px 10px; font-size: 0.75rem; background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);" ${disableSelfAction}>
-                            ${subActionText}
+                    <td style="text-align: center;">
+                        <button onclick="openManageModal('${u.id}', '${(u.name || '').replace(/'/g, "\\'")}', '${u.email}', '${u.role}', ${u.isSubscribed})" class="action-btn" style="padding: 6px 15px; font-size: 0.8rem;" ${disableSelfAction}>
+                            ⚙️ Manage
                         </button>
                     </td>
                 </tr>
@@ -906,6 +903,64 @@ window.toggleSubscription = async function(userId, currentStatus) {
             alert("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message);
         } else {
             initAdminPage(); // Table ကို Refresh ပြန်လုပ်မည်
+        }
+    }
+};
+
+
+// =========================================
+// Admin Manage Modal Logic
+// =========================================
+
+window.openManageModal = function(id, name, email, role, isSubscribed) {
+    // Modal တွင် နာမည်နှင့် အီးမေးလ် ဖော်ပြမည်
+    document.getElementById('manageUserName').innerText = name || 'Unknown User';
+    document.getElementById('manageUserEmail').innerText = email;
+
+    const btnRole = document.getElementById('btnRole');
+    const btnSub = document.getElementById('btnSub');
+    const btnPass = document.getElementById('btnPass');
+
+    // လက်ရှိ Role ပေါ်မူတည်၍ ခလုတ်စာသားပြောင်းမည်
+    btnRole.innerText = role === 'admin' ? 'Change to User' : 'Make Admin';
+    btnRole.onclick = () => { 
+        closeManageModal(); 
+        toggleUserRole(id, role); 
+    };
+
+    // လက်ရှိ Sub ပေါ်မူတည်၍ ခလုတ်စာသားပြောင်းမည်
+    btnSub.innerText = isSubscribed ? 'Revoke Premium 🌟' : 'Grant Premium 🌟';
+    btnSub.onclick = () => { 
+        closeManageModal(); 
+        toggleSubscription(id, isSubscribed); 
+    };
+
+    // Password Reset အတွက်
+    btnPass.onclick = () => { 
+        closeManageModal(); 
+        sendPasswordReset(email); 
+    };
+
+    // Modal ကို ဖွင့်မည်
+    document.getElementById('manageUserModal').classList.remove('hidden');
+};
+
+window.closeManageModal = function() {
+    document.getElementById('manageUserModal').classList.add('hidden');
+};
+
+
+// User ထံသို့ Password Reset Link ကို အီးမေးလ်ဖြင့် လှမ်းပို့မည့် Function
+window.sendPasswordReset = async function(userEmail) {
+    const confirmMsg = `"${userEmail}" ထံသို့ စကားဝှက်အသစ်ပြောင်းရန် လင့်ခ် (Reset Link) ပို့မှာ သေချာပြီလား?`;
+    
+    if (confirm(confirmMsg)) {
+        const { data, error } = await supabaseClient.auth.resetPasswordForEmail(userEmail);
+
+        if (error) {
+            alert("အီးမေးလ်ပို့ရာတွင် အမှားအယွင်းရှိနေပါသည်: " + error.message);
+        } else {
+            alert(`စကားဝှက်ပြောင်းရန် လင့်ခ်ကို "${userEmail}" သို့ အောင်မြင်စွာ ပို့လိုက်ပါပြီ! 📧\n(User အနေဖြင့် Email Inbox သို့မဟုတ် Spam Folder ကို စစ်ဆေးရပါမည်)`);
         }
     }
 };
