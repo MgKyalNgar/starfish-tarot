@@ -103,18 +103,20 @@ function initAuthPage() {
             } else {
                 const { data: dbUser } = await supabaseClient
                     .from('User')
-                    .select('role')
+                    .select('role','isSubscribed')
                     .eq('id', data.user.id)
                     .single();
 
-                const userRole = dbUser ? dbUser.role : 'user'; 
+                const userRole = dbUser ? dbUser.role : 'user';
+                const isSub = dbUser ? dbUser.isSubscribed : false;
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
 
                 localStorage.setItem('tarot_user', JSON.stringify({ 
                     email: data.user.email, 
                     name: displayName,
                     id: data.user.id,
-                    role: userRole 
+                    role: userRole,
+                    isSubscribed: isSub
                 }));
 
                 alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
