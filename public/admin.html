@@ -47,6 +47,21 @@
         </div>
     </main>
 
+       <div id="manageUserModal" class="modal-overlay hidden" style="z-index: 2000;">
+        <div class="reading-modal-box" style="max-width: 400px; text-align: center; padding: 2rem;">
+            <button class="close-modal-btn" onclick="closeManageModal()">✕</button>
+            <h3 class="glow-text" style="font-size: 1.5rem; margin-bottom: 0.5rem;" id="manageUserName">User Name</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;" id="manageUserEmail">email@example.com</p>
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button id="btnRole" class="action-btn" style="width: 100%;">Make Admin</button>
+                <button id="btnSub" class="action-btn" style="width: 100%; background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);">Grant Premium</button>
+                <button id="btnPass" class="action-btn" style="width: 100%; background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d;">Reset Password</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/script.js"></script>
     <script>
