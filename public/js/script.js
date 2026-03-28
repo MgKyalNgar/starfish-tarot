@@ -430,7 +430,7 @@ async function saveDailyDrawToJournal(cardData, saveBtnElement) {
             date: today,
             type: 'Daily Draw',
             cards: cardToSave,
-            answer: null // AI အဖြေအတွက် နေရာချန်ထားသည်
+            answer: cardData.upright_meaning
         }]);
 
     if (error) {
