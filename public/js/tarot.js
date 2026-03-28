@@ -256,6 +256,7 @@ function createDeckStack() {
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
+    deckStack.style.cursor = 'pointer';
 
     for (let i = 0; i < 10; i++) {
         const card = document.createElement('div');
@@ -264,25 +265,82 @@ function createDeckStack() {
         card.style.zIndex = i;
         deckStack.appendChild(card);
     }
+    // ပြင်ဆင်ချက်: ကတ်အထပ်ကို တိုက်ရိုက်နှိပ်လျှင်လည်း မွှေမည်
+    deckStack.addEventListener('click', () => {
+        if (!deckStack.classList.contains('shuffling')) {
+            startShuffleAnimation();
+        }
+    });
     deckArea.appendChild(deckStack);
+    // "ကတ်ရွေးမည်" ခလုတ်ကို JS မှတစ်ဆင့် အလိုအလျောက် ဖန်တီးထည့်သွင်းခြင်း
+    let proceedBtn = document.getElementById('proceedToSpreadBtn');
+    if (!proceedBtn) {
+        proceedBtn = document.createElement('button');
+        proceedBtn.id = 'proceedToSpreadBtn';
+        proceedBtn.className = 'action-btn';
+        proceedBtn.innerText = 'ကတ်ရွေးမည် 🃏';
+        proceedBtn.style.marginTop = '1.5rem';
+        proceedBtn.style.marginLeft = '10px';
+        proceedBtn.style.display = 'none'; // မွှေပြီးမှ ပေါ်လာစေရန် အစတွင် ဖျောက်ထားမည်
+        proceedBtn.onclick = proceedToSpread;
+        
+        // Shuffle Button ၏ အနီးတွင် ကပ်ထည့်မည်
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        if (shuffleBtn && shuffleBtn.parentNode) {
+            shuffleBtn.parentNode.insertBefore(proceedBtn, shuffleBtn.nextSibling);
+        } else {
+            deckArea.parentNode.appendChild(proceedBtn);
+        }
+    } else {
+        proceedBtn.style.display = 'none'; // အစတွင် ဖျောက်ထားမည်
+    }
 }
 
+// ၂။ ကတ်မွှေသည့် Animation (အလိုအလျောက် မသွားတော့ဘဲ ထပ်မွှေခွင့်ပေးခြင်း)
 function startShuffleAnimation() {
     const shuffleBtn = document.getElementById('shuffleBtn');
     const deckStack = document.getElementById('deckStack');
-    if(!shuffleBtn || !deckStack) return;
+    if(!deckStack) return;
 
-    shuffleBtn.disabled = true;
-    shuffleBtn.innerText = "ကတ်မွှေနေပါသည်... 🔮";
-    shuffleBtn.style.opacity = "0.7";
+    if(shuffleBtn) {
+        shuffleBtn.disabled = true;
+        shuffleBtn.innerText = "ကတ်မွှေနေပါသည်... 🔮";
+        shuffleBtn.style.opacity = "0.7";
+    }
     deckStack.classList.add('shuffling');
 
     setTimeout(() => {
         deckStack.classList.remove('shuffling');
-        deckStack.style.display = 'none'; 
-        shuffleBtn.style.display = 'none'; 
-        spreadCardsOut(); 
-    }, 2500);
+        
+        // ပြင်ဆင်ချက်: မွှေပြီးသွားလျှင် အလိုအလျောက် မသွားတော့ဘဲ ထပ်မွှေခွင့်ပေးမည်
+        if(shuffleBtn) {
+            shuffleBtn.disabled = false;
+            shuffleBtn.innerText = "ထပ်မွှေမည် 🔄";
+            shuffleBtn.style.opacity = "1";
+        }
+
+        // "ကတ်ရွေးမည်" ခလုတ်ကို ပေါ်လာစေမည်
+        const proceedBtn = document.getElementById('proceedToSpreadBtn');
+        if (proceedBtn) {
+            proceedBtn.style.display = 'inline-block';
+            proceedBtn.classList.add('fade-in'); // အလန်းစားလေး ပေါ်လာအောင်
+        }
+        
+    }, 2500); // Animation ကြာချိန်
+}
+
+function proceedToSpread() {
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const deckStack = document.getElementById('deckStack');
+    const proceedBtn = document.getElementById('proceedToSpreadBtn');
+
+    // မလိုအပ်သော ခလုတ်များနှင့် ကတ်အထပ်ကို ဖျောက်မည်
+    if (shuffleBtn) shuffleBtn.style.display = 'none';
+    if (proceedBtn) proceedBtn.style.display = 'none';
+    if (deckStack) deckStack.style.display = 'none'; 
+
+    // ကတ်များကို စတင်ခင်းကျင်းမည်
+    spreadCardsOut(); 
 }
 
 function spreadCardsOut() {
