@@ -541,21 +541,25 @@ function spreadCardsOut() {
     const spreadContainer = document.createElement('div');
     spreadContainer.className = 'spread-area';
 
+    // ပြင်ဆင်ချက်: Major Arcana ပဲဆိုရင် 22 ကတ်ပဲ ယူမည်
+    let availableDeck = appSettings.majorArcanaOnly 
+        ? fullDeck.filter(c => c.arcana === 'Major Arcana') 
+        : [...fullDeck];
+
     const isMobile = window.innerWidth <= 600;
     const cardsPerRow = isMobile ? 13 : 26; 
     const xOverlap = isMobile ? 22 : 30; 
     const ySpacing = isMobile ? 120 : 160; 
     const cardHeight = isMobile ? 120 : 150;
-    const totalRows = Math.ceil(78 / cardsPerRow);
+    const totalRows = Math.ceil(availableDeck.length / cardsPerRow);
 
     spreadContainer.style.height = `${(totalRows - 1) * ySpacing + cardHeight + 50}px`;
 
     const title = document.querySelector('#step-shuffle h2');
     if(title) title.innerText = `ကျေးဇူးပြု၍ သင့်စိတ်ကြိုက် ကတ် (${cardsToDraw}) ကတ်ကို ရွေးချယ်ပါ`;
 
-    let availableDeck = [...fullDeck];
-
-    for (let i = 0; i < 78; i++) {
+    // ၇၈ အစား availableDeck.length ကို သုံးပါမည်
+    for (let i = 0; i < availableDeck.length; i++) {
         const cardItem = document.createElement('div');
         cardItem.className = 'spread-card-item';
         cardItem.id = `spread-card-${i}`;
@@ -586,6 +590,7 @@ function spreadCardsOut() {
     setTimeout(() => { spreadContainer.classList.add('visible'); }, 100);
 }
 
+
 function selectIndividualCard(cardElement, availableDeck) {
     if (drawnCardDetails.length >= cardsToDraw) return;
 
@@ -593,6 +598,14 @@ function selectIndividualCard(cardElement, availableDeck) {
 
     const randIndex = Math.floor(Math.random() * availableDeck.length);
     const selectedCard = availableDeck.splice(randIndex, 1)[0]; 
+
+    // ပြင်ဆင်ချက်: Reversed setting On ထားလျှင် ၅၀% အခွင့်အရေးဖြင့် ပြောင်းပြန်လုပ်မည်
+    if (appSettings.useReversed) {
+        selectedCard.isReversed = Math.random() < 0.5;
+    } else {
+        selectedCard.isReversed = false;
+    }
+
     drawnCardDetails.push(selectedCard);
 
     if (drawnCardDetails.length === cardsToDraw) {
@@ -601,6 +614,7 @@ function selectIndividualCard(cardElement, availableDeck) {
         }, 1200); 
     }
 }
+
 
 function goToRevealStep() {
     history.replaceState({step: 'reveal'}, '', '#reveal');
@@ -623,7 +637,7 @@ function goToRevealStep() {
             <div class="flip-card-inner">
                 <div class="flip-card-front card-pattern"></div>
                 <div class="flip-card-back">
-                    <img src="${card.imageUrl}" alt="${card.name}">
+                    <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
                 </div>
             </div>
         `;
@@ -726,11 +740,17 @@ function openReadingModal(card, index) {
         cardTitle = "Quick Answer";
     }
 
+    const isRev = card.isReversed; // ပြောင်းပြန် ဟုတ်မဟုတ် စစ်ဆေးခြင်း
+
     const imgEl = document.getElementById('modalCardImg');
-    if(imgEl) imgEl.src = card.imageUrl;
+    if(imgEl) {
+        imgEl.src = card.imageUrl;
+        imgEl.style.transform = isRev ? 'rotate(180deg)' : 'none'; // ပုံကို ပြောင်းပြန်လှည့်မည်
+    }
 
     const nameEl = document.getElementById('modalCardName');
-    if(nameEl) nameEl.innerText = cardTitle ? `${cardTitle} - ${card.name}` : card.name;
+    // နာမည်ဘေးတွင် (Reversed) ဟု ပြမည်
+    if(nameEl) nameEl.innerText = cardTitle ? `${cardTitle} - ${card.name} ${isRev ? '(Reversed)' : ''}` : `${card.name} ${isRev ? '(Reversed)' : ''}`;
 
     const typeEl = document.getElementById('modalCardType');
     if(typeEl) typeEl.innerText = card.suit ? card.suit : card.arcana;
@@ -739,7 +759,8 @@ function openReadingModal(card, index) {
     if(keywordsEl) keywordsEl.innerText = `Keywords: ${card.keywords}`;
 
     const meaningEl = document.getElementById('modalCardMeaning');
-    if(meaningEl) meaningEl.innerText = card.upright_meaning;
+    // ပြောင်းပြန်ဆိုလျှင် reversed_meaning ကို ပြမည် (မရှိပါက upright_meaning ကိုသာ ပြမည်)
+    if(meaningEl) meaningEl.innerText = isRev && card.reversed_meaning ? card.reversed_meaning : card.upright_meaning;
 
     const modal = document.getElementById('readingModal');
     if(modal) {
@@ -893,7 +914,7 @@ async function initAdminPage() {
             const roleBadge = u.role === 'admin' 
                 ? `<span class="badge admin">Admin</span>` 
                 : `<span class="badge user">User</span>`;
-                
+
             const subBadge = u.isSubscribed 
                 ? `<span style="color: #00ffaa; font-weight: bold;">Premium 🌟</span>` 
                 : `<span style="color: var(--text-muted);">Free Plan</span>`;
@@ -928,7 +949,7 @@ async function initAdminPage() {
 window.toggleUserRole = async function(userId, currentRole) {
     const newRole = currentRole === 'admin' ? 'user' : 'admin';
     const confirmMsg = `ဒီ User ကို "${newRole.toUpperCase()}" အဖြစ် ပြောင်းလဲမှာ သေချာပြီလား?`;
-    
+
     if (confirm(confirmMsg)) {
         const { error } = await supabaseClient
             .from('User')
@@ -948,7 +969,7 @@ window.toggleSubscription = async function(userId, currentStatus) {
     const newStatus = !currentStatus;
     const statusText = newStatus ? 'Premium User 🌟' : 'Free User';
     const confirmMsg = `ဒီ User ကို "${statusText}" အဖြစ် သတ်မှတ်မှာ သေချာပြီလား?`;
-    
+
     if (confirm(confirmMsg)) {
         const { error } = await supabaseClient
             .from('User')
@@ -1009,7 +1030,7 @@ window.closeManageModal = function() {
 // User ထံသို့ Password Reset Link ကို အီးမေးလ်ဖြင့် လှမ်းပို့မည့် Function
 window.sendPasswordReset = async function(userEmail) {
     const confirmMsg = `"${userEmail}" ထံသို့ စကားဝှက်အသစ်ပြောင်းရန် လင့်ခ် (Reset Link) ပို့မှာ သေချာပြီလား?`;
-    
+
     if (confirm(confirmMsg)) {
         const { data, error } = await supabaseClient.auth.resetPasswordForEmail(userEmail);
 
@@ -1020,3 +1041,28 @@ window.sendPasswordReset = async function(userEmail) {
         }
     }
 };
+
+// =========================================
+// App Settings Logic (profile.html တွင်သုံးရန်)
+// =========================================
+
+// Profile Page ပွင့်လာချိန်တွင် ခလုတ်များကို On/Off အမှန်ပြပေးရန် (initProfilePage ထဲတွင် ခေါ်သုံးနိုင်ပါသည်)
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleMajor = document.getElementById('toggleMajorArcana');
+    const toggleRev = document.getElementById('toggleReversed');
+    
+    if(toggleMajor) toggleMajor.checked = appSettings.majorArcanaOnly;
+    if(toggleRev) toggleRev.checked = appSettings.useReversed;
+});
+
+// ခလုတ်နှိပ်လိုက်တိုင်း Local Storage သို့ သိမ်းမည်
+window.saveAppSettings = function() {
+    const toggleMajor = document.getElementById('toggleMajorArcana');
+    const toggleRev = document.getElementById('toggleReversed');
+    
+    appSettings.majorArcanaOnly = toggleMajor ? toggleMajor.checked : false;
+    appSettings.useReversed = toggleRev ? toggleRev.checked : false;
+    
+    localStorage.setItem('tarot_settings', JSON.stringify(appSettings));
+};
+
