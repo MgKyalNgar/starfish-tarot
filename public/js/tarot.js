@@ -207,12 +207,36 @@ function showStep(stepId) {
     }
 }
 
-function selectSpread(type, count) {
+// ပြင်ဆင်ချက်: isPremium ဆိုသော parameter အသစ် ထပ်ထည့်လိုက်ပါသည်
+function selectSpread(type, count, isPremium = false) {
+    
+    // Premium ဟောစာတမ်းဖြစ်ခဲ့လျှင်
+    if (isPremium) {
+        const userStr = localStorage.getItem('tarot_user');
+        
+        // ၁။ အကောင့်မဝင်ရသေးလျှင်
+        if (!userStr) {
+            alert("Premium ဟောစာတမ်းများကို ဖတ်ရန် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const currentUser = JSON.parse(userStr);
+        
+        // ၂။ Premium User လည်း မဟုတ်၊ Admin လည်း မဟုတ်လျှင်
+        if (!currentUser.isSubscribed && currentUser.role !== 'admin') {
+            handlePremiumClick(); // Premium Modal ကို ပြမည်
+            return; // ရှေ့ဆက်ခွင့်မပေးဘဲ ရပ်လိုက်မည်
+        }
+    }
+
+    // Free ဖြစ်လျှင် (သို့) Premium User ဖြစ်လျှင် ပုံမှန်အတိုင်း ရှေ့ဆက်သွားမည်
     currentSpreadType = type;
     cardsToDraw = count;
     history.pushState({step: 'shuffle'}, '', '#shuffle');
     showStep('step-shuffle');
 }
+
 
 function handlePremiumClick() {
     const modal = document.getElementById('premiumModal');
