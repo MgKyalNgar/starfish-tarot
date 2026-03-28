@@ -103,8 +103,12 @@ function updateAuthUI() {
 
     authLinksContainers.forEach(container => {
         if (currentUser) {
+            // Admin ဖြစ်ပါက Admin Panel လင့်ခ် ပြမည်
+            const adminLink = currentUser.role === 'admin' ? `<a href="admin.html" class="nav-link" style="color: #ffd700; margin-left: 15px;">Admin Panel</a>` : '';
+
             container.innerHTML = `
                 <a href="library.html" class="nav-link">Library</a>
+                ${adminLink}
                 <a href="profile.html" class="nav-profile-btn" style="color: var(--accent-cyan); text-decoration: none; margin-left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;">
                     👤 ${currentUser.name}
                 </a>
@@ -117,10 +121,9 @@ function updateAuthUI() {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
                     if(supabaseClient) supabaseClient.auth.signOut();
-                    window.location.reload(); 
+                    window.location.href = 'index.html'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
                 });
             }
-            // မှတ်ချက်: profileBtn အတွက် addEventListener ဖြုတ်လိုက်ပါပြီ။ href="profile.html" က တိုက်ရိုက်အလုပ်လုပ်ပါမည်။
         } else {
             container.innerHTML = `
                 <a href="library.html" class="nav-link">Library</a>
@@ -129,6 +132,8 @@ function updateAuthUI() {
         }
     });
 }
+
+
 
 function initAuthPage() {
     const authForm = document.getElementById('authForm');
@@ -148,13 +153,37 @@ function initAuthPage() {
         isLogin = !isLogin;
 
         if (isLogin) {
-            authTitle.innerText = "Login";
-            authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
-            authSwitchText.innerText = "အကောင့်မရှိသေးဘူးလား?";
-            authSwitchLink.innerText = "အသစ်ဖွင့်မည်";
-            nameGroup.style.display = "none";
-            nameInput.removeAttribute('required');
-        } else {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+                authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
+                authSubmitBtn.disabled = false;
+            } else {
+                // --- ပြင်ဆင်ချက်: Database မှ User Role ကိုပါ လှမ်းယူမည် ---
+                const { data: dbUser } = await supabaseClient
+                    .from('User')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single();
+                    
+                const userRole = dbUser ? dbUser.role : 'user'; // မရှိလျှင် 'user' ဟု သတ်မှတ်မည်
+                const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
+                
+                localStorage.setItem('tarot_user', JSON.stringify({ 
+                    email: data.user.email, 
+                    name: displayName,
+                    id: data.user.id,
+                    role: userRole // ဤနေရာတွင် role ကို သိမ်းဆည်းလိုက်ပါပြီ
+                }));
+                
+                alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
+                window.location.href = 'index.html'; 
+            }
+        } else  {
             authTitle.innerText = "Sign Up";
             authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
             authSwitchText.innerText = "အကောင့်ရှိပြီးသားလား?";
@@ -163,6 +192,7 @@ function initAuthPage() {
             nameInput.setAttribute('required', 'true');
         }
     };
+
 
     // ပြင်ဆင်ချက် ၂: Form Submit ကိုလည်း onsubmit ဖြင့် ပြောင်းရေးထားပါသည်
     authForm.onsubmit = async (e) => {
@@ -782,3 +812,60 @@ function initProfilePage() {
         updatePassBtn.disabled = false;
     });
 }
+
+
+// =========================================
+// Admin Dashboard Logic
+// =========================================
+
+async function initAdminPage() {
+    const userStr = localStorage.getItem('tarot_user');
+    const tableBody = document.getElementById('userTableBody');
+    
+    // ၁။ လုံခြုံရေးအလွှာ (Admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
+    if (!userStr || !supabaseClient) {
+        window.location.href = 'login.html';
+        return;
+    }
+    const currentUser = JSON.parse(userStr);
+    if (currentUser.role !== 'admin') {
+        alert("⚠️ သင့်တွင် ဤစာမျက်နှာကို ကြည့်ရှုခွင့် (Admin Access) မရှိပါ။");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // ၂။ Database မှ User အားလုံးကို ဆွဲထုတ်ခြင်း
+    const { data: users, error } = await supabaseClient
+        .from('User')
+        .select('*')
+        .order('id', { ascending: true }); // ID အလိုက် စီစဉ်မည်
+
+    if (error) {
+        console.error("Error fetching users:", error);
+        tableBody.innerHTML = `<tr><td colspan="4" style="color: #ff4d4d; text-align: center;">Error: Database မှ အချက်အလက်များ မရနိုင်ပါ။</td></tr>`;
+        return;
+    }
+
+    // ၃။ HTML Table တွင် ပြသခြင်း
+    if (users.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="text-center">User များ မရှိသေးပါ။</td></tr>`;
+    } else {
+        tableBody.innerHTML = ''; // Loading စာသားကို ရှင်းမည်
+        users.forEach((u, index) => {
+            const roleBadge = u.role === 'admin' 
+                ? `<span class="badge admin">Admin</span>` 
+                : `<span class="badge user">User</span>`;
+                
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td style="font-weight: bold;">${u.name || '-'}</td>
+                    <td style="color: var(--text-muted);">${u.email}</td>
+                    <td>${roleBadge}</td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+}
+
