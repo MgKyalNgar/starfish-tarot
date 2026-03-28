@@ -804,7 +804,7 @@ async function initAdminPage() {
     const userStr = localStorage.getItem('tarot_user');
     const tableBody = document.getElementById('userTableBody');
 
-    // ၁။ လုံခြုံရေးအလွှာ (Admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
+    // ၁။ လုံခြုံရေးအလွှာ
     if (!userStr || !supabaseClient) {
         window.location.href = 'login.html';
         return;
@@ -820,23 +820,34 @@ async function initAdminPage() {
     const { data: users, error } = await supabaseClient
         .from('User')
         .select('*')
-        .order('id', { ascending: true }); // ID အလိုက် စီစဉ်မည်
+        .order('id', { ascending: true }); 
 
     if (error) {
         console.error("Error fetching users:", error);
-        tableBody.innerHTML = `<tr><td colspan="4" style="color: #ff4d4d; text-align: center;">Error: Database မှ အချက်အလက်များ မရနိုင်ပါ။</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" style="color: #ff4d4d; text-align: center;">Error: Database မှ အချက်အလက်များ မရနိုင်ပါ။</td></tr>`;
         return;
     }
 
     // ၃။ HTML Table တွင် ပြသခြင်း
     if (users.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="text-center">User များ မရှိသေးပါ။</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center">User များ မရှိသေးပါ။</td></tr>`;
     } else {
-        tableBody.innerHTML = ''; // Loading စာသားကို ရှင်းမည်
+        tableBody.innerHTML = ''; 
         users.forEach((u, index) => {
             const roleBadge = u.role === 'admin' 
                 ? `<span class="badge admin">Admin</span>` 
                 : `<span class="badge user">User</span>`;
+                
+            const subBadge = u.isSubscribed 
+                ? `<span style="color: #00ffaa; font-weight: bold;">Premium 🌟</span>` 
+                : `<span style="color: var(--text-muted);">Free Plan</span>`;
+
+            // Action ခလုတ်များ (Role ပြောင်းရန် နှင့် Premium ပေးရန်)
+            const roleActionText = u.role === 'admin' ? 'Make User' : 'Make Admin';
+            const subActionText = u.isSubscribed ? 'Revoke Premium' : 'Grant Premium';
+
+            // ကိုယ့်အကောင့်ကို ကိုယ်တိုင် ပြန်ချတာမျိုး မလုပ်မိအောင် ကာကွယ်ခြင်း
+            const disableSelfAction = u.id === currentUser.id ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : '';
 
             const row = `
                 <tr>
@@ -844,9 +855,57 @@ async function initAdminPage() {
                     <td style="font-weight: bold;">${u.name || '-'}</td>
                     <td style="color: var(--text-muted);">${u.email}</td>
                     <td>${roleBadge}</td>
+                    <td>${subBadge}</td>
+                    <td>
+                        <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="action-btn" style="padding: 5px 10px; font-size: 0.75rem; margin-right: 5px;" ${disableSelfAction}>
+                            ${roleActionText}
+                        </button>
+                        <button onclick="toggleSubscription('${u.id}', ${u.isSubscribed})" class="action-btn" style="padding: 5px 10px; font-size: 0.75rem; background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan);" ${disableSelfAction}>
+                            ${subActionText}
+                        </button>
+                    </td>
                 </tr>
             `;
             tableBody.insertAdjacentHTML('beforeend', row);
         });
     }
 }
+
+// User ၏ Role ကို ပြောင်းလဲသည့် Function
+window.toggleUserRole = async function(userId, currentRole) {
+    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+    const confirmMsg = `ဒီ User ကို "${newRole.toUpperCase()}" အဖြစ် ပြောင်းလဲမှာ သေချာပြီလား?`;
+    
+    if (confirm(confirmMsg)) {
+        const { error } = await supabaseClient
+            .from('User')
+            .update({ role: newRole })
+            .eq('id', userId);
+
+        if (error) {
+            alert("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message);
+        } else {
+            initAdminPage(); // Table ကို Refresh ပြန်လုပ်မည်
+        }
+    }
+};
+
+// User ၏ Premium / Free အခြေအနေကို ပြောင်းလဲသည့် Function
+window.toggleSubscription = async function(userId, currentStatus) {
+    const newStatus = !currentStatus;
+    const statusText = newStatus ? 'Premium User 🌟' : 'Free User';
+    const confirmMsg = `ဒီ User ကို "${statusText}" အဖြစ် သတ်မှတ်မှာ သေချာပြီလား?`;
+    
+    if (confirm(confirmMsg)) {
+        const { error } = await supabaseClient
+            .from('User')
+            .update({ isSubscribed: newStatus })
+            .eq('id', userId);
+
+        if (error) {
+            alert("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message);
+        } else {
+            initAdminPage(); // Table ကို Refresh ပြန်လုပ်မည်
+        }
+    }
+};
