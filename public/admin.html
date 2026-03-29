@@ -6,6 +6,10 @@
     <title>Admin Panel - Starfish Tarot</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a1128">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
     <style>
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; color: #fff; }
         .admin-table th, .admin-table td { padding: 12px; border: 1px solid rgba(0, 240, 255, 0.2); text-align: left; }
@@ -74,5 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if(typeof initAdminPage === 'function') initAdminPage();
         });
     </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+    </script>
+
 </body>
 </html>
