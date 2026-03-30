@@ -858,6 +858,9 @@ footer {
 
 /* ဖုန်း Screen အသေးများအတွက် (Responsive) */
 @media (max-width: 768px) {
+    .navbar {
+        justify-content: center;
+    }
     /* Title နှင့် ကပ်သွားစေရန် margin-top များကို 0rem ပြောင်းထားသည် */
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
     
