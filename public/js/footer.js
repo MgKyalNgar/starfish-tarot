@@ -14,10 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 </button>
             </div>
             
-            <p>&copy; 2024 Starfish Tarot. All rights reserved.</p>
-            <p style="font-size: 0.8rem; margin-top: 5px; color: var(--text-muted);">
-                သင့်အတွက် အကောင်းဆုံး ဟောစာတမ်းများ
-            </p>
+            <p>&copy; 2026 Starfish Tarot. Create by Mg Kyal Ngar.</p>
+           
         </footer>
     `;
 
