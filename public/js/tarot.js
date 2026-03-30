@@ -253,6 +253,24 @@ function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
 
+    // --- Guide Text ဖန်တီးခြင်း ---
+    let guideText = document.getElementById('shuffleGuideText');
+    if (!guideText) {
+        guideText = document.createElement('p');
+        guideText.id = 'shuffleGuideText';
+        guideText.style.color = 'var(--text-main)';
+        guideText.style.textAlign = 'center';
+        guideText.style.marginBottom = '1.5rem';
+        guideText.style.fontSize = '1rem';
+        guideText.style.lineHeight = '1.6';
+        guideText.style.animation = 'fadeIn 0.8s ease';
+        // Deck Area ၏ အပေါ်တည့်တည့်တွင် ကပ်ထည့်မည်
+        deckArea.parentNode.insertBefore(guideText, deckArea);
+    }
+    // အစပိုင်း စာသား
+    guideText.innerHTML = "✨ စိတ်ကို တည်တည်ငြိမ်ငြိမ်ထားပါ။<br>သင့်သိလိုသော မေးခွန်းကို အာရုံပြုပြီး ကတ်များကို မွှေပါ...";
+    guideText.style.display = 'block';
+
     deckArea.innerHTML = ''; 
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
@@ -322,6 +340,7 @@ function createDeckStack() {
 function startShuffleAnimation() {
     const shuffleBtn = document.getElementById('shuffleBtn');
     const deckStack = document.getElementById('deckStack');
+    const guideText = document.getElementById('shuffleGuideText');
     if(!deckStack) return;
 
     if(shuffleBtn) {
@@ -331,6 +350,11 @@ function startShuffleAnimation() {
     }
     deckStack.classList.add('shuffling');
 
+    // မွှေနေစဉ် စာသားပြောင်းမည်
+    if(guideText) {
+        guideText.innerHTML = "🔮 ကတ်များကို မွှေနှောက်နေပါသည်...<br>စိတ်ကို လွတ်လွတ်လပ်လပ် ထားပါ။";
+    }
+
     setTimeout(() => {
         deckStack.classList.remove('shuffling');
         
@@ -338,6 +362,11 @@ function startShuffleAnimation() {
             shuffleBtn.disabled = false;
             shuffleBtn.innerText = "ထပ်မွှေမည် 🔄";
             shuffleBtn.style.opacity = "1";
+        }
+
+        // မွှေပြီးသွားလျှင် စာသားထပ်ပြောင်းမည်
+        if(guideText) {
+            guideText.innerHTML = "✨ သင့်စိတ်ကြိုက် ထပ်မွှေနိုင်ပါသည်။<br>အဆင်သင့်ဖြစ်လျှင် <b>'ကတ်ရွေးမည်'</b> ကို နှိပ်ပါ။";
         }
 
         const proceedBtn = document.getElementById('proceedToSpreadBtn');
@@ -354,12 +383,18 @@ function proceedToSpread() {
     const shuffleBtn = document.getElementById('shuffleBtn');
     const deckStack = document.getElementById('deckStack');
     const proceedBtn = document.getElementById('proceedToSpreadBtn');
+    const guideText = document.getElementById('shuffleGuideText');
 
     // မလိုအပ်သော ခလုတ်များနှင့် ကတ်အထပ်ကို ဖျောက်မည်
     if (shuffleBtn) shuffleBtn.style.display = 'none';
     if (proceedBtn) proceedBtn.style.display = 'none';
     if (deckStack) deckStack.style.display = 'none'; 
 
+    // ကတ်တွေ ဖြန့်ခင်းလိုက်သည့်အချိန်တွင် ရွေးချယ်ရန် စာသားပြောင်းမည်
+    if(guideText) {
+        guideText.innerHTML = "👇 သင့်မေးခွန်းကို ဆက်လက်အာရုံပြုပြီး...<br>သင့်စိတ်က ညွှန်ပြရာ ကတ်များကို ရွေးချယ်ပါ။";
+        guideText.style.color = "var(--accent-cyan)"; // ပိုထင်ရှားသွားအောင် အရောင်ပြောင်းပေးမည်
+    }
     // ကတ်များကို စတင်ခင်းကျင်းမည်
     spreadCardsOut(); 
 }
