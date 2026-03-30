@@ -694,58 +694,6 @@ footer {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
 }
 
-/* =========================================
-   Mobile Optimization (ဖုန်းမျက်နှာပြင်အတွက် ပြင်ဆင်ချက်များ)
-========================================= */
-@media (max-width: 768px) {
-    .auth-container .glow-text {
-        font-size: 1.5rem !important; 
-        margin-bottom: 0.25rem !important;
-    }
-    .auth-container p {
-        font-size: 0.8rem !important;
-        margin-bottom: 1rem !important;
-    }
-    .auth-box {
-        padding: 1rem !important;
-        width: 95% !important;
-    }
-
-    .navbar {
-        flex-wrap: wrap !important; 
-        height: auto !important; 
-        padding: 0.75rem 1rem !important;
-    }
-    .navbar .logo {
-        margin-bottom: 0.5rem; 
-    }
-    .auth-links {
-        width: 100%; 
-        justify-content: flex-start !important; 
-        flex-wrap: wrap !important; 
-        gap: 5px !important; 
-    }
-    .nav-link, .nav-profile-btn {
-        margin-left: 0 !important;
-        margin-right: 10px !important; 
-        font-size: 0.85rem !important;
-    }
-
-    .admin-table th, .admin-table td {
-        padding: 8px !important; 
-        font-size: 0.8rem !important; 
-    }
-    .auth-box > div {
-        overflow-x: auto; 
-    }
-    .action-btn {
-        padding: 4px 8px !important;
-        font-size: 0.7rem !important;
-        width: 100% !important; 
-        margin-bottom: 5px !important; 
-        margin-right: 0 !important;
-    }
-}
 
 /* =========================================
    Toggle Switch (On/Off ခလုတ် ဒီဇိုင်း)
@@ -856,10 +804,57 @@ footer {
 
 .spread-love-reading .card-pos-7 { top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5; }
 
-/* ဖုန်း Screen အသေးများအတွက် (Responsive) */
+/* =========================================
+   Mobile Optimization (ဖုန်းမျက်နှာပြင်အတွက် ပြင်ဆင်ချက်များ)
+========================================= */
 @media (max-width: 768px) {
+    .auth-container .glow-text {
+        font-size: 1.5rem !important; 
+        margin-bottom: 0.25rem !important;
+    }
+    .auth-container p {
+        font-size: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+    .auth-box {
+        padding: 1rem !important;
+        width: 95% !important;
+    }
+
     .navbar {
         justify-content: center;
+        flex-wrap: wrap !important; 
+        height: auto !important; 
+        padding: 0.75rem 1rem !important;
+   .navbar .logo {
+        margin-bottom: 0.5rem; 
+    }
+    .auth-links {
+        text-align: right;
+        width: 100%; 
+        justify-content: flex-start !important; 
+        flex-wrap: wrap !important; 
+        gap: 5px !important; 
+    }
+    .nav-link, .nav-profile-btn {
+        margin-left: 0 !important;
+        margin-right: 10px !important; 
+        font-size: 0.85rem !important;
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 8px !important; 
+        font-size: 0.8rem !important; 
+    }
+    .auth-box > div {
+        overflow-x: auto; 
+    }
+    .action-btn {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+        width: 100% !important; 
+        margin-bottom: 5px !important; 
+        margin-right: 0 !important;
     }
     /* Title နှင့် ကပ်သွားစေရန် margin-top များကို 0rem ပြောင်းထားသည် */
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
