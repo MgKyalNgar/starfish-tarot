@@ -826,6 +826,7 @@ footer {
         flex-wrap: wrap !important; 
         height: auto !important; 
         padding: 0.75rem 1rem !important;
+    }
    .navbar .logo {
         margin-bottom: 0.5rem; 
     }
