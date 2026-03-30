@@ -533,7 +533,7 @@ function showStaticReadingResult() {
     const resultBox = document.getElementById('staticReadingResult');
     if (!resultBox) return;
 
-    // Premium Spread များအတွက် (လောလောဆယ် Placeholder ပြထားမည်)
+    // Premium Spread များကို စစ်ထုတ်မည်
     if (currentSpreadType !== 'one-card' && currentSpreadType !== 'three-card-time' && currentSpreadType !== 'three-card-action') {
         resultBox.innerHTML = `
             <div style="text-align: center; padding: 1rem;">
@@ -546,9 +546,9 @@ function showStaticReadingResult() {
         return;
     }
 
-    // Free Spread (၁-ကတ် နှင့် ၃-ကတ်) များအတွက် Database မှ အချက်အလက်များကို ယူပြမည်
     let htmlContent = '<h2 style="text-align: center; color: var(--accent-cyan); margin-bottom: 2rem; font-family: \'Orbitron\', sans-serif;">သင့်၏ ဟောစာတမ်းအဖြေ</h2>';
 
+    // ၁။ "၁-ကတ်" ဟောစာတမ်းအတွက်
     if (currentSpreadType === 'one-card') {
         const card = drawnCardDetails[0];
         const meaning = card.isReversed && card.reversed_meaning ? card.reversed_meaning : card.upright_meaning;
@@ -559,16 +559,31 @@ function showStaticReadingResult() {
                 <p style="line-height: 1.8; color: var(--text-main);">${meaning}</p>
             </div>
         `;
-    } else {
-        const titles = currentSpreadType === 'three-card-time' 
-            ? ["အတိတ် (Past)", "ပစ္စုပ္ပန် (Present)", "အနာဂတ် (Future)"]
-            : ["အခြေအနေ (Situation)", "အကြံပြုချက် (Action)", "ရလဒ် (Outcome)"];
-
+    } 
+    // ၂။ "၃-ကတ် (အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်)" အတွက်
+    else if (currentSpreadType === 'three-card-time') {
+        const titles = ["အတိတ် (Past)", "ပစ္စုပ္ပန် (Present)", "အနာဂတ် (Future)"];
         drawnCardDetails.forEach((card, index) => {
             const meaning = card.isReversed && card.reversed_meaning ? card.reversed_meaning : card.upright_meaning;
             htmlContent += `
                 <div class="meaning-box" style="text-align: left; margin-bottom: 1.5rem; background: rgba(28, 37, 65, 0.8);">
                     <h3 style="color: var(--accent-cyan); border-bottom: 1px solid rgba(0,240,255,0.2); padding-bottom: 8px; margin-bottom: 15px;">
+                        ${titles[index]} : <span style="color: #fff;">${card.name}</span> ${card.isReversed ? '<span style="color:#ff4d4d; font-size: 0.9rem;">(Reversed)</span>' : ''}
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;"><strong>Keywords:</strong> ${card.keywords}</p>
+                    <p style="line-height: 1.8; color: var(--text-main);">${meaning}</p>
+                </div>
+            `;
+        });
+    }
+    // ၃။ "၃-ကတ် (အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်)" အတွက်
+    else if (currentSpreadType === 'three-card-action') {
+        const titles = ["အခြေအနေ (Situation)", "အကြံပြုချက် (Action)", "ရလဒ် (Outcome)"];
+        drawnCardDetails.forEach((card, index) => {
+            const meaning = card.isReversed && card.reversed_meaning ? card.reversed_meaning : card.upright_meaning;
+            htmlContent += `
+                <div class="meaning-box" style="text-align: left; margin-bottom: 1.5rem; background: rgba(28, 37, 65, 0.8);">
+                    <h3 style="color: #FFD700; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 8px; margin-bottom: 15px;">
                         ${titles[index]} : <span style="color: #fff;">${card.name}</span> ${card.isReversed ? '<span style="color:#ff4d4d; font-size: 0.9rem;">(Reversed)</span>' : ''}
                     </h3>
                     <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;"><strong>Keywords:</strong> ${card.keywords}</p>
@@ -587,6 +602,7 @@ function showStaticReadingResult() {
     }, 100);
 }
 
+// =========================================
 
 async function saveReadingToJournal(cardsArray, spreadType) {
     const userStr = localStorage.getItem('tarot_user');
