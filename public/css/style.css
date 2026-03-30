@@ -830,7 +830,7 @@ footer {
         margin-bottom: 0.5rem; 
     }
     .auth-links {
-        text-align: right;
+        /*text-align: right;*/
         width: 100%; 
         justify-content: flex-start !important; 
         flex-wrap: wrap !important; 
