@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const footerHTML = `
         <footer>
-            <div id="installContainer" style="display: none; text-align: center; margin: 10px 0;">
+            <div id="installContainer hidden" style="display: none; text-align: center; margin: 10px 0;">
                 <button id="installAppBtn" class="btn-cancel" style="padding: 5px 15px; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; margin: 0 auto;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
