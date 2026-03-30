@@ -483,46 +483,80 @@ function goToRevealStep() {
         revealArea.appendChild(wrapper);
     });
     
-    // --- ၁။ Button များ ဖန်တီးခြင်း ---
-    let saveBtnContainer = document.getElementById('readingSaveBtnContainer');
-    if (!saveBtnContainer) {
-        saveBtnContainer = document.createElement('div');
-        saveBtnContainer.id = 'readingSaveBtnContainer';
-        saveBtnContainer.style.textAlign = 'center';
-        saveBtnContainer.style.marginTop = '2.5rem';
-        saveBtnContainer.style.width = '100%';
-        saveBtnContainer.style.display = 'flex'; // ဘေးတိုက်စီရန်
-        saveBtnContainer.style.justifyContent = 'center';
-        saveBtnContainer.style.flexWrap = 'wrap';
-        saveBtnContainer.style.gap = '15px';
-        revealArea.parentNode.appendChild(saveBtnContainer); 
+    // --- ၁။ Button များ နှင့် Layout အသစ် ဖန်တီးခြင်း ---
+    let buttonsWrapper = document.getElementById('readingButtonsWrapper');
+    if (!buttonsWrapper) {
+        buttonsWrapper = document.createElement('div');
+        buttonsWrapper.id = 'readingButtonsWrapper';
+        buttonsWrapper.style.width = '100%';
+        buttonsWrapper.style.maxWidth = '500px'; // ဖုန်းစခရင်နှင့် အနေတော်ဖြစ်စေရန်
+        buttonsWrapper.style.margin = '2rem auto';
+        buttonsWrapper.style.display = 'flex';
+        buttonsWrapper.style.flexDirection = 'column';
+        buttonsWrapper.style.gap = '15px';
+        revealArea.parentNode.appendChild(buttonsWrapper); 
     }
-
-    // ခလုတ် (၂) ခု ထည့်မည် (အဖြေဖတ်မည် + Journal သိမ်းမည်)
-    saveBtnContainer.innerHTML = `
-        <button class="action-btn" id="readResultBtn" style="padding: 1rem 2rem; font-size: 1.1rem; width: auto; min-width: 200px;">ဟောစာတမ်း ဖတ်မည် ✨</button>
-        <button class="save-journal-btn" id="saveReadingBtn" style="padding: 1rem 2rem; font-size: 1.1rem; width: auto; min-width: 200px;">Journal သိမ်းမည် 📝</button>
-    `;
     
+    // ခလုတ် ၃ ခုကို အစ်ကိုလိုချင်သည့် Layout အတိုင်း ချထားခြင်း
+    buttonsWrapper.innerHTML = `
+        <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">ဟောစာတမ်း ဖတ်မည် ✨</button>
+        
+        <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%;">
+            <button class="btn-cancel" id="restartReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem;">အစမှ ပြန်ရွေးမည်</button>
+            <button class="btn-cancel" id="saveReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem; border-color: rgba(0,240,255,0.5); color: #fff;">Journal သိမ်းမည် 📝</button>
+        </div>
+    `;
+
     // --- ၂။ အဖြေပေါ်မည့် Result Box ဖန်တီးခြင်း ---
     let resultBox = document.getElementById('staticReadingResult');
     if (!resultBox) {
         resultBox = document.createElement('div');
         resultBox.id = 'staticReadingResult';
         resultBox.className = 'reading-result-box hidden fade-in';
-        saveBtnContainer.parentNode.insertBefore(resultBox, saveBtnContainer.nextSibling); 
+        buttonsWrapper.parentNode.insertBefore(resultBox, buttonsWrapper.nextSibling); 
     }
     resultBox.innerHTML = ''; 
     resultBox.classList.add('hidden');
-    
 
-    // --- ၃။ ခလုတ် Click Events ---
+    // --- ၃။ ကတ်အားလုံးလှန်ပြီးမှ ခလုတ်ပေါ်မည့်စနစ် နှင့် Click Events ---
+    let flippedCount = 0;
+    const totalCards = drawnCardDetails.length;
+    const revealCards = revealArea.querySelectorAll('.flip-card'); 
+
+    // ကတ်တစ်ခုချင်းစီကို Click လုပ်တိုင်း ရေတွက်မည်
+    revealCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // ကတ်က မလှန်ရသေးဘူးဆိုရင် ရေတွက်မည်
+            if (!this.classList.contains('counted-flip')) {
+                this.classList.add('counted-flip'); 
+                flippedCount++;
+                
+                // ကတ်အရေအတွက် အားလုံးပြည့်သွားလျှင် "ဟောစာတမ်းဖတ်မည်" ခလုတ်ကို ပြမည်
+                if (flippedCount === totalCards) {
+                    const readBtn = document.getElementById('readResultBtn');
+                    if(readBtn) {
+                        readBtn.style.display = 'block';
+                        // ခလုတ်ပေါ်လာလျှင် ခလုတ်ဆီသို့ အလိုအလျောက် ဆင်းပေးမည်
+                        setTimeout(() => readBtn.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                    }
+                }
+            }
+        });
+    });
+
+    // ခလုတ်များ၏ လုပ်ဆောင်ချက်များ
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
         saveReadingToJournal(drawnCardDetails, currentSpreadType);
     });
     
     document.getElementById('readResultBtn').addEventListener('click', () => {
-        showStaticReadingResult(); // အဖြေကို တွက်ထုတ်ပြသမည့် Function ကို ခေါ်မည်
+        showStaticReadingResult(); 
+        // ဖတ်မည်ကို နှိပ်ပြီးလျှင် ထိုခလုတ်ကို ပြန်ဖျောက်ထားလိုက်မည် (ရွေးချယ်နိုင်သည်)
+        document.getElementById('readResultBtn').style.display = 'none'; 
+    });
+
+    document.getElementById('restartReadingBtn').addEventListener('click', () => {
+        location.reload(); // အစမှ ပြန်စရန် စာမျက်နှာကို Refresh လုပ်မည်
     });
 }
 
