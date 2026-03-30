@@ -555,8 +555,8 @@ footer {
 
 /* ၃ ကတ်ကို အတန်းလိုက် သေးသေးလေးဖြစ်အောင် ထိန်းချုပ်ခြင်း (မူလအတိုင်း) */
 .reveal-card-wrapper.flip-card {
-    width: 130px; 
-    max-width: 130px;
+    width: 108px; 
+    max-width: 108px;
     aspect-ratio: 130 / 210; 
     cursor: pointer;
     background-image: none !important;
@@ -781,7 +781,7 @@ footer {
 .spread-three-card-time, .spread-three-card-action, .spread-one-card {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 5px;
     flex-wrap: wrap;
     position: relative;
     min-height: auto;
