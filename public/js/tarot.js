@@ -617,18 +617,48 @@ function showStaticReadingResult() {
 
     let htmlContent = '<h2 style="text-align: center; color: var(--accent-cyan); margin-bottom: 2rem; font-family: \'Orbitron\', sans-serif;">သင့်၏ ဟောစာတမ်းအဖြေ</h2>';
 
-    // ၁။ "၁-ကတ်" ဟောစာတမ်းအတွက်
+    // ၁။ "၁-ကတ် (Yes/No)" ဟောစာတမ်းအတွက်
     if (currentSpreadType === 'one-card') {
         const card = drawnCardDetails[0];
-        const meaning = card.isReversed && card.reversed_meaning ? card.reversed_meaning : card.upright_meaning;
+        
+        let yesNoResult = "Maybe 🤔"; // Default အနေဖြင့် "မသေချာသေးပါ" ဟုထားမည်
+        let resultColor = "#FFD700"; // အဝါရောင်
+
+        // Array ထဲတွင် ပါ/မပါ စစ်ဆေးခြင်း (အစ်ကို့ရဲ့ Idea အတိုင်း)
+        if (definitelyYesCards.includes(card.id)) {
+            // Yes ကတ်ဖြစ်နေလျှင်တောင် ပြောင်းပြန်(Reversed) ဆိုလျှင် No သို့မဟုတ် Maybe ဖြစ်သွားနိုင်သည်
+            yesNoResult = card.isReversed ? "No / Maybe ⚠️" : "Yes ✅";
+            resultColor = card.isReversed ? "#FF9900" : "#00FF00";
+        } 
+        else if (definitelyNoCards.includes(card.id)) {
+            // No ကတ်သည် အမတ်ဖြစ်စေ၊ အပြောင်းပြန်ဖြစ်စေ အများအားဖြင့် No ပင်ဖြစ်သည်
+            yesNoResult = "No ❌";
+            resultColor = "#FF4D4D";
+        }
+        // Yes စာရင်းထဲလည်းမပါ၊ No စာရင်းထဲလည်းမပါလျှင် Default အတိုင်း "Maybe 🤔" သာဖြစ်နေပါမည်။
+
+        // အဓိပ္ပာယ် ရှင်းလင်းချက်ကို ယူမည်
+        const meaningText = card.isReversed && card.yes_no_reversed_meaning 
+                            ? card.yes_no_reversed_meaning 
+                            : card.yes_no_meaning;
+
         htmlContent += `
-            <div class="meaning-box" style="text-align: left; background: rgba(28, 37, 65, 0.8);">
-                <h3 style="color: #fff; margin-bottom: 10px;">${card.name} ${card.isReversed ? '<span style="color:#ff4d4d;">(Reversed)</span>' : ''}</h3>
-                <p style="color: var(--accent-cyan); font-size: 0.9rem; margin-bottom: 15px;"><strong>Keywords:</strong> ${card.keywords}</p>
-                <p style="line-height: 1.8; color: var(--text-main);">${meaning}</p>
+            <div class="meaning-box" style="text-align: center; background: rgba(28, 37, 65, 0.8);">
+                <h3 style="color: #fff; margin-bottom: 10px;">
+                    ${card.name} ${card.isReversed ? '<span style="color:#ff4d4d; font-size:0.9rem;">(Reversed)</span>' : ''}
+                </h3>
+                
+                <h1 style="color: ${resultColor}; font-size: 3rem; margin: 20px 0; text-shadow: 0 0 15px ${resultColor}40;">
+                    ${yesNoResult}
+                </h1>
+                
+                <p style="line-height: 1.8; color: var(--text-main); font-size: 1.1rem; padding: 0 15px;">
+                    ${meaningText || "ယေဘုယျအားဖြင့် သင့်မေးခွန်းအပေါ် ဤကတ်၏ သက်ရောက်မှုဖြစ်သည်။"}
+                </p>
             </div>
         `;
-    } 
+    }
+        
     // ၂။ "၃-ကတ် (အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်)" အတွက်
     else if (currentSpreadType === 'three-card-time') {
         const titles = ["အတိတ် (Past)", "ပစ္စုပ္ပန် (Present)", "အနာဂတ် (Future)"];
