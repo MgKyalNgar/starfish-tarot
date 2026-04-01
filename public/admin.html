@@ -49,6 +49,47 @@
                 </table>
             </div>
         </div>
+        <div class="admin-card" style="background: rgba(10,17,40,0.9); padding: 20px; border-radius: 10px; color: white; max-width: 600px; margin: 20px auto;">
+    <h3 style="color: var(--accent-cyan); margin-bottom: 20px;">Galaxy Background Settings ✨</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <label>ကြယ်အရေအတွက်: <span id="valCount">145</span></label>
+            <input type="range" id="gCount" min="50" max="500" value="145" style="width: 100%;">
+        </div>
+        <div>
+            <label>လည်ပတ်မှုအရှိန်: <span id="valSpeed">0.0005</span></label>
+            <input type="range" id="gSpeed" min="0" max="0.01" step="0.0001" value="0.0005" style="width: 100%;">
+        </div>
+        <div>
+            <label>လက်တံအရေအတွက်: <span id="valArms">5</span></label>
+            <input type="range" id="gArms" min="2" max="10" value="5" style="width: 100%;">
+        </div>
+        <div>
+            <label>လက်တံကျစ်လစ်မှု: <span id="valTightness">0.6</span></label>
+            <input type="range" id="gTightness" min="0.1" max="2.0" step="0.1" value="0.6" style="width: 100%;">
+        </div>
+        <div>
+            <label>ချိတ်ဆက်မှုအချင်းဝက်: <span id="valRadius">118</span></label>
+            <input type="range" id="gRadius" min="20" max="200" value="118" style="width: 100%;">
+        </div>
+        <div>
+            <label>ပျံ့နှံ့မှုအကျယ်: <span id="valSpread">150</span></label>
+            <input type="range" id="gSpread" min="50" max="300" value="150" style="width: 100%;">
+        </div>
+        <div style="grid-column: span 2;">
+            <label>အရောင်ပုံစံ:</label>
+            <select id="gTheme" style="width: 100%; padding: 5px; background: #1c2541; color: white; border: 1px solid #00f0ff;">
+                <option value="Mix" selected>Mix (အရောင်စုံ)</option>
+                <option value="Cyan">Cyan (စိမ်းပြာရောင်)</option>
+                <option value="Golden">Golden (ရွှေရောင်)</option>
+            </select>
+        </div>
+    </div>
+    <button id="saveGalaxyBtn" style="margin-top: 20px; width: 100%; padding: 10px; background: var(--accent-cyan); color: black; border: none; font-weight: bold; cursor: pointer;">Save Settings</button>
+</div>
+
+
     </main>
 
        <div id="manageUserModal" class="modal-overlay hidden" style="z-index: 2000;">
@@ -66,13 +107,46 @@
     </div>
 
 
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
 
     <script>
+    const ids = ['Count', 'Speed', 'Arms', 'Tightness', 'Radius', 'Spread'];
+    
+    // Slider ရွှေ့တိုင်း နံပါတ်ပြောင်းပြရန်
+    ids.forEach(id => {
+        const input = document.getElementById('g' + id);
+        const valSpan = document.getElementById('val' + id);
+        input.addEventListener('input', () => valSpan.innerText = input.value);
+        
+        // စစချင်း localStorage တွင် ရှိပါက ဆွဲတင်ပြသရန်
+        const stored = localStorage.getItem('galaxy_' + id.toLowerCase());
+        if(stored) {
+            input.value = stored;
+            valSpan.innerText = stored;
+        }
+    });
+
+    const themeSelect = document.getElementById('gTheme');
+    if(localStorage.getItem('galaxy_theme')) themeSelect.value = localStorage.getItem('galaxy_theme');
+
+    // Save Button နှိပ်လျှင် သိမ်းမည်
+    document.getElementById('saveGalaxyBtn').addEventListener('click', () => {
+        ids.forEach(id => {
+            localStorage.setItem('galaxy_' + id.toLowerCase(), document.getElementById('g' + id).value);
+        });
+        localStorage.setItem('galaxy_theme', themeSelect.value);
+        
+        alert("Galaxy Settings သိမ်းဆည်းပြီးပါပြီ!");
+        
+        // ချက်ချင်း effect ပြောင်းသွားစေရန် Custom Event လွှင့်မည်
+        window.dispatchEvent(new Event('galaxySettingsUpdated'));
+    });
+    
+    
         // စာမျက်နှာပွင့်သည်နှင့် Admin စနစ်ကို အသက်သွင်းမည်        
 document.addEventListener('DOMContentLoaded', () => {
             if(typeof initAdminPage === 'function') initAdminPage();
