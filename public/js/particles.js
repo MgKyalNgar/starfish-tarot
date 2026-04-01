@@ -1,33 +1,49 @@
 // =========================================
-// Tarot Magical Particle Background (Random Mix)
+// Mathematical Spiral Galaxy with Nodes & Twinkle
 // =========================================
 
 (function() {
-    // Canvas ကို အလိုအလျောက် ဖန်တီးပြီး Body အောက်ထည့်မည်
     const canvas = document.createElement('canvas');
     canvas.id = 'particle-canvas';
     document.body.insertBefore(canvas, document.body.firstChild);
     const ctx = canvas.getContext('2d');
 
-    // CSS ဖြင့် Canvas ကို နောက်ခံတွင် အသေထားမည်
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
     canvas.style.left = '0';
     canvas.style.width = '100vw';
     canvas.style.height = '100vh';
-    canvas.style.zIndex = '-1'; // အနောက်ဆုံးတွင် ထားမည်
-    canvas.style.pointerEvents = 'none'; // ခလုတ်များကို နှိပ်၍ရစေရန်
+    canvas.style.zIndex = '-1'; 
+    canvas.style.pointerEvents = 'none';
 
     let width, height;
     let particles = [];
 
-    // --- User's Settings ---
-    const P_COUNT = 30; // အစက်အရေအတွက်
-    const LINK_RADIUS = 108; // ချိတ်ဆက်မည့် အကွာအဝေး
-    const P_SPEED = 0.5; // အမြန်နှုန်း
-    
-    // Tarot Random Mix Colors (Cyan, Gold, Purple, White)
-    const colors = ['#00f0ff', '#FFD700', '#b100ff', '#ffffff'];
+    // Admin က မပြင်ရသေးခင် ပုံမှန်အလုပ်လုပ်မည့် အစ်ကို့ရဲ့ Master Settings
+    const defaultSettings = {
+        count: 145,
+        speed: 0.0005, // 0 ဆိုရင် လုံးဝရပ်နေမည်မို့ အနည်းငယ်ရွေ့အောင် ထားထားသည်
+        arms: 5,
+        tightness: 0.6,
+        radius: 118,
+        spread: 150,
+        theme: 'Mix'
+    };
+
+    // Admin Panel (localStorage) မှ Setting များကို ဖတ်မည်
+    function getSetting(key) {
+        const stored = localStorage.getItem('galaxy_' + key);
+        if (stored !== null) {
+            return key === 'theme' ? stored : parseFloat(stored);
+        }
+        return defaultSettings[key];
+    }
+
+    const colors = {
+        'Mix': ['#00f0ff', '#FFD700', '#b100ff', '#ffffff'],
+        'Cyan': ['#00f0ff', '#ffffff'],
+        'Golden': ['#FFD700', '#ffffff']
+    };
 
     function resize() {
         width = canvas.width = window.innerWidth;
@@ -36,95 +52,96 @@
 
     class Particle {
         constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * P_SPEED;
-            this.vy = (Math.random() - 0.5) * P_SPEED;
-            this.radius = Math.random() * 2 + 1; // အရွယ်အစား
-            this.color = colors[Math.floor(Math.random() * colors.length)]; // အရောင် Random ယူမည်
+            this.init();
         }
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            // ဘေးဘောင်ရောက်လျှင် ပြန်ကန်ထွက်မည်
-            if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > height) this.vy *= -1;
+        init() {
+            const arms = getSetting('arms');
+            const spread = getSetting('spread');
+            const theme = getSetting('theme');
+            const tightness = getSetting('tightness');
+            
+            // Spiral Math တွက်ချက်ခြင်း
+            const armIndex = Math.floor(Math.random() * arms);
+            const armAngle = (Math.PI * 2 / arms) * armIndex;
+            const distancePercent = Math.random(); // 0 to 1
+            const maxDistance = (Math.max(width, height) / 2) * (spread / 100);
+            
+            this.baseDistance = distancePercent * maxDistance;
+            this.angle = armAngle + (this.baseDistance * tightness * 0.01) + (Math.random() - 0.5) * 1.5; // Random scatter
+            
+            this.radius = Math.random() * 1.5 + 0.5;
+            
+            const themeColors = colors[theme] || colors['Mix'];
+            this.color = themeColors[Math.floor(Math.random() * themeColors.length)];
+            
+            // Twinkle အတွက်
+            this.twinkleOffset = Math.random() * Math.PI * 2;
+            this.twinkleFreq = Math.random() * 0.02 + 0.005;
+        }
+        update(time) {
+            this.angle += getSetting('speed');
+            this.x = width / 2 + Math.cos(this.angle) * this.baseDistance;
+            this.y = height / 2 + Math.sin(this.angle) * this.baseDistance;
+            this.currentAlpha = Math.abs(Math.sin(time * this.twinkleFreq + this.twinkleOffset));
         }
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = this.color;
-            ctx.shadowBlur = 15;
+            ctx.globalAlpha = this.currentAlpha;
+            ctx.shadowBlur = 10;
             ctx.shadowColor = this.color;
             ctx.fill();
+            ctx.globalAlpha = 1.0; // Reset
         }
     }
 
-    function init() {
+    function initParticles() {
         resize();
-        window.addEventListener('resize', resize);
         particles = [];
-        // ဖုန်းစခရင်သေးလျှင် အစက်အရေအတွက်ကို အချိုးကျ လျှော့ချပေးမည် (App မလေးစေရန်)
-        const count = window.innerWidth < 768 ? Math.floor(P_COUNT * 0.7) : P_COUNT;
+        const count = getSetting('count');
         for (let i = 0; i < count; i++) {
             particles.push(new Particle());
         }
-        animate();
     }
 
-    // မောက်စ် (သို့) လက်ချောင်း အပြန်အလှန်သက်ရောက်မှု
-    let mouse = { x: null, y: null };
-    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
-    window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
-    window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-
+    let time = 0;
     function animate() {
         ctx.clearRect(0, 0, width, height);
+        time++;
 
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
+        const connRadius = getSetting('radius');
 
-        // ချိတ်ဆက်မှု မျဉ်းကြောင်းများ ဆွဲမည်
+        particles.forEach(p => p.update(time));
+
+        // လိုင်းများဆွဲခြင်း
+        ctx.lineWidth = 0.5;
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
                 const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                const distSq = dx * dx + dy * dy;
 
-                if (dist < LINK_RADIUS) {
+                if (distSq < connRadius * connRadius) {
+                    const dist = Math.sqrt(distSq);
+                    const alpha = (1 - (dist / connRadius)) * Math.min(particles[i].currentAlpha, particles[j].currentAlpha) * 0.5;
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    const alpha = 1 - (dist / LINK_RADIUS);
-                    // မျဉ်းကြောင်းအရောင်ကို မှော်ဆန်ဆန် အဖြူဖျော့ဖျော့ထားမည်
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.15})`; 
-                    ctx.lineWidth = 1;
-                    ctx.shadowBlur = 0; 
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
                     ctx.stroke();
                 }
             }
-
-            // မောက်စ်/လက်ချောင်းနှင့် ချိတ်ဆက်မှု (ရွှေရောင်လိုင်းများ)
-            if (mouse.x != null) {
-                const dx = particles[i].x - mouse.x;
-                const dy = particles[i].y - mouse.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < LINK_RADIUS + 30) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    const alpha = 1 - (dist / (LINK_RADIUS + 30));
-                    ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.4})`; // ရွှေရောင်
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-            }
+            particles[i].draw();
         }
         requestAnimationFrame(animate);
     }
 
-    init();
+    window.addEventListener('resize', initParticles);
+    
+    // Admin က Save လိုက်လျှင် ချက်ချင်း Update ဖြစ်စေရန် Event နားထောင်မည်
+    window.addEventListener('galaxySettingsUpdated', initParticles);
+
+    initParticles();
+    animate();
 })();
