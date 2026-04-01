@@ -50,3 +50,24 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+// public/js/footer.js ၏ အောက်ဆုံးတွင် ထည့်ရန်
+
+if ('serviceWorker' in navigator) {
+    // Service Worker အသစ်ရောက်လာတာနဲ့ စာမျက်နှာကို Auto Refresh လုပ်ပေးမည့်အပိုင်း
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+            window.location.reload(); // အလိုအလျောက် Update ဖြစ်သွားစေရန်
+            refreshing = true;
+        }
+    });
+
+    // Service Worker ကို Register လုပ်သည့်အပိုင်း (မလုပ်ရသေးလျှင်)
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+            // Update အသစ်ရှိမရှိကို ပုံမှန်စစ်ပေးရန်
+            reg.update();
+        });
+    });
+}
