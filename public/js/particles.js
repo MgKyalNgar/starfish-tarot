@@ -22,9 +22,9 @@
     // Admin က မပြင်ရသေးခင် ပုံမှန်အလုပ်လုပ်မည့် အစ်ကို့ရဲ့ Master Settings
     const defaultSettings = {
         count: 145,
-        speed: 0.0005, // 0 ဆိုရင် လုံးဝရပ်နေမည်မို့ အနည်းငယ်ရွေ့အောင် ထားထားသည်
+        speed: -0.0002, // 0 ဆိုရင် လုံးဝရပ်နေမည်မို့ အနည်းငယ်ရွေ့အောင် ထားထားသည်
         arms: 5,
-        tightness: 0.6,
+        tightness: 1,
         radius: 118,
         spread: 150,
         theme: 'Mix'
