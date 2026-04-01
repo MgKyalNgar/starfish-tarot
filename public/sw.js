@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v1';
+const CACHE_NAME = 'starfish-tarot-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -33,3 +33,15 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+
+self.addEventListener('install', (event) => {
+    // စောင့်မနေဘဲ အသစ်ကို ချက်ချင်း install လုပ်ခိုင်းခြင်း
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    // လက်ရှိပွင့်နေတဲ့ စာမျက်နှာအားလုံးကို ချက်ချင်း ထိန်းချုပ်ခိုင်းခြင်း
+    event.waitUntil(clients.claim());
+});
+
