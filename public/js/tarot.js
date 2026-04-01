@@ -602,51 +602,52 @@ function showStaticReadingResult() {
     const resultBox = document.getElementById('staticReadingResult');
     
     // ==========================================
-    // 1. DEFINITELY YES CARDS (သေချာပေါက် Yes ဖြစ်သော ကတ်များ)
-    // ==========================================
-    const definitelyYesCards = [
-      // Major Arcana
-      'fool', 'magician', 'empress', 'emperor', 'lovers', 'chariot', 
-      'strength', 'wheel_of_fortune', 'justice', 'temperance', 
-      'star', 'sun', 'judgement', 'world',
+// 1. DEFINITELY YES CARDS (သေချာပေါက် Yes ဖြစ်သော ကတ်များ)
+// ==========================================
+const definitelyYesCards = [
+  // Major Arcana
+  'The Fool', 'The Magician', 'The Empress', 'The Emperor', 'The Lovers', 'The Chariot', 
+  'Strength', 'Wheel of Fortune', 'Justice', 'Temperance', 
+  'The Star', 'The Sun', 'Judgement', 'The World',
 
-      // Wands
-      'wands_1', 'wands_2', 'wands_3', 'wands_4', 'wands_6', 'wands_8', 
-      'wands_page', 'wands_knight', 'wands_queen', 'wands_king',
+  // Wands
+  'Ace of Wands', 'Two of Wands', 'Three of Wands', 'Four of Wands', 'Six of Wands', 'Eight of Wands', 
+  'Page of Wands', 'Knight of Wands', 'Queen of Wands', 'King of Wands',
 
-      // Cups
-      'cups_1', 'cups_2', 'cups_3', 'cups_6', 'cups_9', 'cups_10', 
-      'cups_page', 'cups_knight', 'cups_queen', 'cups_king',
+  // Cups
+  'Ace of Cups', 'Two of Cups', 'Three of Cups', 'Six of Cups', 'Nine of Cups', 'Ten of Cups', 
+  'Page of Cups', 'Knight of Cups', 'Queen of Cups', 'King of Cups',
 
-      // Swords
-      'swords_1', 'swords_6', 'swords_page', 'swords_knight', 'swords_queen', 'swords_king',
+  // Swords
+  'Ace of Swords', 'Six of Swords', 'Page of Swords', 'Knight of Swords', 'Queen of Swords', 'King of Swords',
 
-      // Pentacles
-      'pentacles_1', 'pentacles_3', 'pentacles_6', 'pentacles_7', 'pentacles_8', 
-      'pentacles_9', 'pentacles_10', 'pentacles_page', 'pentacles_knight', 
-      'pentacles_queen', 'pentacles_king'
-    ];
+  // Pentacles
+  'Ace of Pentacles', 'Three of Pentacles', 'Six of Pentacles', 'Seven of Pentacles', 'Eight of Pentacles', 
+  'Nine of Pentacles', 'Ten of Pentacles', 'Page of Pentacles', 'Knight of Pentacles', 
+  'Queen of Pentacles', 'King of Pentacles'
+];
 
 
-    // ==========================================
-    // 2. DEFINITELY NO CARDS (သေချာပေါက် No ဖြစ်သော ကတ်များ)
-    // ==========================================
-    const definitelyNoCards = [
-      // Major Arcana
-      'death', 'devil', 'tower', 'moon',
+// ==========================================
+// 2. DEFINITELY NO CARDS (သေချာပေါက် No ဖြစ်သော ကတ်များ)
+// ==========================================
+const definitelyNoCards = [
+  // Major Arcana
+  'Death', 'The Devil', 'The Tower', 'The Moon',
 
-      // Wands
-      'wands_5', 'wands_10',
+  // Wands
+  'Five of Wands', 'Ten of Wands',
 
-      // Cups
-      'cups_4', 'cups_5', 'cups_8',
+  // Cups
+  'Four of Cups', 'Five of Cups', 'Eight of Cups',
 
-      // Swords
-      'swords_3', 'swords_5', 'swords_7', 'swords_8', 'swords_9', 'swords_10',
+  // Swords
+  'Three of Swords', 'Five of Swords', 'Seven of Swords', 'Eight of Swords', 'Nine of Swords', 'Ten of Swords',
 
-      // Pentacles
-      'pentacles_5'
-    ];
+  // Pentacles
+  'Five of Pentacles'
+];
+
     if (!resultBox) return;
 
     // Premium Spread များကို စစ်ထုတ်မည်
