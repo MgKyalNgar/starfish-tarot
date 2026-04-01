@@ -600,6 +600,53 @@ function goToRevealStep() {
 // =========================================
 function showStaticReadingResult() {
     const resultBox = document.getElementById('staticReadingResult');
+    
+    // ==========================================
+    // 1. DEFINITELY YES CARDS (သေချာပေါက် Yes ဖြစ်သော ကတ်များ)
+    // ==========================================
+    const definitelyYesCards = [
+      // Major Arcana
+      'fool', 'magician', 'empress', 'emperor', 'lovers', 'chariot', 
+      'strength', 'wheel_of_fortune', 'justice', 'temperance', 
+      'star', 'sun', 'judgement', 'world',
+
+      // Wands
+      'wands_1', 'wands_2', 'wands_3', 'wands_4', 'wands_6', 'wands_8', 
+      'wands_page', 'wands_knight', 'wands_queen', 'wands_king',
+
+      // Cups
+      'cups_1', 'cups_2', 'cups_3', 'cups_6', 'cups_9', 'cups_10', 
+      'cups_page', 'cups_knight', 'cups_queen', 'cups_king',
+
+      // Swords
+      'swords_1', 'swords_6', 'swords_page', 'swords_knight', 'swords_queen', 'swords_king',
+
+      // Pentacles
+      'pentacles_1', 'pentacles_3', 'pentacles_6', 'pentacles_7', 'pentacles_8', 
+      'pentacles_9', 'pentacles_10', 'pentacles_page', 'pentacles_knight', 
+      'pentacles_queen', 'pentacles_king'
+    ];
+
+
+    // ==========================================
+    // 2. DEFINITELY NO CARDS (သေချာပေါက် No ဖြစ်သော ကတ်များ)
+    // ==========================================
+    const definitelyNoCards = [
+      // Major Arcana
+      'death', 'devil', 'tower', 'moon',
+
+      // Wands
+      'wands_5', 'wands_10',
+
+      // Cups
+      'cups_4', 'cups_5', 'cups_8',
+
+      // Swords
+      'swords_3', 'swords_5', 'swords_7', 'swords_8', 'swords_9', 'swords_10',
+
+      // Pentacles
+      'pentacles_5'
+    ];
     if (!resultBox) return;
 
     // Premium Spread များကို စစ်ထုတ်မည်
