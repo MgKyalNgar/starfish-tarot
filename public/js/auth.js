@@ -38,7 +38,7 @@ function updateAuthUI() {
             `;
         }
     });
-    const isPremiumUser = currentUser && (currentUser.isSubscribed || currentUser.role === 'admin');
+    const isPremiumUser = currentUser && (currentUser.isSubscribed =='TRUE');
     const premiumCards = document.querySelectorAll('.premium-spread');
     
     premiumCards.forEach(card => {
