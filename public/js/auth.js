@@ -119,7 +119,7 @@ function initAuthPage() {
             } else {
                 const { data: dbUser } = await supabaseClient
                     .from('User')
-                    .select('role','isSubscribed')
+                    .select('role, isSubscribed')
                     .eq('id', data.user.id)
                     .single();
 
