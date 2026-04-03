@@ -38,7 +38,8 @@ function updateAuthUI() {
             `;
         }
     });
-    const isPremiumUser = currentUser && (currentUser.isSubscribed =='TRUE');
+    console.log("Current User Data:", currentUser);
+    const isPremiumUser = currentUser && (currentUser.isSubscribed);
     const premiumCards = document.querySelectorAll('.premium-spread');
     
     premiumCards.forEach(card => {
