@@ -133,7 +133,7 @@ function initAuthPage() {
                     name: displayName,
                     id: data.user.id,
                     role: userRole,
-                    isSubscribed: isSub
+                    isSubscribed: dbUser.isSubscribed
                 }));
 
                 alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
