@@ -36,6 +36,25 @@
 
         <div id="card-grid" class="card-grid"></div>
     </main>
+    <div id="readingModal" class="modal hidden">
+        <div class="modal-content reading-modal-content">
+            <span class="close-modal" onclick="closeReadingModal()">&times;</span>
+            <div class="reading-result-layout">
+                <div class="reading-image-col">
+                    <img id="modalCardImg" src="" alt="Card Image">
+                </div>
+                <div class="reading-text-col">
+                    <h2 id="modalCardName" style="color: var(--accent-cyan); margin-bottom: 5px;"></h2>
+                    <p id="modalCardType" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;"></p>
+                    <div class="meaning-box">
+                        <p id="modalCardKeywords" style="color: #FFD700; font-size: 0.9rem; margin-bottom: 10px;"></p>
+                        <p id="modalCardMeaning" style="line-height: 1.8; color: var(--text-main);"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <footer>
         <p>&copy; 2026 Starfish Tarot. Created by Mg Kyal Ngar.</p>
