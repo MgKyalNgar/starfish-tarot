@@ -18,13 +18,22 @@ export default async function handler(req, res) {
 
     try {
         // ဖုန်း/Browser ဘက်က ပို့လိုက်တဲ့ Data တွေကို Gemini ဆီ တိုက်ရိုက် ပြန်ပို့ပေးခြင်း
+                // Frontend က ပို့လိုက်တဲ့ Data ကို ယူမယ်
+        const requestData = req.body;
+        
+        // Token Limit ကို ဒီနေရာမှာ အမြင့်ဆုံး တိုးပေးလိုက်ပါမယ် (ဥပမာ ၂၀၄၈ သို့မဟုတ် ၄၀၉၆)
+        if (requestData.generationConfig) {
+            requestData.generationConfig.maxOutputTokens = 2048; // လိုအပ်ရင် 4096 အထိ တိုးလို့ရပါတယ်
+        }
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(requestData)
         });
+
 
         const data = await response.json();
         
