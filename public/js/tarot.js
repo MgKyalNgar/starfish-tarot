@@ -673,12 +673,12 @@ const definitelyNoCards = [
         let resultColor = "#FFD700"; // အဝါရောင်
 
         // Array ထဲတွင် ပါ/မပါ စစ်ဆေးခြင်း (အစ်ကို့ရဲ့ Idea အတိုင်း)
-        if (definitelyYesCards.includes(card.id)) {
+        if (definitelyYesCards.includes(card.name)) {
             // Yes ကတ်ဖြစ်နေလျှင်တောင် ပြောင်းပြန်(Reversed) ဆိုလျှင် No သို့မဟုတ် Maybe ဖြစ်သွားနိုင်သည်
             yesNoResult = card.isReversed ? "No / Maybe ⚠️" : "Yes ✅";
             resultColor = card.isReversed ? "#FF9900" : "#00FF00";
         } 
-        else if (definitelyNoCards.includes(card.id)) {
+        else if (definitelyNoCards.includes(card.name)) {
             // No ကတ်သည် အမတ်ဖြစ်စေ၊ အပြောင်းပြန်ဖြစ်စေ အများအားဖြင့် No ပင်ဖြစ်သည်
             yesNoResult = "No ❌";
             resultColor = "#FF4D4D";
