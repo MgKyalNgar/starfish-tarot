@@ -3,16 +3,9 @@
 // ဖိုင်အမည်: preTarot.js
 // =========================================
 
-// သင့်ထံတွင်ရှိသော အကောင်းဆုံးနှင့် အတည်ငြိမ်ဆုံး Model ကို အသုံးပြုထားပါသည်
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+// API Key များကို Frontend တွင် မထားတော့ဘဲ Vercel API ဆီသို့သာ လှမ်းချိတ်ပါမည်
+const VERCEL_API_URL = '/api/gemini'; 
 
-
-/**
- * tarot.js မှ လှမ်းခေါ်မည့် Main Function
- * @param {Array} cards - User ရွေးချယ်ထားသော ကတ်အချက်အလက်များ Array
- * @param {String} spreadType - Spread အမျိုးအစား (e.g., 'three-card-time')
- * @param {String} userQuestion - User ရိုက်ထည့်ထားသော မေးခွန်း
- */
 async function generatePremiumReading(cards, spreadType, userQuestion) {
     const resultBox = document.getElementById('staticReadingResult');
     if (!resultBox) return;
@@ -29,12 +22,12 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
     resultBox.classList.remove('hidden');
     resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // ၂။ Gemini သို့ပို့မည့် Prompt တည်ဆောက်ခြင်း
+    // ၂။ Prompt တည်ဆောက်ခြင်း
     const promptText = buildPrompt(cards, spreadType, userQuestion);
 
     try {
-        // ၃။ Gemini API သို့ လှမ်းခေါ်ခြင်း
-        const response = await fetch(GEMINI_API_URL, {
+        // ၃။ ကိုယ်ပိုင် Vercel API သို့ လှမ်းခေါ်ခြင်း (Gemini သို့ တိုက်ရိုက်မဟုတ်တော့ပါ)
+        const response = await fetch(VERCEL_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -44,7 +37,7 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
                     parts: [{ text: promptText }]
                 }],
                 generationConfig: {
-                    temperature: 0.7, // ဖန်တီးဉာဏ်နှင့် တိကျမှု အချိုးအစား
+                    temperature: 0.7,
                     topK: 40,
                     topP: 0.95,
                     maxOutputTokens: 1024,
@@ -52,27 +45,32 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+        const data = await response.json();
+        
+        // Error ဖြစ်ခဲ့လျှင် ဖမ်းရန်
+        if (!response.ok || data.error) {
+            throw new Error(data.error || `API Error: ${response.status}`);
         }
 
-        const data = await response.json();
         const aiResponseText = data.candidates[0].content.parts[0].text;
 
         // ၄။ ရလာသော အဖြေကို မျက်နှာပြင်တွင် ပြသခြင်း
         displayPremiumResult(aiResponseText, cards);
 
     } catch (error) {
-        console.error("Gemini API Error:", error);
+        console.error("Reading Generation Error:", error);
         resultBox.innerHTML = `
             <div style="text-align: center; padding: 2rem; background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; border-radius: 10px;">
                 <h3 style="color: #ff4d4d; margin-bottom: 10px;">⚠️ ချိတ်ဆက်မှု အခက်အခဲဖြစ်နေပါသည်</h3>
-                <p style="color: var(--text-main);">ဆာဗာနှင့် ချိတ်ဆက်ရာတွင် အမှားအယွင်းရှိနေပါသည်။ ခေတ္တနေမှ ပြန်လည်ကြိုးစားကြည့်ပါ။</p>
+                <p style="color: var(--text-main);">ဆာဗာနှင့် ချိတ်ဆက်ရာတွင် အမှားအယွင်းရှိနေပါသည်။ ခေတ္တနေမှ ပြန်လည်ကြိုးစားကြည့်ပါ။ <br><small>(${error.message})</small></p>
                 <button onclick="location.reload()" class="action-btn" style="margin-top: 15px; padding: 8px 20px; font-size: 0.9rem;">ပြန်လည်စတင်မည်</button>
             </div>
         `;
     }
 }
+
+// ... အောက်က buildPrompt နှင့် displayPremiumResult အပိုင်းများကို မူလအတိုင်း ဆက်ထားပါ ...
+
 
 /**
  * AI အတွက် အမိန့်စာ (Prompt) တည်ဆောက်ခြင်း
