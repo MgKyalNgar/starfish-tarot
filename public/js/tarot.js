@@ -1,20 +1,12 @@
-// ============================================================================
-// Starfish Tarot - Core Tarot Logic (tarot.js)
-// ============================================================================
+// =========================================
+// Starfish Tarot - Core Tarot Logic
+// ဖိုင်အမည်: tarot.js
+// =========================================
 
-// ============================================================================
-// [၁] GLOBAL VARIABLES (အခြေခံ မှတ်သားထားမည့် ကိန်းရှင်များ)
-// ============================================================================
-let isCurrentSpreadPremium = false; 
-let currentSpreadType = ''; 
-let cardsToDraw = 0; 
-let drawnCardDetails = []; 
-let isModalOpen = false;
+// =========================================
+// Library Page Logic
+// =========================================
 
-
-// ============================================================================
-// [၂] LIBRARY PAGE LOGIC (ကတ်စာကြည့်တိုက် စာမျက်နှာအတွက်)
-// ============================================================================
 function initLibraryLocally() {
     const loadingText = document.querySelector('.loading-text') || document.getElementById('loading-text');
     if (loadingText) loadingText.style.display = 'none';
@@ -65,10 +57,10 @@ function renderLibraryCards(cards) {
     });
 }
 
+// =========================================
+// Daily Draw Logic
+// =========================================
 
-// ============================================================================
-// [၃] DAILY DRAW LOGIC (နေ့စဉ်ကတ်ရွေးချယ်ခြင်း)
-// ============================================================================
 async function initDailyDrawLocally() {
     if (fullDeck.length > 0) {
         const userStr = localStorage.getItem('tarot_user');
@@ -197,10 +189,10 @@ async function saveDailyDrawToJournal(cardData, saveBtnElement) {
     }
 }
 
+// =========================================
+// Reading Page Logic & Save Multiple Cards
+// =========================================
 
-// ============================================================================
-// [၄] SPREAD SELECTION & ROUTING (ဟောစာတမ်းရွေးချယ်ခြင်းနှင့် အဆင့်ပြောင်းခြင်း)
-// ============================================================================
 function showStep(stepId) {
     const steps = document.querySelectorAll('.step-section');
     steps.forEach(step => {
@@ -215,10 +207,14 @@ function showStep(stepId) {
     }
 }
 
+// ပြင်ဆင်ချက်: isPremium ဆိုသော parameter အသစ် ထပ်ထည့်လိုက်ပါသည်
 function selectSpread(type, count, isPremium = false) {
+
+    // Premium ဟောစာတမ်းဖြစ်ခဲ့လျှင်
     if (isPremium) {
         const userStr = localStorage.getItem('tarot_user');
-        
+
+        // ၁။ အကောင့်မဝင်ရသေးလျှင်
         if (!userStr) {
             alert("Premium ဟောစာတမ်းများကို ဖတ်ရန် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
             window.location.href = 'login.html';
@@ -226,19 +222,21 @@ function selectSpread(type, count, isPremium = false) {
         }
 
         const currentUser = JSON.parse(userStr);
+
+        // ၂။ Premium User လည်း မဟုတ်၊ Admin လည်း မဟုတ်လျှင်
         if (!currentUser.isSubscribed && currentUser.role !== 'admin') {
-            handlePremiumClick(); 
-            return; 
+            handlePremiumClick(); // Premium Modal ကို ပြမည်
+            return; // ရှေ့ဆက်ခွင့်မပေးဘဲ ရပ်လိုက်မည်
         }
     }
 
+    // Free ဖြစ်လျှင် (သို့) Premium User ဖြစ်လျှင် ပုံမှန်အတိုင်း ရှေ့ဆက်သွားမည်
     currentSpreadType = type;
     cardsToDraw = count;
-    isCurrentSpreadPremium = isPremium; // Premium ဟုတ်မဟုတ် ဤနေရာတွင် မှတ်ထားမည်
-    
     history.pushState({step: 'shuffle'}, '', '#shuffle');
     showStep('step-shuffle');
 }
+
 
 function handlePremiumClick() {
     const modal = document.getElementById('premiumModal');
@@ -250,14 +248,12 @@ function closeModal() {
     if(modal) modal.classList.add('hidden');
 }
 
-
-// ============================================================================
-// [၅] SHUFFLING & DECK SETUP (ကတ်မွှေခြင်း နှင့် Deck ဖန်တီးခြင်း)
-// ============================================================================
+// ၁။ ကတ်အထပ် ဖန်တီးသည့်အပိုင်း (ခလုတ်များကို ဘေးတိုက်စီရန် Flexbox ထည့်သွင်းထားသည်)
 function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
 
+    // --- Guide Text ဖန်တီးခြင်း ---
     let guideText = document.getElementById('shuffleGuideText');
     if (!guideText) {
         guideText = document.createElement('p');
@@ -268,8 +264,10 @@ function createDeckStack() {
         guideText.style.fontSize = '1rem';
         guideText.style.lineHeight = '1.6';
         guideText.style.animation = 'fadeIn 0.8s ease';
+        // Deck Area ၏ အပေါ်တည့်တည့်တွင် ကပ်ထည့်မည်
         deckArea.parentNode.insertBefore(guideText, deckArea);
     }
+    // အစပိုင်း စာသား
     guideText.innerHTML = "✨ စိတ်ကို တည်တည်ငြိမ်ငြိမ်ထားပါ။<br>သင့်သိလိုသော မေးခွန်းကို အာရုံပြုပြီး ကတ်များကို မွှေပါ...";
     guideText.style.display = 'block';
 
@@ -286,7 +284,7 @@ function createDeckStack() {
         card.style.zIndex = i;
         deckStack.appendChild(card);
     }
-    
+
     deckStack.addEventListener('click', () => {
         if (!deckStack.classList.contains('shuffling')) {
             startShuffleAnimation();
@@ -295,6 +293,7 @@ function createDeckStack() {
 
     deckArea.appendChild(deckStack);
 
+    // ခလုတ်နှစ်ခုကို ဘေးတိုက်စီရန် Container နှင့် လိုအပ်သည်များ ဖန်တီးခြင်း
     let proceedBtn = document.getElementById('proceedToSpreadBtn');
     const shuffleBtn = document.getElementById('shuffleBtn');
 
@@ -303,21 +302,24 @@ function createDeckStack() {
         proceedBtn.id = 'proceedToSpreadBtn';
         proceedBtn.className = 'action-btn';
         proceedBtn.innerText = 'ကတ်ရွေးမည် 🃏';
-        proceedBtn.style.setProperty('display', 'none', 'important'); 
+        proceedBtn.style.setProperty('display', 'none', 'important'); // အစတွင် ဖျောက်ထားမည်
         proceedBtn.onclick = proceedToSpread;
-        
+
         if (shuffleBtn && shuffleBtn.parentNode) {
+            // ဘေးတိုက်စီမည့် Flex Container အသစ်ဖန်တီးခြင်း
             const btnContainer = document.createElement('div');
             btnContainer.style.display = 'flex';
             btnContainer.style.justifyContent = 'center';
             btnContainer.style.gap = '15px';
             btnContainer.style.width = '100%';
             btnContainer.style.marginTop = '1.5rem';
-            
+
+            // ခလုတ်များကို Container အသစ်ထဲသို့ ရွှေ့ထည့်မည်
             shuffleBtn.parentNode.insertBefore(btnContainer, shuffleBtn);
             btnContainer.appendChild(shuffleBtn);
             btnContainer.appendChild(proceedBtn);
-            
+
+            // ဖုန်းတွင် 100% ဖြစ်နေခြင်းကို JS မှ အတင်း Override လုပ်မည်
             shuffleBtn.style.setProperty('width', 'auto', 'important');
             shuffleBtn.style.setProperty('flex', '1', 'important');
             shuffleBtn.style.setProperty('max-width', '200px', 'important');
@@ -333,6 +335,8 @@ function createDeckStack() {
     }
 }
 
+
+// ၂။ ကတ်မွှေသည့် Animation
 function startShuffleAnimation() {
     const shuffleBtn = document.getElementById('shuffleBtn');
     const deckStack = document.getElementById('deckStack');
@@ -346,29 +350,32 @@ function startShuffleAnimation() {
     }
     deckStack.classList.add('shuffling');
 
+    // မွှေနေစဉ် စာသားပြောင်းမည်
     if(guideText) {
         guideText.innerHTML = "🔮 ကတ်များကို မွှေနှောက်နေပါသည်...<br>စိတ်ကို လွတ်လွတ်လပ်လပ် ထားပါ။";
     }
 
     setTimeout(() => {
         deckStack.classList.remove('shuffling');
-        
+
         if(shuffleBtn) {
             shuffleBtn.disabled = false;
             shuffleBtn.innerText = "ထပ်မွှေမည် 🔄";
             shuffleBtn.style.opacity = "1";
         }
 
+        // မွှေပြီးသွားလျှင် စာသားထပ်ပြောင်းမည်
         if(guideText) {
             guideText.innerHTML = "✨ သင့်စိတ်ကြိုက် ထပ်မွှေနိုင်ပါသည်။<br>အဆင်သင့်ဖြစ်လျှင် <b>'ကတ်ရွေးမည်'</b> ကို နှိပ်ပါ။";
         }
 
         const proceedBtn = document.getElementById('proceedToSpreadBtn');
         if (proceedBtn) {
+            // ဖျောက်ထားသည်ကို ပြန်ဖော်မည် (ဘေးတိုက်စီထားသည့်အတိုင်း block ပြန်လုပ်မည်)
             proceedBtn.style.setProperty('display', 'block', 'important'); 
             proceedBtn.classList.add('fade-in'); 
         }
-        
+
     }, 2500); 
 }
 
@@ -378,21 +385,20 @@ function proceedToSpread() {
     const proceedBtn = document.getElementById('proceedToSpreadBtn');
     const guideText = document.getElementById('shuffleGuideText');
 
+    // မလိုအပ်သော ခလုတ်များနှင့် ကတ်အထပ်ကို ဖျောက်မည်
     if (shuffleBtn) shuffleBtn.style.display = 'none';
     if (proceedBtn) proceedBtn.style.display = 'none';
     if (deckStack) deckStack.style.display = 'none'; 
 
+    // ကတ်တွေ ဖြန့်ခင်းလိုက်သည့်အချိန်တွင် ရွေးချယ်ရန် စာသားပြောင်းမည်
     if(guideText) {
         guideText.innerHTML = "👇 သင့်မေးခွန်းကို ဆက်လက်အာရုံပြုပြီး...<br>သင့်စိတ်က ညွှန်ပြရာ ကတ်များကို ရွေးချယ်ပါ။";
-        guideText.style.color = "var(--accent-cyan)"; 
+        guideText.style.color = "var(--accent-cyan)"; // ပိုထင်ရှားသွားအောင် အရောင်ပြောင်းပေးမည်
     }
+    // ကတ်များကို စတင်ခင်းကျင်းမည်
     spreadCardsOut(); 
 }
 
-
-// ============================================================================
-// [၆] CARD SPREADING & SELECTION (ကတ်ခင်းကျင်းခြင်း နှင့် User ရွေးချယ်ခြင်း)
-// ============================================================================
 function spreadCardsOut() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
@@ -470,10 +476,6 @@ function selectIndividualCard(cardElement, availableDeck) {
     }
 }
 
-
-// ============================================================================
-// [၇] REVEAL STEP & PREMIUM UI (ကတ်လှန်ခြင်း နှင့် Textbox/Buttons ဖန်တီးခြင်း)
-// ============================================================================
 function goToRevealStep() {
     history.replaceState({step: 'reveal'}, '', '#reveal');
     showStep('step-reveal');
@@ -485,10 +487,14 @@ function goToRevealStep() {
     if(!revealArea) return;
 
     revealArea.innerHTML = '';
+
+    // ပြင်ဆင်ချက် ၁: Spread အမျိုးအစားအလိုက် Parent Container ကို Class နာမည်ကပ်ပေးမည်
     revealArea.className = `reveal-area spread-${currentSpreadType}`;
 
     drawnCardDetails.forEach((card, index) => {
         const wrapper = document.createElement('div');
+
+        // ပြင်ဆင်ချက် ၂: ကတ်တစ်ခုချင်းစီအတွက် နေရာသတ်မှတ်ရန် 'card-pos-1', 'card-pos-2' စသဖြင့် Class ထည့်မည်
         wrapper.className = `reveal-card-wrapper flip-card card-pos-${index + 1}`;
         wrapper.style.animationDelay = `${index * 0.3}s`;
 
@@ -511,34 +517,24 @@ function goToRevealStep() {
 
         revealArea.appendChild(wrapper);
     });
-    
+
+    // --- ၁။ Button များ နှင့် Layout အသစ် ဖန်တီးခြင်း ---
     let buttonsWrapper = document.getElementById('readingButtonsWrapper');
     if (!buttonsWrapper) {
         buttonsWrapper = document.createElement('div');
         buttonsWrapper.id = 'readingButtonsWrapper';
         buttonsWrapper.style.width = '100%';
-        buttonsWrapper.style.maxWidth = '500px'; 
+        buttonsWrapper.style.maxWidth = '500px'; // ဖုန်းစခရင်နှင့် အနေတော်ဖြစ်စေရန်
         buttonsWrapper.style.margin = '2rem auto';
         buttonsWrapper.style.display = 'flex';
         buttonsWrapper.style.flexDirection = 'column';
         buttonsWrapper.style.gap = '15px';
         revealArea.parentNode.appendChild(buttonsWrapper); 
     }
-    
-    // AI အတွက် မေးခွန်းတောင်းမည့် Textbox နှင့် ခလုတ်များ
-    buttonsWrapper.innerHTML = `
-        <div id="aiQuestionContainer" style="display: none; animation: fadeIn 0.8s ease; flex-direction: column; gap: 8px;">
-            <label for="userQuestionInput" style="color: var(--accent-cyan); font-size: 0.95rem; font-weight: bold;">
-                ✨ သင့်သိလိုသော မေးခွန်း (သို့) လက်ရှိအခြေအနေ
-            </label>
-            <textarea id="userQuestionInput" rows="3" placeholder="ဥပမာ - ကျွန်တော့်ရဲ့ အလုပ်အကိုင် အခွင့်အလမ်း ရှေ့ဆက်ဘယ်လိုနေမလဲ..." 
-                      style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(10,17,40,0.8); border: 1px solid rgba(0, 240, 255, 0.4); color: white; font-size: 1rem; resize: vertical; outline: none;"></textarea>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">* မေးခွန်းတိကျလေ ဟောစာတမ်း ပိုမိုမှန်ကန်လေ ဖြစ်ပါသည်။</p>
-        </div>
 
-        <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">
-            ဟောစာတမ်း ဖတ်မည် ✨
-        </button>
+    // ခလုတ် ၃ ခုကို အစ်ကိုလိုချင်သည့် Layout အတိုင်း ချထားခြင်း
+    buttonsWrapper.innerHTML = `
+        <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">ဟောစာတမ်း ဖတ်မည် ✨</button>
         
         <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%;">
             <button class="btn-cancel" id="restartReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem;">အစမှ ပြန်ရွေးမည်</button>
@@ -546,6 +542,7 @@ function goToRevealStep() {
         </div>
     `;
 
+    // --- ၂။ အဖြေပေါ်မည့် Result Box ဖန်တီးခြင်း ---
     let resultBox = document.getElementById('staticReadingResult');
     if (!resultBox) {
         resultBox = document.createElement('div');
@@ -556,115 +553,139 @@ function goToRevealStep() {
     resultBox.innerHTML = ''; 
     resultBox.classList.add('hidden');
 
+    // --- ၃။ ကတ်အားလုံးလှန်ပြီးမှ ခလုတ်ပေါ်မည့်စနစ် နှင့် Click Events ---
     let flippedCount = 0;
     const totalCards = drawnCardDetails.length;
     const revealCards = revealArea.querySelectorAll('.flip-card'); 
 
+    // ကတ်တစ်ခုချင်းစီကို Click လုပ်တိုင်း ရေတွက်မည်
     revealCards.forEach(card => {
         card.addEventListener('click', function() {
+            // ကတ်က မလှန်ရသေးဘူးဆိုရင် ရေတွက်မည်
             if (!this.classList.contains('counted-flip')) {
                 this.classList.add('counted-flip'); 
                 flippedCount++;
-                
+
+                // ကတ်အရေအတွက် အားလုံးပြည့်သွားလျှင် "ဟောစာတမ်းဖတ်မည်" ခလုတ်ကို ပြမည်
                 if (flippedCount === totalCards) {
                     const readBtn = document.getElementById('readResultBtn');
-                    const questionBox = document.getElementById('aiQuestionContainer');
-                    
-                    // Premium ဆိုမှသာ Textbox ကို ပြမည်
-                    if(questionBox && isCurrentSpreadPremium) { 
-                        questionBox.style.display = 'flex'; 
+                    if(readBtn) {
+                        readBtn.style.display = 'block';
+                        // ခလုတ်ပေါ်လာလျှင် ခလုတ်ဆီသို့ အလိုအလျောက် ဆင်းပေးမည်
+                        setTimeout(() => readBtn.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
                     }
-                    if(readBtn) readBtn.style.display = 'block';
-                    
-                    setTimeout(() => {
-                        if(questionBox && isCurrentSpreadPremium) {
-                            questionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else if (readBtn) {
-                            readBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }, 300);
                 }
             }
         });
     });
 
+    // ခလုတ်များ၏ လုပ်ဆောင်ချက်များ
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
         saveReadingToJournal(drawnCardDetails, currentSpreadType);
     });
-    
+
     document.getElementById('readResultBtn').addEventListener('click', () => {
+        showStaticReadingResult(); 
+        // ဖတ်မည်ကို နှိပ်ပြီးလျှင် ထိုခလုတ်ကို ပြန်ဖျောက်ထားလိုက်မည် (ရွေးချယ်နိုင်သည်)
         document.getElementById('readResultBtn').style.display = 'none'; 
-        
-        // Premium ဆိုလျှင် preTarot.js ထဲက AI Function ကို လှမ်းခေါ်မည်
-        if (isCurrentSpreadPremium) {
-            const questionBox = document.getElementById('userQuestionInput');
-            const question = questionBox ? questionBox.value.trim() : "";
-            
-            // preTarot.js ထဲတွင် generatePremiumReading ဖန်တီးထားရန် လိုအပ်သည်
-            if (typeof generatePremiumReading === 'function') {
-                generatePremiumReading(drawnCardDetails, currentSpreadType, question);
-            } else {
-                console.error("preTarot.js script is not loaded or missing.");
-                alert("Premium စနစ် ချို့ယွင်းနေပါသည်။ (preTarot.js ချိတ်ဆက်ရန် လိုအပ်သည်)");
-            }
-        } 
-        // Free ဆိုလျှင် ပုံမှန်အတိုင်း ပြမည်
-        else {
-            showStaticReadingResult(); 
-        }
     });
 
     document.getElementById('restartReadingBtn').addEventListener('click', () => {
-        location.reload(); 
+        location.reload(); // အစမှ ပြန်စရန် စာမျက်နှာကို Refresh လုပ်မည်
     });
 }
 
-
-// ============================================================================
-// [၈] FREE READING RESULT (ရိုးရိုး ဟောစာတမ်းတွက်ချက်သည့်အပိုင်း)
-// ============================================================================
+// =========================================
+// UI Testing: Database မှ အချက်အလက်များဖြင့် ဟောစာတမ်း ပြသမည့်စနစ်
+// =========================================
 function showStaticReadingResult() {
     const resultBox = document.getElementById('staticReadingResult');
+
+    // ==========================================
+// 1. DEFINITELY YES CARDS (သေချာပေါက် Yes ဖြစ်သော ကတ်များ)
+// ==========================================
+const definitelyYesCards = [
+  // Major Arcana
+  'The Fool', 'The Magician', 'The Empress', 'The Emperor', 'The Lovers', 'The Chariot', 
+  'Strength', 'Wheel of Fortune', 'Justice', 'Temperance', 
+  'The Star', 'The Sun', 'Judgement', 'The World',
+
+  // Wands
+  'Ace of Wands', 'Two of Wands', 'Three of Wands', 'Four of Wands', 'Six of Wands', 'Eight of Wands', 
+  'Page of Wands', 'Knight of Wands', 'Queen of Wands', 'King of Wands',
+
+  // Cups
+  'Ace of Cups', 'Two of Cups', 'Three of Cups', 'Six of Cups', 'Nine of Cups', 'Ten of Cups', 
+  'Page of Cups', 'Knight of Cups', 'Queen of Cups', 'King of Cups',
+
+  // Swords
+  'Ace of Swords', 'Six of Swords', 'Page of Swords', 'Knight of Swords', 'Queen of Swords', 'King of Swords',
+
+  // Pentacles
+  'Ace of Pentacles', 'Three of Pentacles', 'Six of Pentacles', 'Seven of Pentacles', 'Eight of Pentacles', 
+  'Nine of Pentacles', 'Ten of Pentacles', 'Page of Pentacles', 'Knight of Pentacles', 
+  'Queen of Pentacles', 'King of Pentacles'
+];
+
+
+// ==========================================
+// 2. DEFINITELY NO CARDS (သေချာပေါက် No ဖြစ်သော ကတ်များ)
+// ==========================================
+const definitelyNoCards = [
+  // Major Arcana
+  'Death', 'The Devil', 'The Tower', 'The Moon',
+
+  // Wands
+  'Five of Wands', 'Ten of Wands',
+
+  // Cups
+  'Four of Cups', 'Five of Cups', 'Eight of Cups',
+
+  // Swords
+  'Three of Swords', 'Five of Swords', 'Seven of Swords', 'Eight of Swords', 'Nine of Swords', 'Ten of Swords',
+
+  // Pentacles
+  'Five of Pentacles'
+];
+
     if (!resultBox) return;
 
-    const definitelyYesCards = [
-      'The Fool', 'The Magician', 'The Empress', 'The Emperor', 'The Lovers', 'The Chariot', 
-      'Strength', 'Wheel of Fortune', 'Justice', 'Temperance', 
-      'The Star', 'The Sun', 'Judgement', 'The World',
-      'Ace of Wands', 'Two of Wands', 'Three of Wands', 'Four of Wands', 'Six of Wands', 'Eight of Wands', 
-      'Page of Wands', 'Knight of Wands', 'Queen of Wands', 'King of Wands',
-      'Ace of Cups', 'Two of Cups', 'Three of Cups', 'Six of Cups', 'Nine of Cups', 'Ten of Cups', 
-      'Page of Cups', 'Knight of Cups', 'Queen of Cups', 'King of Cups',
-      'Ace of Swords', 'Six of Swords', 'Page of Swords', 'Knight of Swords', 'Queen of Swords', 'King of Swords',
-      'Ace of Pentacles', 'Three of Pentacles', 'Six of Pentacles', 'Seven of Pentacles', 'Eight of Pentacles', 
-      'Nine of Pentacles', 'Ten of Pentacles', 'Page of Pentacles', 'Knight of Pentacles', 
-      'Queen of Pentacles', 'King of Pentacles'
-    ];
-
-    const definitelyNoCards = [
-      'Death', 'The Devil', 'The Tower', 'The Moon',
-      'Five of Wands', 'Ten of Wands',
-      'Four of Cups', 'Five of Cups', 'Eight of Cups',
-      'Three of Swords', 'Five of Swords', 'Seven of Swords', 'Eight of Swords', 'Nine of Swords', 'Ten of Swords',
-      'Five of Pentacles'
-    ];
+    // Premium Spread များကို စစ်ထုတ်မည်
+    if (currentSpreadType !== 'one-card' && currentSpreadType !== 'three-card-time' && currentSpreadType !== 'three-card-action') {
+        resultBox.innerHTML = `
+            <div style="text-align: center; padding: 1rem;">
+                <h2 style="color: var(--accent-cyan); margin-bottom: 1rem;">Premium AI Reading 🌟</h2>
+                <p style="color: var(--text-muted); line-height: 1.6;">ဤဟောစာတမ်းကို အဆင့်မြင့် AI စနစ်ဖြင့် တွက်ချက်ပေးမည့်အပိုင်း ဖြစ်ပါသည်။<br>(AI ချိတ်ဆက်ရန် အဆင်သင့်ဖြစ်နေပါပြီ!)</p>
+            </div>
+        `;
+        resultBox.classList.remove('hidden');
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
 
     let htmlContent = '<h2 style="text-align: center; color: var(--accent-cyan); margin-bottom: 2rem; font-family: \'Orbitron\', sans-serif;">သင့်၏ ဟောစာတမ်းအဖြေ</h2>';
 
+    // ၁။ "၁-ကတ် (Yes/No)" ဟောစာတမ်းအတွက်
     if (currentSpreadType === 'one-card') {
         const card = drawnCardDetails[0];
-        let yesNoResult = "Maybe 🤔"; 
-        let resultColor = "#FFD700"; 
 
+        let yesNoResult = "Maybe 🤔"; // Default အနေဖြင့် "မသေချာသေးပါ" ဟုထားမည်
+        let resultColor = "#FFD700"; // အဝါရောင်
+
+        // Array ထဲတွင် ပါ/မပါ စစ်ဆေးခြင်း (အစ်ကို့ရဲ့ Idea အတိုင်း)
         if (definitelyYesCards.includes(card.name)) {
+            // Yes ကတ်ဖြစ်နေလျှင်တောင် ပြောင်းပြန်(Reversed) ဆိုလျှင် No သို့မဟုတ် Maybe ဖြစ်သွားနိုင်သည်
             yesNoResult = card.isReversed ? "No / Maybe ⚠️" : "Yes ✅";
             resultColor = card.isReversed ? "#FF9900" : "#00FF00";
         } 
         else if (definitelyNoCards.includes(card.name)) {
+            // No ကတ်သည် အမတ်ဖြစ်စေ၊ အပြောင်းပြန်ဖြစ်စေ အများအားဖြင့် No ပင်ဖြစ်သည်
             yesNoResult = "No ❌";
             resultColor = "#FF4D4D";
         }
+        // Yes စာရင်းထဲလည်းမပါ၊ No စာရင်းထဲလည်းမပါလျှင် Default အတိုင်း "Maybe 🤔" သာဖြစ်နေပါမည်။
 
+        // အဓိပ္ပာယ် ရှင်းလင်းချက်ကို ယူမည်
         const meaningText = card.isReversed && card.yes_no_reversed_meaning 
                             ? card.yes_no_reversed_meaning 
                             : card.yes_no_meaning;
@@ -674,15 +695,19 @@ function showStaticReadingResult() {
                 <h3 style="color: #fff; margin-bottom: 10px;">
                     ${card.name} ${card.isReversed ? '<span style="color:#ff4d4d; font-size:0.9rem;">(Reversed)</span>' : ''}
                 </h3>
+                
                 <h1 style="color: ${resultColor}; font-size: 3rem; margin: 20px 0; text-shadow: 0 0 15px ${resultColor}40;">
                     ${yesNoResult}
                 </h1>
+                
                 <p style="line-height: 1.8; color: var(--text-main); font-size: 1.1rem; padding: 0 15px;">
                     ${meaningText || "ယေဘုယျအားဖြင့် သင့်မေးခွန်းအပေါ် ဤကတ်၏ သက်ရောက်မှုဖြစ်သည်။"}
                 </p>
             </div>
         `;
     }
+
+    // ၂။ "၃-ကတ် (အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်)" အတွက်
     else if (currentSpreadType === 'three-card-time') {
         const titles = ["အတိတ် (Past)", "ပစ္စုပ္ပန် (Present)", "အနာဂတ် (Future)"];
         drawnCardDetails.forEach((card, index) => {
@@ -698,6 +723,7 @@ function showStaticReadingResult() {
             `;
         });
     }
+    // ၃။ "၃-ကတ် (အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်)" အတွက်
     else if (currentSpreadType === 'three-card-action') {
         const titles = ["အခြေအနေ (Situation)", "အကြံပြုချက် (Action)", "ရလဒ် (Outcome)"];
         drawnCardDetails.forEach((card, index) => {
@@ -716,13 +742,15 @@ function showStaticReadingResult() {
 
     resultBox.innerHTML = htmlContent;
     resultBox.classList.remove('hidden');
-    setTimeout(() => { resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+
+    // အဖြေပေါ်လာလျှင် ထိုနေရာသို့ အလိုအလျောက် Scroll ဆင်းသွားမည်
+    setTimeout(() => {
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
 }
 
+// =========================================
 
-// ============================================================================
-// [၉] JOURNAL SAVING LOGIC (ဟောစာတမ်းများကို Database တွင် မှတ်တမ်းတင်ခြင်း)
-// ============================================================================
 async function saveReadingToJournal(cardsArray, spreadType) {
     const userStr = localStorage.getItem('tarot_user');
 
@@ -739,8 +767,6 @@ async function saveReadingToJournal(cardsArray, spreadType) {
     if (spreadType === 'three-card-time') spreadName = 'အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်';
     else if (spreadType === 'three-card-action') spreadName = 'အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်';
     else if (spreadType === 'one-card') spreadName = 'One Card Reading';
-    // Premium spreads များကို ထပ်မံဖြည့်စွက်နိုင်ပါသည်
-    else spreadName = 'Premium Custom Spread'; 
 
     const saveBtn = document.getElementById('saveReadingBtn');
     if (saveBtn) {
@@ -748,7 +774,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
         saveBtn.disabled = true;
     }
 
-    const cardsToSave = cardsArray.map(c => ({ name: c.name, isReversed: c.isReversed }));
+    const cardsToSave = cardsArray.map(c => ({ name: c.name }));
 
     const { error } = await supabaseClient
         .from('Journal')
@@ -757,7 +783,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
             date: today,
             type: spreadName,
             cards: cardsToSave,
-            answer: null 
+            answer: null // AI အဖြေအတွက်
         }]);
 
     if (error) {
@@ -779,10 +805,6 @@ async function saveReadingToJournal(cardsArray, spreadType) {
     }
 }
 
-
-// ============================================================================
-// [၁၀] MODAL INTERACTIONS (ကတ်တစ်ခုချင်းစီကို အသေးစိတ်နှိပ်ကြည့်သည့်စနစ်)
-// ============================================================================
 function openReadingModal(card, index) {
     let cardTitle = "";
 
