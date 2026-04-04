@@ -5,7 +5,6 @@
 // [၁] GLOBAL VARIABLES (အခြေခံ မှတ်သားထားမည့် ကိန်းရှင်များ)
 // ============================================================================
 let isCurrentSpreadPremium = false; 
-let currentSpreadType = ''; 
 let cardsToDraw = 0; 
 let drawnCardDetails = []; 
 let isModalOpen = false;
