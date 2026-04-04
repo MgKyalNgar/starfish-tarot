@@ -3,9 +3,6 @@
 // ဖိုင်အမည်: preTarot.js
 // =========================================
 
-// အရေးကြီးသည်: Vercel ကဲ့သို့သော နေရာများတွင် API Key ကို Environment Variable မှတဆင့် ယူသင့်သော်လည်း
-// ယခု Client-side တွင် စမ်းသပ်ရန်အတွက် တိုက်ရိုက်ထည့်သွင်းထားခြင်း ဖြစ်ပါသည်။ (Production တွင် API ဖျောက်ရန် လိုအပ်နိုင်သည်)
-const GEMINI_API_KEY = "AIzaSyB01UBPZMXOnYfW5GtSl7ZqEVxUdv58-kI"; // <--- ဒီမှာ API Key ပြောင်းထည့်ရန်
 // သင့်ထံတွင်ရှိသော အကောင်းဆုံးနှင့် အတည်ငြိမ်ဆုံး Model ကို အသုံးပြုထားပါသည်
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
