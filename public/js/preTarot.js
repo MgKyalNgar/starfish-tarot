@@ -47,9 +47,11 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
 
         const data = await response.json();
         
-        // Error ဖြစ်ခဲ့လျှင် ဖမ်းရန်
+        // Error ဖြစ်ခဲ့လျှင် ဖမ်းရန် (အသစ်ပြင်ထားသောအပိုင်း)
         if (!response.ok || data.error) {
-            throw new Error(data.error || `API Error: ${response.status}`);
+            // [object Object] မဖြစ်အောင် Error စာသား အတိအကျကို ဆွဲထုတ်မည်
+            const errorDetail = data.error?.message || JSON.stringify(data.error) || 'Unknown API Error';
+            throw new Error(errorDetail);
         }
 
         const aiResponseText = data.candidates[0].content.parts[0].text;
