@@ -1,46 +1,56 @@
 // ဖိုင်တည်နေရာ: /api/gemini.js
 
 export default async function handler(req, res) {
-    // POST request မဟုတ်ရင် လက်မခံပါ
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    // Vercel Environment ထဲက API Key ကို လှမ်းယူခြင်း
     const apiKey = process.env.GEMINI_API_KEY;
-    
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API Key ပျောက်ဆုံးနေပါသည်' });
-    }
+    if (!apiKey) return res.status(500).json({ error: 'API Key ပျောက်ဆုံးနေပါသည်' });
 
-    // Gemini 2.5 Flash Model URL
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // AI Astrology တုန်းကလို Model (၃) ခုကို အစီအစဉ်အတိုင်း ထားလိုက်ပါမယ်
+    const AVAILABLE_MODELS = [
+        'gemini-2.5-flash', 
+        'gemini-2.0-flash-lite',
+        'gemini-3-flash-preview'
+    ];
 
-    try {
-        // ဖုန်း/Browser ဘက်က ပို့လိုက်တဲ့ Data တွေကို Gemini ဆီ တိုက်ရိုက် ပြန်ပို့ပေးခြင်း
-                // Frontend က ပို့လိုက်တဲ့ Data ကို ယူမယ်
-        const requestData = req.body;
-        
-        // Token Limit ကို ဒီနေရာမှာ အမြင့်ဆုံး တိုးပေးလိုက်ပါမယ် (ဥပမာ ၂၀၄၈ သို့မဟုတ် ၄၀၉၆)
-        if (requestData.generationConfig) {
-            requestData.generationConfig.maxOutputTokens = 2048; // လိုအပ်ရင် 4096 အထိ တိုးလို့ရပါတယ်
+    let lastError = null;
+
+    // Model တစ်ခုချင်းစီကို စမ်းကြည့်မည့် Loop
+    for (const modelName of AVAILABLE_MODELS) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(req.body)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                // 429 (Too Many Requests / Token Exhausted) ဆိုလျှင် နောက် Model ပြောင်းစမ်းမည်
+                if (response.status === 429 || (data.error && data.error.code === 429)) {
+                    console.log(`${modelName} Limit ပြည့်သွားပါပြီ။ နောက် Model သို့ ပြောင်းပါမည်...`);
+                    lastError = "Token Limit Exhausted";
+                    continue; 
+                } else {
+                    // အခြား Error ဆိုလျှင် ချက်ချင်း ရပ်မည်
+                    throw new Error(data.error?.message || 'API Error');
+                }
+            }
+
+            // အောင်မြင်သွားလျှင် အဖြေကို ပြန်ပို့မည် (Loop ရပ်သွားမည်)
+            return res.status(200).json(data);
+
+        } catch (error) {
+            console.error(`Error with ${modelName}:`, error);
+            lastError = error.message;
+            // 429 မဟုတ်တဲ့ တခြား Error တွေဆိုရင် ရှေ့ဆက်မစမ်းတော့ပါဘူး
+            break; 
         }
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-
-        const data = await response.json();
-        
-        // Gemini ဆီက ပြန်လာတဲ့ အဖြေကို Browser ဘက်ကို ပြန်ပို့ပေးခြင်း
-        res.status(200).json(data);
-    } catch (error) {
-        console.error("Vercel Server Error:", error);
-        res.status(500).json({ error: 'Server မှ ချိတ်ဆက်ရာတွင် အမှားအယွင်းရှိနေပါသည်' });
     }
+
+    // Model ၃ ခုလုံး စမ်းပြီးလို့မှ မရရင်
+    return res.status(500).json({ error: `ရနိုင်သမျှ AI Model အားလုံး ချို့ယွင်းနေပါသည်။ (${lastError})` });
 }
