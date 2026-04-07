@@ -26,7 +26,7 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
     const promptText = buildPrompt(cards, spreadType, userQuestion);
 
     try {
-        // ၃။ ကိုယ်ပိုင် Vercel API သို့ လှမ်းခေါ်ခြင်း (Gemini သို့ တိုက်ရိုက်မဟုတ်တော့ပါ)
+        // ၃။ ကိုယ်ပိုင် Vercel API သို့ လှမ်းခေါ်ခြင်း
         const response = await fetch(VERCEL_API_URL, {
             method: "POST",
             headers: {
@@ -35,13 +35,8 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
             body: JSON.stringify({
                 contents: [{
                     parts: [{ text: promptText }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    topK: 40,
-                    topP: 0.95,
-                    maxOutputTokens: 1024,
-                }
+                }]
+                // ဒီနေရာမှာ ရှိနေတဲ့ generationConfig အပိုင်းကြီးတစ်ခုလုံးကို ဖျက်လိုက်ပါ!
             })
         });
 
