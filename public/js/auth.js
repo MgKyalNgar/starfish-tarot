@@ -39,6 +39,7 @@ function updateAuthUI() {
         }
     });
     console.log("Current User Data:", currentUser);
+    console.log("Tarot User Data:", tarot_user);    
     const isPremiumUser = currentUser && (currentUser.isSubscribed);
     const premiumCards = document.querySelectorAll('.premium-spread');
     
