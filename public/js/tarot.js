@@ -277,8 +277,6 @@ function createDeckStack() {
     }
     guideText.style.display = 'block';
 
-    deckArea.innerHTML = ''; 
-
     // Premium ဆိုလျှင် မေးခွန်း Box ကို ကတ်အုပ်အပေါ်တွင် ပြမည်
     if (isCurrentSpreadPremium) {
         const questionDiv = document.createElement('div');
@@ -293,6 +291,8 @@ function createDeckStack() {
         deckArea.appendChild(questionDiv);
     }
 
+    deckArea.innerHTML = ''; 
+    
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
