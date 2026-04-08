@@ -222,7 +222,7 @@ function selectSpread(type, count, isPremium = false) {
         }
 
         const currentUser = JSON.parse(userStr);
-        if (!currentUser.isSubscribed && currentUser.role !== 'admin') {
+        if (!currentUser.isSubscribed ) {
             handlePremiumClick(); 
             return; 
         }
