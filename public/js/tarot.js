@@ -5,7 +5,7 @@
 // [၁] GLOBAL VARIABLES (အခြေခံ မှတ်သားထားမည့် ကိန်းရှင်များ)
 // ============================================================================
 
-
+let userPremiumQuestion = ''; // Premium မေးခွန်းမှတ်သားရန် Variable အသစ် (ထပ်ဖြည့်ထားသည်)
 
 // ============================================================================
 // [၂] LIBRARY PAGE LOGIC (ကတ်စာကြည့်တိုက် စာမျက်နှာအတွက်)
@@ -253,6 +253,8 @@ function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
 
+    userPremiumQuestion = ''; // အသစ်ပြန်ရွေးတိုင်း မေးခွန်းဟောင်းကို ဖျက်မည်
+
     let guideText = document.getElementById('shuffleGuideText');
     if (!guideText) {
         guideText = document.createElement('p');
@@ -265,10 +267,31 @@ function createDeckStack() {
         guideText.style.animation = 'fadeIn 0.8s ease';
         deckArea.parentNode.insertBefore(guideText, deckArea);
     }
-    guideText.innerHTML = "✨ စိတ်ကို တည်တည်ငြိမ်ငြိမ်ထားပါ။<br>သင့်သိလိုသော မေးခွန်းကို အာရုံပြုပြီး ကတ်များကို မွှေပါ...";
+    
+    // Premium နဲ့ Free စာသားခွဲပြမည်
+    if (isCurrentSpreadPremium) {
+        guideText.innerHTML = "✨ သင့်သိလိုသော မေးခွန်းကို အောက်တွင်ရေးသားပြီး ကတ်များကို မွှေပါ...";
+    } else {
+        guideText.innerHTML = "✨ စိတ်ကို တည်တည်ငြိမ်ငြိမ်ထားပါ။<br>သင့်သိလိုသော မေးခွန်းကို အာရုံပြုပြီး ကတ်များကို မွှေပါ...";
+    }
     guideText.style.display = 'block';
 
     deckArea.innerHTML = ''; 
+
+    // Premium ဆိုလျှင် မေးခွန်း Box ကို ကတ်အုပ်အပေါ်တွင် ပြမည်
+    if (isCurrentSpreadPremium) {
+        const questionDiv = document.createElement('div');
+        questionDiv.id = 'premiumQuestionWrapper';
+        questionDiv.style.width = '100%';
+        questionDiv.style.maxWidth = '400px';
+        questionDiv.style.margin = '0 auto 20px auto';
+        questionDiv.innerHTML = `
+            <textarea id="premiumQuestionInput" rows="3" placeholder="ဥပမာ - ကျွန်တော့်ရဲ့ အလုပ်အကိုင် အခွင့်အလမ်း ရှေ့ဆက်ဘယ်လိုနေမလဲ..."
+                      style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(10,17,40,0.8); border: 1px solid rgba(0, 240, 255, 0.4); color: white; font-size: 1rem; resize: vertical; outline: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);"></textarea>
+        `;
+        deckArea.appendChild(questionDiv);
+    }
+
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
@@ -333,6 +356,15 @@ function startShuffleAnimation() {
     const deckStack = document.getElementById('deckStack');
     const guideText = document.getElementById('shuffleGuideText');
     if(!deckStack) return;
+
+    // Shuffle မလုပ်ခင် မေးခွန်းကို မှတ်သားပြီး Box ကို ဖျောက်မည်
+    if (isCurrentSpreadPremium) {
+        const qInput = document.getElementById('premiumQuestionInput');
+        if (qInput) userPremiumQuestion = qInput.value.trim();
+
+        const qWrapper = document.getElementById('premiumQuestionWrapper');
+        if (qWrapper) qWrapper.style.display = 'none'; // ကတ်ခင်းရန် နေရာလွတ်အောင် ဖျောက်မည်
+    }
 
     if(shuffleBtn) {
         shuffleBtn.disabled = true;
@@ -521,21 +553,12 @@ function goToRevealStep() {
     }
     
     // AI အတွက် မေးခွန်းတောင်းမည့် Textbox နှင့် ခလုတ်များ
-    buttonsWrapper.innerHTML = `
-        <div id="aiQuestionContainer" style="display: none; animation: fadeIn 0.8s ease; flex-direction: column; gap: 8px;">
-            <label for="userQuestionInput" style="color: var(--accent-cyan); font-size: 0.95rem; font-weight: bold;">
-                ✨ သင့်သိလိုသော မေးခွန်း (သို့) လက်ရှိအခြေအနေ
-            </label>
-            <textarea id="userQuestionInput" rows="3" placeholder="ဥပမာ - ကျွန်တော့်ရဲ့ အလုပ်အကိုင် အခွင့်အလမ်း ရှေ့ဆက်ဘယ်လိုနေမလဲ..." 
-                      style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(10,17,40,0.8); border: 1px solid rgba(0, 240, 255, 0.4); color: white; font-size: 1rem; resize: vertical; outline: none;"></textarea>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0;">* မေးခွန်းတိကျလေ ဟောစာတမ်း ပိုမိုမှန်ကန်လေ ဖြစ်ပါသည်။</p>
-        </div>
-
+        buttonsWrapper.innerHTML = `
         <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">
             ဟောစာတမ်း ဖတ်မည် ✨
         </button>
         
-        <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%;">
+        <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%; margin-top: 15px;">
             <button class="btn-cancel" id="restartReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem;">အစမှ ပြန်ရွေးမည်</button>
             <button class="btn-cancel" id="saveReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem; border-color: rgba(0,240,255,0.5); color: #fff;">Journal သိမ်းမည် 📝</button>
         </div>
@@ -563,21 +586,10 @@ function goToRevealStep() {
                 
                 if (flippedCount === totalCards) {
                     const readBtn = document.getElementById('readResultBtn');
-                    const questionBox = document.getElementById('aiQuestionContainer');
                     
-                    // Premium ဆိုမှသာ Textbox ကို ပြမည်
-                    if(questionBox && isCurrentSpreadPremium) { 
-                        questionBox.style.display = 'flex'; 
-                    }
                     if(readBtn) readBtn.style.display = 'block';
                     
-                    setTimeout(() => {
-                        if(questionBox && isCurrentSpreadPremium) {
-                            questionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        } else if (readBtn) {
-                            readBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }, 300);
+                    setTimeout(() => { readBtn.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
                 }
             }
         });
@@ -590,14 +602,11 @@ function goToRevealStep() {
     document.getElementById('readResultBtn').addEventListener('click', () => {
         document.getElementById('readResultBtn').style.display = 'none'; 
         
-        // Premium ဆိုလျှင် preTarot.js ထဲက AI Function ကို လှမ်းခေါ်မည်
+        // Premium ဆိုလျှင် ကြိုတင်မှတ်သားထားသော userPremiumQuestion ဖြင့် preTarot.js ကို လှမ်းခေါ်မည်
         if (isCurrentSpreadPremium) {
-            const questionBox = document.getElementById('userQuestionInput');
-            const question = questionBox ? questionBox.value.trim() : "";
-            
-            // preTarot.js ထဲတွင် generatePremiumReading ဖန်တီးထားရန် လိုအပ်သည်
             if (typeof generatePremiumReading === 'function') {
-                generatePremiumReading(drawnCardDetails, currentSpreadType, question);
+                // DOM မှ မယူတော့ဘဲ Memory ထဲမှ မေးခွန်းကို တိုက်ရိုက်ထည့်ပေးလိုက်သည်
+                generatePremiumReading(drawnCardDetails, currentSpreadType, userPremiumQuestion);
             } else {
                 console.error("preTarot.js script is not loaded or missing.");
                 alert("Premium စနစ် ချို့ယွင်းနေပါသည်။ (preTarot.js ချိတ်ဆက်ရန် လိုအပ်သည်)");
