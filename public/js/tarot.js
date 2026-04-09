@@ -256,6 +256,14 @@ function createDeckStack() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
     userPremiumQuestion = ''; // အသစ်ပြန်ရွေးတိုင်း မေးခွန်းဟောင်းကို ဖျက်မည်
+    
+    // 👇 Layout ကို ဘေးတိုက်မဟုတ်ဘဲ အပေါ်အောက် (Vertical Stack) စီရန်နှင့် အလယ်တည့်တည့်ဖြစ်စေရန် ထိန်းချုပ်ခြင်း 👇
+    deckArea.style.display = 'flex';
+    deckArea.style.flexDirection = 'column';
+    deckArea.style.alignItems = 'center';
+    deckArea.style.justifyContent = 'center';
+    deckArea.style.width = '100%';
+    
     deckArea.innerHTML = '';
 
     let guideText = document.getElementById('shuffleGuideText');
@@ -298,6 +306,9 @@ function createDeckStack() {
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
     deckStack.style.cursor = 'pointer'; 
+    // ကတ်အုပ်ကို အလယ်တည့်တည့်မှာ သေချာရပ်နေစေရန်
+    deckStack.style.position = 'relative';
+    deckStack.style.margin = '0 auto';
 
     for (let i = 0; i < 10; i++) {
         const card = document.createElement('div');
