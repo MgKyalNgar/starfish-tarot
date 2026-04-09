@@ -272,7 +272,7 @@ function createDeckStack() {
     }
     
     // Premium နဲ့ Free စာသားခွဲပြမည်
-    console.log("Current User Data:", currentUser);
+    console.log("Spread Premium:", isCurrentSpreadPremium);
     if (isCurrentSpreadPremium) {
         guideText.innerHTML = "✨ သင့်သိလိုသော မေးခွန်းကို အောက်တွင်ရေးသားပြီး ကတ်များကို မွှေပါ...";
     } else {
