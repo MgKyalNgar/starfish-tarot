@@ -125,7 +125,7 @@ function initAuthPage() {
                     .single();
                 
                 const userRole = dbUser ? dbUser.role : 'user';
-                const  = isSub ? dbUser.isSubscribed : false;
+                const isSub = dbUser ? dbUser.isSubscribed : false;
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
 
                 localStorage.setItem('tarot_user', JSON.stringify({ 
