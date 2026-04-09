@@ -810,8 +810,8 @@ footer {
    ========================================= */
 .global-back-btn {
     position: fixed;
-    bottom: 20px; /* အောက်ခြေမှ အကွာအဝေး */
-    left: 20px; /* ဘယ်ဘက်မှ အကွာအဝေး (ညာဘက်ထားချင်ပါက right: 20px; ဟုပြောင်းပါ) */
+    bottom: 10px; /* အောက်ခြေမှ အကွာအဝေး */
+    right: 10px; /* ဘယ်ဘက်မှ အကွာအဝေး */
     background: rgba(10, 17, 40, 0.8);
     color: var(--accent-cyan);
     border: 1px solid rgba(0, 240, 255, 0.4);
