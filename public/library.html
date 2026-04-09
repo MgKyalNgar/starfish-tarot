@@ -38,12 +38,12 @@
     </main>
     <div id="readingModal" class="modal-overlay hidden">
         <div class="modal-content reading-modal-box">
-            <span class="close-modal-btn" onclick="closeReadingModal()">&times;</span>
-            <div class="reading-result-layout">
-                <div class="reading-image-col">
+            <button class="close-modal-btn" onclick="closeReadingModal()">&times;</button>
+            <div class="reading-content">
+                <div class="reading-image">
                     <img id="modalCardImg" src="" alt="Card Image">
                 </div>
-                <div class="reading-text-col">
+                <div class="reading-text-col" style=" text-align: center;">
                     <h2 id="modalCardName" style="color: var(--accent-cyan); margin-bottom: 5px;"></h2>
                     <p id="modalCardType" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;"></p>
                     <div class="meaning-box">
