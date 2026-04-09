@@ -231,6 +231,7 @@ function selectSpread(type, count, isPremium = false) {
     currentSpreadType = type;
     cardsToDraw = count;
     isCurrentSpreadPremium = isPremium; // Premium ဟုတ်မဟုတ် ဤနေရာတွင် မှတ်ထားမည်
+    createDeckStack();
     
     history.pushState({step: 'shuffle'}, '', '#shuffle');
     showStep('step-shuffle');
@@ -251,10 +252,11 @@ function closeModal() {
 // [၅] SHUFFLING & DECK SETUP (ကတ်မွှေခြင်း နှင့် Deck ဖန်တီးခြင်း)
 // ============================================================================
 function createDeckStack() {
+    isCurrentSpreadPremium = isPremium;
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
-
     userPremiumQuestion = ''; // အသစ်ပြန်ရွေးတိုင်း မေးခွန်းဟောင်းကို ဖျက်မည်
+    deckArea.innerHTML = '';
 
     let guideText = document.getElementById('shuffleGuideText');
     if (!guideText) {
@@ -290,9 +292,7 @@ function createDeckStack() {
         `;
         deckArea.appendChild(questionDiv);
     }
-
-    deckArea.innerHTML = ''; 
-    
+     
     const deckStack = document.createElement('div');
     deckStack.className = 'deck-stack';
     deckStack.id = 'deckStack';
