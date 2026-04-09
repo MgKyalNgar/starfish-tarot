@@ -817,7 +817,6 @@ footer {
     border: 1px solid rgba(0, 240, 255, 0.4);
     padding: 10px 18px;
     border-radius: 25px; /* ခလုတ်ကို လုံးဝန်းစေရန် */
-    font-family: 'Orbitron', sans-serif;
     font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
