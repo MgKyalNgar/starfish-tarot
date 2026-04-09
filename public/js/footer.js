@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </svg>
                     App သွင်းမည်
                 </button>
+                <button onclick="goBackStep()" id="globalBackBtn" class="global-back-btn"> &#8592; </button>
             </div>
             
             <p>&copy; 2026 Starfish Tarot. Create by Mg Kyal Ngar.</p>
@@ -70,4 +71,17 @@ if ('serviceWorker' in navigator) {
             reg.update();
         });
     });
+}
+
+// ============================================================================
+// [၁၁] GLOBAL BACK BUTTON LOGIC
+// ============================================================================
+function goBackStep() {
+    // အကယ်၍ ကတ်အဓိပ္ပာယ်ပြသည့် Modal Box ပွင့်နေလျှင်၊ Box ကိုသာ ပိတ်ပေးမည်
+    if (typeof isModalOpen !== 'undefined' && isModalOpen) {
+        closeReadingModal(false);
+    } else {
+        // Modal ပွင့်မနေလျှင် Browser ၏ မူလ Back အတိုင်း အလုပ်လုပ်မည်
+        window.history.back();
+    }
 }
