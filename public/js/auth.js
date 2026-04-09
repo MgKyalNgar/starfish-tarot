@@ -40,7 +40,7 @@ function updateAuthUI() {
     });
     console.log("Current User Data:", currentUser);
     console.log("Tarot User Data:", userStr);    
-    const isPremiumUser = currentUser && (currentUser.scribed);
+        const isPremiumUser = currentUser && (currentUser.isSubscribed);
     const premiumCards = document.querySelectorAll('.premium-spread');
     
     premiumCards.forEach(card => {
@@ -125,7 +125,7 @@ function initAuthPage() {
                     .single();
                 
                 const userRole = dbUser ? dbUser.role : 'user';
-                const  = dbUser ? dbUser.isSubscribed : false;
+                const  = isSub ? dbUser.isSubscribed : false;
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
 
                 localStorage.setItem('tarot_user', JSON.stringify({ 
@@ -162,7 +162,7 @@ function initAuthPage() {
                                 email: email, 
                                 name: name,
                                 role: 'user', 
-                                isScribed: false
+                                isSubscribed: false
                             }
                         ]);
 
