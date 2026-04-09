@@ -26,6 +26,17 @@ function updateAuthUI() {
             if(logoutBtn) {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
+                    if ('caches' in window) {
+                         try {
+                               const cacheNames = await caches.keys();
+                               await Promise.all(
+                                   cacheNames.map(cache => caches.delete(cache))
+                               );
+                               console.log("🧹 Cache Clear!");
+                      } catch (error) {
+                               console.error("Cache Cleanning error!", error);
+                           }
+                    }
                     localStorage.removeItem('tarot_user');
                     if(supabaseClient) supabaseClient.auth.signOut();
                     window.location.href = 'index.html'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
