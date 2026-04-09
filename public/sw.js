@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.1';
+const CACHE_NAME = 'starfish-tarot-v3.2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -45,15 +45,26 @@ self.addEventListener('activate', event => {
 // ၃။ FETCH EVENT (Network သို့မဟုတ် Cache မှ ယူမည်)
 // =========================================================
 self.addEventListener('fetch', event => {
-  // Database သို့သွားသော API Request များကို Cache မလုပ်ရန် ဖယ်ချန်ထားသည်
-  if (event.request.url.includes('supabase.co')) {
+    // 🌟 Chrome Extension များမှလာသော လင့်ခ်များကို Service Worker မှ ဝင်မဖမ်းရန် စစ်ထုတ်ခြင်း 🌟
+    if (!(event.request.url.startsWith('http:') || event.request.url.startsWith('https:'))) {
+        return; 
+    }
+    //care Database api
+    if (event.request.url.includes('supabase.co')) {
       return; 
-  }
-  
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
-  );
+    }
+
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                if (response) {
+                    return response; 
+                }
+                // Fetch လုပ်လို့မရတဲ့ Error တွေကိုပါ အသံတိတ်ဖမ်းပေးထားမည် (.catch ထပ်ဖြည့်ထားသည်)
+                return fetch(event.request).catch(error => {
+                    console.log("Fetch failed (Offline or Blocked):", event.request.url);
+                });
+            })
+    );
 });
+
