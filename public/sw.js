@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v2';
+const CACHE_NAME = 'starfish-tarot-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -9,7 +9,9 @@ const urlsToCache = [
   '/Tarot Card/card_back.jpg'
 ];
 
-// Install Event - ဖိုင်များကို Cache ထဲသို့ သိမ်းမည်
+// =========================================================
+// ၁။ INSTALL EVENT (Cache အသစ်သိမ်းမည် + ချက်ချင်း Install လုပ်မည်)
+// =========================================================
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -17,9 +19,31 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
+  self.skipWaiting();
 });
 
-// Fetch Event - Cache ရှိလျှင် Cache မှ ယူသုံးမည်၊ မရှိလျှင် Network မှ ယူမည်
+/ =========================================================
+// ၂။ ACTIVATE EVENT (Cache အဟောင်းဖျက်မည် + ချက်ချင်း ထိန်းချုပ်မည်)
+// =========================================================
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+    // Client အားလုံးကို အသစ်ပြောင်းခိုင်းမည်
+    self.clients.claim();
+});
+
+// =========================================================
+// ၃။ FETCH EVENT (Network သို့မဟုတ် Cache မှ ယူမည်)
+// =========================================================
 self.addEventListener('fetch', event => {
   // Database သို့သွားသော API Request များကို Cache မလုပ်ရန် ဖယ်ချန်ထားသည်
   if (event.request.url.includes('supabase.co')) {
@@ -33,15 +57,3 @@ self.addEventListener('fetch', event => {
       })
   );
 });
-
-
-self.addEventListener('install', (event) => {
-    // စောင့်မနေဘဲ အသစ်ကို ချက်ချင်း install လုပ်ခိုင်းခြင်း
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-    // လက်ရှိပွင့်နေတဲ့ စာမျက်နှာအားလုံးကို ချက်ချင်း ထိန်းချုပ်ခိုင်းခြင်း
-    event.waitUntil(clients.claim());
-});
-
