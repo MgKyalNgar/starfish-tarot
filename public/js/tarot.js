@@ -252,7 +252,7 @@ function closeModal() {
 // [၅] SHUFFLING & DECK SETUP (ကတ်မွှေခြင်း နှင့် Deck ဖန်တီးခြင်း)
 // ============================================================================
 function createDeckStack() {
-    isCurrentSpreadPremium = isPremium;
+    
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
     userPremiumQuestion = ''; // အသစ်ပြန်ရွေးတိုင်း မေးခွန်းဟောင်းကို ဖျက်မည်
