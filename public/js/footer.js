@@ -84,3 +84,25 @@ function goBackStep() {
         window.history.back();
     }
 }
+
+// HIDE BACK BUTTON ON HOME PAGE LOGIC
+
+document.addEventListener("DOMContentLoaded", () => {
+    const globalBackBtn = document.getElementById("globalBackBtn");
+    
+    if (globalBackBtn) {
+        // လက်ရှိရောက်နေတဲ့ လင့်ခ် (URL) ကို ဆွဲယူမည်
+        const currentPath = window.location.pathname;
+        
+        // Home Page (index.html သို့မဟုတ် /) ဟုတ်မဟုတ် စစ်ဆေးမည်
+        const isHomePage = currentPath.endsWith("index.html") || currentPath === "/" || currentPath === "";
+        
+        if (isHomePage) {
+            // Home Page ဆိုလျှင် ခလုတ်ကို ဖျောက်ထားမည်
+            globalBackBtn.style.display = "none";
+        } else {
+            // အခြား Page များဆိုလျှင် ခလုတ်ကို ပြမည်
+            globalBackBtn.style.display = "block";
+        }
+    }
+});
