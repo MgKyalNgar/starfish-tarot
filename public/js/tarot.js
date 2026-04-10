@@ -370,15 +370,6 @@ function startShuffleAnimation() {
     const guideText = document.getElementById('shuffleGuideText');
     if(!deckStack) return;
 
-    // Shuffle မလုပ်ခင် မေးခွန်းကို မှတ်သားပြီး Box ကို ဖျောက်မည်
-    if (isCurrentSpreadPremium) {
-        const qInput = document.getElementById('premiumQuestionInput');
-        if (qInput) userPremiumQuestion = qInput.value.trim();
-
-        const qWrapper = document.getElementById('premiumQuestionWrapper');
-        if (qWrapper) qWrapper.style.display = 'none'; // ကတ်ခင်းရန် နေရာလွတ်အောင် ဖျောက်မည်
-    }
-
     if(shuffleBtn) {
         shuffleBtn.disabled = true;
         shuffleBtn.innerText = "ကတ်မွှေနေပါသည် 🔮";
@@ -417,7 +408,16 @@ function proceedToSpread() {
     const deckStack = document.getElementById('deckStack');
     const proceedBtn = document.getElementById('proceedToSpreadBtn');
     const guideText = document.getElementById('shuffleGuideText');
+    
+    // ကဒ်မရွေးခင်ေခင် မေးခွန်းကို မှတ်သားပြီး Box ကို ဖျောက်မည်
+    if (isCurrentSpreadPremium) {
+        const qInput = document.getElementById('premiumQuestionInput');
+        if (qInput) userPremiumQuestion = qInput.value.trim();
 
+        const qWrapper = document.getElementById('premiumQuestionWrapper');
+        if (qWrapper) qWrapper.style.display = 'none'; // ကတ်ခင်းရန် နေရာလွတ်အောင် ဖျောက်မည်
+    }
+  
     if (shuffleBtn) shuffleBtn.style.display = 'none';
     if (proceedBtn) proceedBtn.style.display = 'none';
     if (deckStack) deckStack.style.display = 'none'; 
