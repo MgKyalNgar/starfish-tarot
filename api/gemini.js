@@ -3,13 +3,11 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY2;
     if (!apiKey) return res.status(500).json({ error: 'API Key ပျောက်ဆုံးနေပါသည်' });
 
     // AI Astrology တုန်းကလို Model (၃) ခုကို အစီအစဉ်အတိုင်း ထားလိုက်ပါမယ်
     const AVAILABLE_MODELS = [
-        'gemini-2.5-flash', 
-        'gemini-2.0-flash-lite',
         'gemini-3-flash-preview'
     ];
 
@@ -18,7 +16,6 @@ export default async function handler(req, res) {
     // Model တစ်ခုချင်းစီကို စမ်းကြည့်မည့် Loop
     for (const modelName of AVAILABLE_MODELS) {
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
