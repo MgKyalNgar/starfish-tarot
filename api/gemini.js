@@ -8,7 +8,8 @@ export default async function handler(req, res) {
 
     // AI Astrology တုန်းကလို Model (၃) ခုကို အစီအစဉ်အတိုင်း ထားလိုက်ပါမယ်
     const AVAILABLE_MODELS = [
-        'gemini-3-flash-preview'
+        'gemini-3-flash-preview',
+        'gemini-2.5-flash'
     ];
 
     let lastError = null;
