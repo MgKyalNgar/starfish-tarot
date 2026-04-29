@@ -74,6 +74,7 @@ async function initDailyDrawLocally() {
 
         if (userStr) {
             const currentUser = JSON.parse(userStr);
+            const dailyCardCacheKey = `daily_draw_${currentUser.id}_${today}`;
             const { data, error } = await supabaseClient
                 .from('Journal')
                 .select('cards')
@@ -86,10 +87,20 @@ async function initDailyDrawLocally() {
                 const savedCardName = data.cards[0].name;
                 cardToUse = fullDeck.find(c => c.name === savedCardName);
                 isAlreadySaved = true;
+                 localStorage.setItem(dailyCardCacheKey, savedCardName);
             }
-        }
 
+            if (!cardToUse) {
+                const cachedCardName = localStorage.getItem(dailyCardCacheKey);
+                if (cachedCardName) {
+                    cardToUse = fullDeck.find(c => c.name === cachedCardName) || null;
+                }
+            }
         if (!cardToUse) {
+                cardToUse = fullDeck[Math.floor(Math.random() * fullDeck.length)];
+                localStorage.setItem(dailyCardCacheKey, cardToUse.name);
+            }
+        } else {
             cardToUse = fullDeck[Math.floor(Math.random() * fullDeck.length)];
         }
 
