@@ -3,6 +3,9 @@
 // =========================================
 
 (function() {
+    // TEMP HIDE 12 Nov 2026 — Background animation လေးနေလို့ ခဏပိတ်ထားသည်။
+    // ပြန်ဖွင့်ချင်လျှင် အောက်က return; လိုင်းကို ဖြုတ်ပါ။
+    return;
     const canvas = document.createElement('canvas');
     canvas.id = 'particle-canvas';
     document.body.insertBefore(canvas, document.body.firstChild);
