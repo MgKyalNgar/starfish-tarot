@@ -118,22 +118,42 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
                 authSubmitBtn.disabled = false;
             } else {
-                const { data: dbUser } = await supabaseClient
+                let { data: dbUser } = await supabaseClient
                     .from('User')
                     .select('*')
                     .eq('id', data.user.id)
                     .single();
-                
+
+                // RLS 12 Nov 2026: User row ကို login မှာ လိုအပ်ရင် ဖန်တီးသည်။
+                // Sign-up ပြီးချင်း session မရှိသေးလို့ RLS insert policy
+                // (auth.uid() = id) ကို မကျော်နိုင်ဘူး — login မှာတော့ session
+                // ရှိနေပြီမို့ insert ရသည်။
+                if (!dbUser) {
+                    const nameForRow = data.user.user_metadata?.display_name || email.split('@')[0];
+                    const { data: created } = await supabaseClient
+                        .from('User')
+                        .insert([{
+                            id: data.user.id,
+                            email: email,
+                            name: nameForRow,
+                            role: 'user',
+                            isSubscribed: false
+                        }])
+                        .select('*')
+                        .single();
+                    if (created) dbUser = created;
+                }
+
                 const userRole = dbUser ? dbUser.role : 'user';
                 const isSub = dbUser ? dbUser.isSubscribed : false;
                 const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
 
-                localStorage.setItem('tarot_user', JSON.stringify({ 
-                    email: data.user.email, 
+                localStorage.setItem('tarot_user', JSON.stringify({
+                    email: data.user.email,
                     name: displayName,
                     id: data.user.id,
                     role: userRole,
-                    isSubscribed: dbUser.isSubscribed
+                    isSubscribed: isSub
                 }));
 
                 alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
@@ -153,24 +173,9 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
                 authSubmitBtn.disabled = false;
             } else {
-                if (data.user) {
-                    const { error: dbError } = await supabaseClient
-                        .from('User')
-                        .insert([
-                            { 
-                                id: data.user.id, 
-                                email: email, 
-                                name: name,
-                                role: 'user', 
-                                isSubscribed: false
-                            }
-                        ]);
-
-                    if (dbError) {
-                        console.error("Database Save Error:", dbError);
-                    }
-                }
-
+                // RLS 12 Nov 2026: Sign-up ပြီးချင်း session မရှိသေးလို့ ဒီမှာ
+                // User row ထည့်လို့မရဘူး (RLS insert policy က auth.uid() လိုတယ်)။
+                // Row ကို ပထမဆုံး login ဝင်တဲ့အခါ အပေါ်က login branch က ဖန်တီးပေးမယ်။
                 alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
                 isLogin = true;
                 authTitle.innerText = "Login";
