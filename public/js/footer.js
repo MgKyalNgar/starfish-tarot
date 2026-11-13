@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </button>                
             </div>
             <button onclick="goBackStep()" id="globalBackBtn" class="global-back-btn"> &#8592; </button>
-            <p>&copy; 2026 Starfish Tarot. Create by Mg Kyal Ngar.</p>
+            <p>&copy; 2026 Starfish Tarot. Created by Mg Kyal Ngar.</p>
            
         </footer>
     `;
