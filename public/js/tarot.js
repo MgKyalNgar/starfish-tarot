@@ -163,8 +163,7 @@ async function saveDailyDrawToJournal(cardData, saveBtnElement) {
     const userStr = localStorage.getItem('tarot_user');
 
     if (!userStr) {
-        alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။");
-        window.location.href = 'login.html';
+        toastThenRedirect("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။", 'info', 'login.html');
         return;
     }
 
@@ -188,13 +187,13 @@ async function saveDailyDrawToJournal(cardData, saveBtnElement) {
 
     if (error) {
         console.error("Save Error:", error);
-        alert("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။");
+        showToast("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။", 'error');
         saveBtnElement.innerText = "ဒီဟောစာတမ်းကို သိမ်းမည် 📝";
         saveBtnElement.disabled = false;
         return;
     }
 
-    alert(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
+    showToast(`👤 ${currentUser.name} ရေ... "${cardData.name}" ကတ်ကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`, 'success');
 
     saveBtnElement.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";
     saveBtnElement.style.opacity = "0.5";
@@ -249,8 +248,7 @@ async function selectSpread(type, count, isPremium = false) {
         const userStr = localStorage.getItem('tarot_user');
         
         if (!userStr) {
-            alert("Premium ဟောစာတမ်းများကို ဖတ်ရန် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
-            window.location.href = 'login.html';
+            toastThenRedirect("Premium ဟောစာတမ်းများကို ဖတ်ရန် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။", 'info', 'login.html');
             return;
         }
 
@@ -664,7 +662,7 @@ function goToRevealStep() {
                 generatePremiumReading(drawnCardDetails, currentSpreadType, userPremiumQuestion);
             } else {
                 console.error("preTarot.js script is not loaded or missing.");
-                alert("Premium စနစ် ချို့ယွင်းနေပါသည်။ (preTarot.js ချိတ်ဆက်ရန် လိုအပ်သည်)");
+                showToast("Premium စနစ် ချို့ယွင်းနေပါသည်။ (preTarot.js ချိတ်ဆက်ရန် လိုအပ်သည်)", 'error');
             }
         } 
         // Free ဆိုလျှင် ပုံမှန်အတိုင်း ပြမည်
@@ -786,8 +784,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
     const userStr = localStorage.getItem('tarot_user');
 
     if (!userStr) {
-        alert("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။");
-        window.location.href = 'login.html';
+        toastThenRedirect("မှတ်စုသိမ်းရန်အတွက် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ သို့မဟုတ် အကောင့်သစ်ဖွင့်ပါ။", 'info', 'login.html');
         return;
     }
 
@@ -821,7 +818,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
 
     if (error) {
         console.error("Save Error:", error);
-        alert("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။");
+        showToast("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိနေပါသည်။", 'error');
         if (saveBtn) {
             saveBtn.innerText = "ဒီဟောစာတမ်းကို သိမ်းမည် 📝";
             saveBtn.disabled = false;
@@ -829,7 +826,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
         return;
     }
 
-    alert(`👤 ${currentUser.name} ရေ... ဟောစာတမ်းကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`);
+    showToast(`👤 ${currentUser.name} ရေ... ဟောစာတမ်းကို Database ပေါ်တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ! ✨`, 'success');
 
     if (saveBtn) {
         saveBtn.innerText = "Journal တွင် သိမ်းပြီးပါပြီ ✓";

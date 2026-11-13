@@ -45,8 +45,7 @@ async function initAdminPage() {
     }
     const currentUser = JSON.parse(userStr);
     if (currentUser.role !== 'admin') {
-        alert("⚠️ သင့်တွင် ဤစာမျက်နှာကို ကြည့်ရှုခွင့် (Admin Access) မရှိပါ။");
-        window.location.href = 'index.html';
+        toastThenRedirect("⚠️ သင့်တွင် ဤစာမျက်နှာကို ကြည့်ရှုခွင့် (Admin Access) မရှိပါ။", 'error', 'index.html', 1500);
         return;
     }
 
@@ -102,15 +101,16 @@ window.toggleUserRole = async function(userId, currentRole) {
     const newRole = currentRole === 'admin' ? 'user' : 'admin';
     const confirmMsg = `ဒီ User ကို "${newRole.toUpperCase()}" အဖြစ် ပြောင်းလဲမှာ သေချာပြီလား?`;
 
-    if (confirm(confirmMsg)) {
+    if (await showConfirm('အတည်ပြုခြင်း', confirmMsg)) {
         try {
             await adminFetch('/api/admin/users/' + userId + '/role', {
                 method: 'POST',
                 body: JSON.stringify({ role: newRole }),
             });
+            showToast('ပြောင်းလဲပြီးပါပြီ ✓', 'success');
             initAdminPage(); // Table ကို Refresh ပြန်လုပ်မည်
         } catch (error) {
-            alert("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message);
+            showToast("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message, 'error');
         }
     }
 };
@@ -121,15 +121,16 @@ window.toggleSubscription = async function(userId, currentStatus) {
     const statusText = newStatus ? 'Premium User 🌟' : 'Free User';
     const confirmMsg = `ဒီ User ကို "${statusText}" အဖြစ် သတ်မှတ်မှာ သေချာပြီလား?`;
 
-    if (confirm(confirmMsg)) {
+    if (await showConfirm('အတည်ပြုခြင်း', confirmMsg)) {
         try {
             await adminFetch('/api/admin/users/' + userId + '/subscription', {
                 method: 'POST',
                 body: JSON.stringify({ isSubscribed: newStatus }),
             });
+            showToast('ပြောင်းလဲပြီးပါပြီ ✓', 'success');
             initAdminPage(); // Table ကို Refresh ပြန်လုပ်မည်
         } catch (error) {
-            alert("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message);
+            showToast("လုပ်ဆောင်မှု မအောင်မြင်ပါ: " + error.message, 'error');
         }
     }
 };
@@ -172,13 +173,13 @@ window.closeManageModal = function() {
 window.sendPasswordReset = async function(userEmail) {
     const confirmMsg = `"${userEmail}" ထံသို့ စကားဝှက်အသစ်ပြောင်းရန် လင့်ခ် (Reset Link) ပို့မှာ သေချာပြီလား?`;
 
-    if (confirm(confirmMsg)) {
+    if (await showConfirm('အတည်ပြုခြင်း', confirmMsg)) {
         const { data, error } = await supabaseClient.auth.resetPasswordForEmail(userEmail);
 
         if (error) {
-            alert("အီးမေးလ်ပို့ရာတွင် အမှားအယွင်းရှိနေပါသည်: " + error.message);
+            showToast("အီးမေးလ်ပို့ရာတွင် အမှားအယွင်းရှိနေပါသည်: " + error.message, 'error');
         } else {
-            alert(`စကားဝှက်ပြောင်းရန် လင့်ခ်ကို "${userEmail}" သို့ အောင်မြင်စွာ ပို့လိုက်ပါပြီ! 📧\n(User အနေဖြင့် Email Inbox သို့မဟုတ် Spam Folder ကို စစ်ဆေးရပါမည်)`);
+            showToast(`စကားဝှက်ပြောင်းရန် လင့်ခ်ကို "${userEmail}" သို့ အောင်မြင်စွာ ပို့လိုက်ပါပြီ! 📧\n(User အနေဖြင့် Email Inbox သို့မဟုတ် Spam Folder ကို စစ်ဆေးရပါမည်)`, 'success');
         }
     }
 };

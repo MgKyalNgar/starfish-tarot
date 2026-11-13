@@ -103,7 +103,7 @@ async function initProfilePage() {
             const newPassword = document.getElementById('newPassword').value;
 
             if (newPassword.length < 6) {
-                alert("စကားဝှက်အသစ်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။");
+                showToast("စကားဝှက်အသစ်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။", 'error');
                 return;
             }
 
@@ -113,9 +113,9 @@ async function initProfilePage() {
             const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
 
             if (error) {
-                alert("Error: " + error.message);
+                showToast("Error: " + error.message, 'error');
             } else {
-                alert("စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲသွားပါပြီ! 🔐");
+                showToast("စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲသွားပါပြီ! 🔐", 'success');
                 document.getElementById('newPassword').value = ''; 
             }
 

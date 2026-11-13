@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.5'; // 13 Nov 2026: bumped so phones fetch the new Library order + image-space fix in config.js + tarot.js + style.css (old SW served stale precache)
+const CACHE_NAME = 'starfish-tarot-v3.6'; // 13 Nov 2026: bumped so phones fetch the new in-app toast/confirm in auth.js + tarot.js + style.css (old SW served stale precache)
 const urlsToCache = [
   '/',
   '/index.html',

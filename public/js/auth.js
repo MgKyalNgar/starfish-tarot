@@ -32,6 +32,72 @@ async function syncSubscriptionFromServer() {
     }
 }
 
+// ===== In-app Toast & Confirm (13 Nov 2026) — browser alert()/confirm() အစား =====
+// auth.js က စာမျက်နှာ ၇ ခုလုံးမှာ ပါလို့ helper တွေကို ဒီမှာပဲ ထားသည်။
+
+// အောက်ခြေမှာ ခဏပေါ်ပြီး သူ့အလိုလို ပျောက်သွားတဲ့ toast (type: 'success' | 'error' | 'info')။
+function showToast(message, type = 'info') {
+    let container = document.getElementById('appToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'appToastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerText = message;
+    toast.onclick = () => toast.remove();
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 350);
+    }, 3500);
+}
+
+// Toast ပြပြီး ခဏနေမှ တခြား စာမျက်နှာကို သွားမည် (alert က ပိတ်ဆို့ပေးသလို စာဖတ်ချိန် ပေးရန်)။
+function toastThenRedirect(message, type, url, delay = 1200) {
+    showToast(message, type);
+    setTimeout(() => { window.location.href = url; }, delay);
+}
+
+// App ပုံစံ confirm modal — Promise<boolean> ပြန်ပေးသည် (OK = true, Cancel = false)။
+function showConfirm(title, message, okText = 'အတည်ပြုမည်', cancelText = 'ပယ်ဖျက်မည်') {
+    return new Promise((resolve) => {
+        let overlay = document.getElementById('appConfirmOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'appConfirmOverlay';
+            overlay.className = 'modal-overlay hidden';
+            overlay.innerHTML = `
+                <div class="modal-box">
+                    <h2 id="appConfirmTitle" style="color: var(--accent-cyan); margin-bottom: 1rem;"></h2>
+                    <p id="appConfirmMsg" style="line-height: 1.6; margin-bottom: 1.5rem;"></p>
+                    <div class="modal-actions">
+                        <button class="btn-cancel" id="appConfirmCancel"></button>
+                        <button class="btn-login" id="appConfirmOk"></button>
+                    </div>
+                </div>`;
+            document.body.appendChild(overlay);
+        }
+        document.getElementById('appConfirmTitle').innerText = title;
+        document.getElementById('appConfirmMsg').innerText = message;
+        document.getElementById('appConfirmOk').innerText = okText;
+        document.getElementById('appConfirmCancel').innerText = cancelText;
+        const close = (value) => {
+            overlay.classList.add('hidden');
+            document.getElementById('appConfirmOk').onclick = null;
+            document.getElementById('appConfirmCancel').onclick = null;
+            overlay.onclick = null;
+            resolve(value);
+        };
+        document.getElementById('appConfirmOk').onclick = () => close(true);
+        document.getElementById('appConfirmCancel').onclick = () => close(false);
+        overlay.onclick = (e) => { if (e.target === overlay) close(false); };
+        overlay.classList.remove('hidden');
+    });
+}
+
 function updateAuthUI() {
     const userStr = localStorage.getItem('tarot_user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
@@ -131,7 +197,7 @@ function initAuthPage() {
         e.preventDefault();
 
         if (!supabaseClient) {
-            alert("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။");
+            showToast("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။", 'error');
             return;
         }
 
@@ -149,7 +215,7 @@ function initAuthPage() {
             });
 
             if (error) {
-                alert("Error: " + error.message);
+                showToast("Error: " + error.message, 'error');
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
                 authSubmitBtn.disabled = false;
             } else {
@@ -191,8 +257,7 @@ function initAuthPage() {
                     isSubscribed: isSub
                 }));
 
-                alert("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!");
-                window.location.href = 'index.html'; 
+                toastThenRedirect("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!", 'success', 'index.html');
             }
         } else {
             const { data, error } = await supabaseClient.auth.signUp({
@@ -204,14 +269,14 @@ function initAuthPage() {
             });
 
             if (error) {
-                alert("Error: " + error.message);
+                showToast("Error: " + error.message, 'error');
                 authSubmitBtn.innerText = "အကောင့်သစ်ဖွင့်မည်";
                 authSubmitBtn.disabled = false;
             } else {
                 // RLS 12 Nov 2026: Sign-up ပြီးချင်း session မရှိသေးလို့ ဒီမှာ
                 // User row ထည့်လို့မရဘူး (RLS insert policy က auth.uid() လိုတယ်)။
                 // Row ကို ပထမဆုံး login ဝင်တဲ့အခါ အပေါ်က login branch က ဖန်တီးပေးမယ်။
-                alert("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။");
+                showToast("အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်! ကျေးဇူးပြု၍ Login ပြန်ဝင်ပေးပါ။", 'success');
                 isLogin = true;
                 authTitle.innerText = "Login";
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";

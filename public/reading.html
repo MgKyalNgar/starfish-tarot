@@ -70,7 +70,7 @@
                 <p>ဤအသေးစိတ် ဟောစာတမ်းကို ဖတ်ရှုရန် Starfish Tarot ၏ Member အဖြစ် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။</p>
                 <div class="modal-actions">
                     <button class="btn-cancel" onclick="closeModal()">နောက်ဆုတ်မည်</button>
-                    <button class="btn-login" onclick="alert('Login Page သို့ သွားမည်')">Login ဝင်ရန်</button>
+                    <button class="btn-login" onclick="window.location.href='login.html'">Login ဝင်ရန်</button>
                 </div>
             </div>
         </div>
@@ -119,7 +119,10 @@
     <div id="footer-placeholder"></div>
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
-    alert("🚨 Error တွေ့ပါပြီ!\n\nအကြောင်းရင်း: " + message + "\nစာကြောင်းနံပါတ်: " + lineno);
+    console.error("🚨 Error:", message, "at line", lineno);
+    if (typeof showToast === 'function') {
+        showToast("🚨 Error တွေ့ပါပြီ! အကြောင်းရင်း: " + message, 'error');
+    }
     return true; 
 };
     </script>
