@@ -222,7 +222,26 @@ function showStep(stepId) {
     }
 }
 
-function selectSpread(type, count, isPremium = false) {
+// Server ဘက်က Premium အခြေအနေကို အသစ်စစ်သည် (localStorage ကို မယုံပါ)။
+// Server ဆက်သွယ်မရလျှင် null ပြန်ပေးမည် — အဲဒီအခါ localStorage တန်ဖိုးကို သုံးမည်။
+async function fetchPremiumFromServer() {
+    if (typeof supabaseClient === 'undefined' || !supabaseClient) return null;
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return null;
+        const res = await fetch('/api/me', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+        });
+        if (!res.ok) return null;
+        const result = await res.json();
+        return !!(result.data && result.data.isSubscribed);
+    } catch (e) {
+        console.warn('Premium check failed:', e);
+        return null;
+    }
+}
+
+async function selectSpread(type, count, isPremium = false) {
     if (isPremium) {
         const userStr = localStorage.getItem('tarot_user');
         
@@ -233,7 +252,16 @@ function selectSpread(type, count, isPremium = false) {
         }
 
         const currentUser = JSON.parse(userStr);
-        if (!currentUser.isSubscribed ) {
+        // Server ကသာ အမှန် — localStorage ပြင်ထားရင်တောင် ဒီမှာ မိမယ်။
+        const serverPremium = await fetchPremiumFromServer();
+        if (serverPremium !== null && serverPremium !== !!currentUser.isSubscribed) {
+            // Server နဲ့ မကိုက်ရင် localStorage ကို အမှန်ပြင်ပေးမည်။
+            currentUser.isSubscribed = serverPremium;
+            localStorage.setItem('tarot_user', JSON.stringify(currentUser));
+            if (typeof updateAuthUI === 'function') updateAuthUI();
+        }
+        const isPremiumNow = serverPremium !== null ? serverPremium : !!currentUser.isSubscribed;
+        if (!isPremiumNow) {
             handlePremiumClick(); 
             return; 
         }

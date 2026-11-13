@@ -3,6 +3,35 @@
 // ဖိုင်အမည်: auth.js
 // =========================================
 
+let _premiumSynced = false; // စာမျက်နှာတစ်ခါဖွင့်တိုင်း server နဲ့ တစ်ခါသာ sync မည်
+
+// Server ဘက်က Premium အခြေအနေကို စစ်ပြီး localStorage ကို အမှန်ပြင်ပေးမည်။
+// localStorage ကို user က ပြင်လို့ရလို့ DB ကသာ အမှန်ဖြစ်သည် (13 Nov 2026)။
+async function syncSubscriptionFromServer() {
+    if (typeof supabaseClient === 'undefined' || !supabaseClient) return false;
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return false;
+        const res = await fetch('/api/me', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+        });
+        if (!res.ok) return false;
+        const result = await res.json();
+        const me = result.data || {};
+        const userStr = localStorage.getItem('tarot_user');
+        if (!userStr) return false;
+        const currentUser = JSON.parse(userStr);
+        currentUser.role = me.role || currentUser.role || 'user';
+        currentUser.isSubscribed = !!me.isSubscribed;
+        if (me.name) currentUser.name = me.name;
+        localStorage.setItem('tarot_user', JSON.stringify(currentUser));
+        return true;
+    } catch (e) {
+        console.warn('Premium status sync failed:', e);
+        return false;
+    }
+}
+
 function updateAuthUI() {
     const userStr = localStorage.getItem('tarot_user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
@@ -55,6 +84,12 @@ function updateAuthUI() {
             if (lockIcon) lockIcon.style.display = 'block';
         }
     });
+
+    // Login ဝင်ထားလျှင် server က Premium အခြေအနေအမှန်ကို တစ်ခါစစ်ပြီး UI ကို ပြန်ပြင်မည်။
+    if (currentUser && !_premiumSynced) {
+        _premiumSynced = true;
+        syncSubscriptionFromServer().then(synced => { if (synced) updateAuthUI(); });
+    }
 }
 
 function initAuthPage() {

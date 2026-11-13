@@ -35,12 +35,8 @@ def get_admin_client():
     return _admin_client
 
 
-async def require_admin(request: Request):
-    """Caller ၏ JWT ကို စစ်ပြီး User table ထဲက role က admin ဟုတ်လား စစ်သည်။
-
-    localStorage က role ကို မယုံပါ။ Server ဘက်က DB ထဲက role ကိုသာ ယုံသည်။
-    Admin မဟုတ်လျှင် 401 (login မဝင်ထားလျှင်) သို့မဟုတ် 403 ပြန်ပေးသည်။
-    """
+async def verify_user_jwt(request: Request):
+    """Caller ၏ JWT ကို စစ်ပြီး Supabase Auth user ကို ပြန်ပေးသည်။"""
     auth_header = request.headers.get("authorization", "")
     if not auth_header.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Login required")
@@ -56,7 +52,18 @@ async def require_admin(request: Request):
     user = getattr(auth_response, "user", None)
     if user is None or not getattr(user, "id", None):
         raise HTTPException(status_code=401, detail="Invalid login")
+    return user
 
+
+async def require_admin(request: Request):
+    """Caller ၏ JWT ကို စစ်ပြီး User table ထဲက role က admin ဟုတ်လား စစ်သည်။
+
+    localStorage က role ကို မယုံပါ။ Server ဘက်က DB ထဲက role ကိုသာ ယုံသည်။
+    Admin မဟုတ်လျှင် 401 (login မဝင်ထားလျှင်) သို့မဟုတ် 403 ပြန်ပေးသည်။
+    """
+    user = await verify_user_jwt(request)
+
+    admin_client = get_admin_client()
     try:
         result = (
             admin_client.table("User")
@@ -70,6 +77,30 @@ async def require_admin(request: Request):
     if not result.data or result.data.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access only")
     return user.id
+
+
+async def require_user(request: Request):
+    """Login ဝင်ထားသော user ၏ DB row (role, isSubscribed) ကို ပြန်ပေးသည်။
+
+    localStorage ကို မယုံပါ — DB ကသာ အမှန်ဖြစ်သည်။ Premium spread သော့ကို
+    server ဘက်က စစ်ရန် သုံးသည် (13 Nov 2026)။
+    """
+    user = await verify_user_jwt(request)
+
+    admin_client = get_admin_client()
+    try:
+        result = (
+            admin_client.table("User")
+            .select("id,name,email,role,isSubscribed")
+            .eq("id", user.id)
+            .single()
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"User record not found: {e}")
+    if not result.data:
+        raise HTTPException(status_code=404, detail="User record not found")
+    return result.data
 
 
 class RoleBody(BaseModel):
@@ -100,6 +131,14 @@ def get_all_cards():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# မိမိ၏ Premium အခြေအနေကို server ဘက်က စစ်ရန် (Login ဝင်ထားသူတိုင်းအတွက်)
+# localStorage ကို ပြင်ပြီး Premium ခိုးသုံးတာကို ကာကွယ်ရန် — DB ကသာ အမှန်။
+@app.get("/api/me")
+async def get_my_status(request: Request):
+    me = await require_user(request)
+    return {"status": "success", "data": me}
 
 
 # (၃) Admin API — User အားလုံးကို ကြည့်ရန် (Admin အတွက်သာ)
