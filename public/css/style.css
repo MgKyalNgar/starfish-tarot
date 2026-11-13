@@ -1085,6 +1085,13 @@ footer {
         margin-bottom: 5px !important; 
         margin-right: 0 !important;
     }
+    /* Messenger ခလုတ်ကိုတော့ အပေါ်က .action-btn ဖုန်း စည်းမျဉ်းကနေ လွတ်အောင် (13 Nov 2026) — စာနဲ့ ကိုက်တဲ့ အကျယ် + ပုံမှန် စာဆိုဒ်/အမြင့် */
+    .pricing-book-btn {
+        width: auto !important;
+        font-size: 1.05rem !important;
+        padding: 0.8rem 2rem !important;
+        margin-bottom: 0 !important;
+    }
     /* Title နှင့် ကပ်သွားစေရန် margin-top များကို 0rem ပြောင်းထားသည် */
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
     

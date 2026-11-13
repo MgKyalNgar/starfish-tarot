@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.12'; // 13 Nov 2026: bumped so phones fetch the 3 pricing-page fixes in style.css — Messenger button in Padauk, dark badge with gold border so the gold star shows, gold CTA button on one line (old SW served stale precache)
+const CACHE_NAME = 'starfish-tarot-v3.13'; // 13 Nov 2026: bumped so phones fetch the Messenger button fix in style.css mobile query — the old .action-btn mobile rule (width 100% + 0.7rem) was overriding it, now .pricing-book-btn is exempt with width auto + 1.05rem (old SW served stale precache)
 const urlsToCache = [
   '/',
   '/index.html',
