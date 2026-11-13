@@ -43,11 +43,14 @@ function renderLibraryCards(cards) {
     if (!cardGrid) return;
     cardGrid.innerHTML = ''; 
 
-    cards.forEach(card => {
+    // Tarot အစဉ်အတိုင်း (id အတိုင်း) ပြမည် — All မှာ ကတ်တွေ အစဉ်လိုက် ပေါ်စေရန် (13 Nov 2026)
+    const orderedCards = [...cards].sort((a, b) => a.id - b.id);
+
+    orderedCards.forEach(card => {
         const cardEl = document.createElement('div');
         cardEl.className = 'tarot-card';
         cardEl.innerHTML = `
-            <img src="${card.imageUrl}" alt="${card.name}" loading="lazy">
+            <img src="${card.imageUrl}" alt="${card.name}" loading="lazy" decoding="async">
             <div class="card-info">
                 <h3>${card.name}</h3>
                 <p>${card.suit ? card.suit : card.arcana}</p>

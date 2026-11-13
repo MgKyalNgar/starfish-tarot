@@ -369,6 +369,9 @@ footer {
     height: auto;
     display: block;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    aspect-ratio: 540 / 949; /* ကတ်ပုံ (540x949) နေရာ ကြိုယူထားမည် — ပုံမရောက်သေးခင် grid မခုန်စေရန် (13 Nov 2026) */
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .card-info { padding: 0.8rem 0.5rem; text-align: center; }
