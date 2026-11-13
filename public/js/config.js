@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (result.status === 'success') {
             fullDeck = result.data;
             // Library မှာ ကတ်တွေ အစဉ်လိုက် ပေါ်စေရန် Tarot အစဉ်အတိုင်း (id အတိုင်း) စီမည် — API က ပြန်ပေးတဲ့ အစဉ်က ရှုပ်နေလို့ (13 Nov 2026)
+            fullDeck.sort(function (a, b) { return a.id - b.id; });
 
             if (document.getElementById('dailyCard') && typeof initDailyDrawLocally === 'function') {
                 initDailyDrawLocally(); 
