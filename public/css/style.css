@@ -303,6 +303,11 @@ footer {
     transform: translateX(5px);
 }
 
+/* Gold CTA — pricing button stands out (13 Nov 2026) */
+.cta-link.gold { border-color: rgba(255, 215, 0, 0.6); color: #ffd700; }
+.cta-link.gold:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.25); }
+.cta-link.gold:hover .arrow { color: #ffd700; }
+
 .arrow { transition: transform 0.3s ease; }
 
 /* =========================================
