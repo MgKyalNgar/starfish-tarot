@@ -934,8 +934,9 @@ footer {
 
 /* ကတ်များအားလုံးကို သက်ဆိုင်ရာနေရာ၌ အလယ်ဗဟိုချမည် */
 .spread-celtic-cross .card-pos-1 { top: 50%; left: 35%; transform: translate(-50%, -50%); z-index: 1; }
-/* ၉၀ ဒီဂရီ အတိအကျ လှည့်ထားခြင်း */
-.spread-celtic-cross .card-pos-2 { top: 50%; left: 35%; transform: translate(-50%, -50%) rotate(90deg); z-index: 10; }
+/* ၉၀ ဒီဂရီ အတိအကျ လှည့်ထားခြင်း — 13 Nov 2026 (#3): ဖြတ်ကတ်ကို ၂၅px အောက်ရွှေ့ထားတယ်၊
+   အလယ်ကတ်ရဲ့ အပေါ်ပိုင်း ~၅၀px နှိပ်လို့ရအောင် (အရင် ထိပ်/အောက် ၂၅px စီပဲ ရတယ်) — cross ပုံစံကျန်တယ် */
+.spread-celtic-cross .card-pos-2 { top: calc(50% + 25px); left: 35%; transform: translate(-50%, -50%) rotate(90deg); z-index: 10; }
 .spread-celtic-cross .card-pos-3 { top: 80%; left: 35%; transform: translate(-50%, -50%); }
 .spread-celtic-cross .card-pos-4 { top: 50%; left: 10%; transform: translate(-50%, -50%); }
 .spread-celtic-cross .card-pos-5 { top: 20%; left: 35%; transform: translate(-50%, -50%); }

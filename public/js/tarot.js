@@ -7,6 +7,7 @@
 
 let userPremiumQuestion = ''; // Premium မေးခွန်းမှတ်သားရန် Variable အသစ် (ထပ်ဖြည့်ထားသည်)
 let isCurrentSpreadPremium = false;
+let fanReady = false; // 13 Nov 2026 (#3): fan ငြိမ်ပြီးမှ ကတ်ရွေးလို့ရမယ် — ခင်းနေတုန်း နှိပ်တာ လက်မခံဘူး
 
 // ============================================================================
 // [၂] LIBRARY PAGE LOGIC (ကတ်စာကြည့်တိုက် စာမျက်နှာအတွက်)
@@ -473,9 +474,18 @@ function proceedToSpread() {
 // ============================================================================
 // [၆] CARD SPREADING & SELECTION (ကတ်ခင်းကျင်းခြင်း နှင့် User ရွေးချယ်ခြင်း)
 // ============================================================================
+// ရွေးပြီး X / N ကတ် counter ကို ခေါင်းစဉ်မှာ အချိန်နဲ့တပြေးညီ ပြမည် (13 Nov 2026, #3)။
+function updatePickCounter() {
+    const title = document.querySelector('#step-shuffle h2');
+    if (title) title.innerText = `ရွေးပြီး ${drawnCardDetails.length} / ${cardsToDraw} ကတ်`;
+}
+
 function spreadCardsOut() {
     const deckArea = document.getElementById('deck-area');
     if(!deckArea) return;
+
+    fanReady = false; // Fan ငြိမ်မှ ရွေးလို့ရမယ်
+    drawnCardDetails = []; // ကတ်အသစ်ခင်းတိုင်း counter က 0 ကနေ ပြန်စမယ်
 
     const spreadContainer = document.createElement('div');
     spreadContainer.className = 'spread-area';
@@ -494,7 +504,7 @@ function spreadCardsOut() {
     spreadContainer.style.height = `${(totalRows - 1) * ySpacing + cardHeight + 50}px`;
 
     const title = document.querySelector('#step-shuffle h2');
-    if(title) title.innerText = `ကျေးဇူးပြု၍ သင့်စိတ်ကြိုက် ကတ် (${cardsToDraw}) ကတ်ကို ရွေးချယ်ပါ`;
+    if(title) title.innerText = 'ကတ်များ ခင်းနေပါသည်...';
 
     for (let i = 0; i < availableDeck.length; i++) {
         const cardItem = document.createElement('div');
@@ -525,9 +535,15 @@ function spreadCardsOut() {
     }
     deckArea.appendChild(spreadContainer);
     setTimeout(() => { spreadContainer.classList.add('visible'); }, 100);
+    // Fan ငြိမ်ပြီးမှ ရွေးလို့ရမယ် (နောက်ဆုံးကတ် နေရာကျပြီး ၁၅၀ms အကြာ)။
+    setTimeout(() => {
+        fanReady = true;
+        updatePickCounter();
+    }, availableDeck.length * 15 + 150);
 }
 
 function selectIndividualCard(cardElement, availableDeck) {
+    if (!fanReady) return; // Fan မငြိမ်သေးရင် နှိပ်တာ လက်မခံဘူး
     if (drawnCardDetails.length >= cardsToDraw) return;
 
     cardElement.classList.add('selected');
@@ -542,6 +558,7 @@ function selectIndividualCard(cardElement, availableDeck) {
     }
 
     drawnCardDetails.push(selectedCard);
+    updatePickCounter();
 
     if (drawnCardDetails.length === cardsToDraw) {
         setTimeout(() => {
