@@ -3,6 +3,33 @@
 // ဖိုင်အမည်: profile.js
 // =========================================
 
+// Profile စာမျက်နှာမှာ Premium/Free အခြေအနေကို ပြမည် (13 Nov 2026)။
+// localStorage တန်ဖိုးက server နဲ့ sync လုပ်ထားပြီးသား ဖြစ်ရမည် (auth.js)။
+function renderMembershipStatus() {
+    const el = document.getElementById('profileMembership');
+    if (!el) return;
+    const userStr = localStorage.getItem('tarot_user');
+    if (!userStr) {
+        el.innerHTML = '';
+        return;
+    }
+    const currentUser = JSON.parse(userStr);
+    const badge = (text, bg, color, border) =>
+        `<span style="display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 3px 10px; border-radius: 12px; background: ${bg}; color: ${color}; border: 1px solid ${border};">${text}</span>`;
+    let html = '';
+    if (currentUser.isSubscribed) {
+        html = badge('🌟 Premium Member', 'rgba(255, 215, 0, 0.15)', '#ffd700', 'rgba(255, 215, 0, 0.4)')
+            + `<span style="color: var(--text-muted); font-size: 0.9rem; margin-left: 8px;">Premium spreads အားလုံး ဖတ်နိုင်ပါတယ်</span>`;
+    } else {
+        html = badge('Free Plan', 'rgba(255, 255, 255, 0.08)', '#a0aec0', 'rgba(255, 255, 255, 0.2)')
+            + `<span style="color: var(--text-muted); font-size: 0.9rem; margin-left: 8px;">Premium spreads တွေကို ဖတ်ရန် Premium လိုပါတယ်</span>`;
+    }
+    if (currentUser.role === 'admin') {
+        html += ' ' + badge('🛡️ Admin', 'rgba(0, 240, 255, 0.12)', 'var(--accent-cyan)', 'rgba(0, 240, 255, 0.4)');
+    }
+    el.innerHTML = html;
+}
+
 async function initProfilePage() {
     const userStr = localStorage.getItem('tarot_user');
     if (!userStr || !supabaseClient) {
@@ -14,6 +41,12 @@ async function initProfilePage() {
 
     document.getElementById('profileName').innerText = currentUser.name;
     document.getElementById('profileEmail').innerText = currentUser.email;
+
+    // အဖွဲ့ဝင်အခြေအနေကို ပြမည် — server sync ပြီးရင် အမှန်နဲ့ ပြန်ပြင်မည်။
+    renderMembershipStatus();
+    if (typeof syncSubscriptionFromServer === 'function') {
+        syncSubscriptionFromServer().then(synced => { if (synced) renderMembershipStatus(); });
+    }
 
     // --- Database မှ Journal History ကို ဆွဲထုတ်ပြခြင်း ---
     const historyContainer = document.getElementById('profileHistoryContainer');
