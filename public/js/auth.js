@@ -109,7 +109,8 @@ function updateAuthUI() {
             const adminLink = currentUser.role === 'admin' ? `<a href="admin.html" class="nav-link" style="color: #ffd700; margin-left: 15px;">Admin Panel</a>` : '';
 
             container.innerHTML = `
-                <a href="library.html" class="nav-link">Library</a>
+                <a href="index.html#pricing" class="nav-link">ဈေးနှုန်း</a>
+                <a href="library.html" class="nav-link" style="margin-left: 15px;">Library</a>
                 ${adminLink}
                 <a href="profile.html" class="nav-profile-btn" style="color: var(--accent-cyan); text-decoration: none; margin-left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;">
                     👤 ${currentUser.name}
@@ -128,7 +129,8 @@ function updateAuthUI() {
             }
         } else {
             container.innerHTML = `
-                <a href="library.html" class="nav-link">Library</a>
+                <a href="index.html#pricing" class="nav-link">ဈေးနှုန်း</a>
+                <a href="library.html" class="nav-link" style="margin-left: 15px;">Library</a>
                 <a href="login.html" class="nav-link" style="margin-left: 15px;">Login</a>
             `;
         }

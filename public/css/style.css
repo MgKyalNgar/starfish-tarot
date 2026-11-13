@@ -625,6 +625,21 @@ footer {
 }
 .toast.hide { opacity: 0; transition: opacity 0.3s ease; }
 
+/* ===== Pricing Section (13 Nov 2026) — ကိုယ်ပိုင်ဟောခြင်း ဈေးနှုန်း ===== */
+.pricing-section { width: 100%; max-width: 900px; margin: 3rem auto 1rem; padding: 0 1rem; }
+.pricing-section h2 { font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: 0.5rem; }
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.pricing-card { position: relative; background: var(--bg-glow); border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; padding: 1.5rem 1.25rem; text-align: center; }
+.pricing-card.featured { border-color: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.15); }
+.pricing-card h3 { color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.5rem; }
+.pricing-card.featured h3 { color: #ffd700; }
+.pricing-price { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; margin: 0.5rem 0; }
+.pricing-price span { font-size: 0.9rem; color: var(--text-muted); }
+.pricing-card p:last-child { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+.pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #ffd700; color: #0a1128; font-size: 0.75rem; font-weight: 700; padding: 2px 12px; border-radius: 20px; white-space: nowrap; }
+.pricing-note { color: var(--text-muted); line-height: 1.8; margin: 1rem 0 1.5rem; }
+.pricing-book-btn { display: inline-block; text-decoration: none; }
+
 /* Reading Step 2: Shuffle & Spread */
 .deck-area {
     position: relative;
