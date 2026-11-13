@@ -153,7 +153,11 @@ async def admin_list_users(request: Request):
             .order("id")
             .execute()
         )
-        return {"status": "success", "data": response.data}
+        users = response.data or []
+        # 13 Nov 2026: Admin အရင်ဆုံး၊ ပြီးရင် Premium၊ နောက်ဆုံး Free Plan —
+        # တူတဲ့ အုပ်စုထဲမှာ မူလ အစီအစဉ်အတိုင်း (Python sort က stable)။
+        users.sort(key=lambda u: (0 if u.get("role") == "admin" else 1, 0 if u.get("isSubscribed") else 1))
+        return {"status": "success", "data": users}
     except HTTPException:
         raise
     except Exception as e:
