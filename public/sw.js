@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.10'; // 13 Nov 2026: bumped so phones fetch the gold Pricing CTA button in index.html, the gold CTA style in style.css and the Home logo link in pricing.html (old SW served stale precache)
+const CACHE_NAME = 'starfish-tarot-v3.11'; // 13 Nov 2026: bumped so phones fetch the hamburger menu (auth.js + style.css mobile nav) instead of the old wrapping nav links (old SW served stale precache)
 const urlsToCache = [
   '/',
   '/index.html',

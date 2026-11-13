@@ -292,3 +292,35 @@ function initAuthPage() {
         }
     };
 }
+
+// Mobile hamburger menu (13 Nov 2026) — ဖုန်းမှာ nav link တွေကို dropdown အဖြစ် ပြမယ်
+function initHamburgerNav() {
+    document.querySelectorAll('.navbar').forEach(navbar => {
+        if (navbar.querySelector('.hamburger')) return;
+        const btn = document.createElement('button');
+        btn.className = 'hamburger';
+        btn.setAttribute('aria-label', 'Menu');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<span></span><span></span><span></span>';
+        btn.addEventListener('click', () => {
+            const open = navbar.classList.toggle('nav-open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        const authLinks = navbar.querySelector('.auth-links');
+        if (authLinks) {
+            // Link တစ်ခု နှိပ်ရင် menu ပိတ်မယ် (container ကို နားထောင်ထားလို့ updateAuthUI က innerHTML ပြန်ရေးလည်း မပျက်ဘူး)
+            authLinks.addEventListener('click', (e) => {
+                if (e.target.closest('a')) navbar.classList.remove('nav-open');
+            });
+            navbar.insertBefore(btn, authLinks);
+        } else {
+            navbar.appendChild(btn);
+        }
+    });
+    // Menu ဖွင့်ထားရင် navbar အပြင်ဘက် နှိပ်ရင် ပိတ်မယ်
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.navbar')) return;
+        document.querySelectorAll('.navbar.nav-open').forEach(n => n.classList.remove('nav-open'));
+    });
+}
+document.addEventListener('DOMContentLoaded', initHamburgerNav);
