@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.11'; // 13 Nov 2026: bumped so phones fetch the hamburger menu (auth.js + style.css mobile nav) instead of the old wrapping nav links (old SW served stale precache)
+const CACHE_NAME = 'starfish-tarot-v3.12'; // 13 Nov 2026: bumped so phones fetch the 3 pricing-page fixes in style.css — Messenger button in Padauk, dark badge with gold border so the gold star shows, gold CTA button on one line (old SW served stale precache)
 const urlsToCache = [
   '/',
   '/index.html',
