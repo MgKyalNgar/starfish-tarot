@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="my">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>StarFish Tarot ဝန်ဆောင်မှုများ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        color-scheme: dark;
+        --bg:#0a1128;
+        --bg2:#0d1531;
+        --card:#131f42;
+        --card2:#16234c;
+        --line:rgba(0,229,255,.35);
+        --cyan:#00e5ff;
+        --cyan-dim:#7dd7e8;
+        --gold:#ffd23f;
+        --gold-deep:#f5b301;
+        --text:#f2f5ff;
+        --muted:#aab6d8;
+        --muted2:#8b98c4;
+        --radius:18px;
+      }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0;
+        background:
+          radial-gradient(1100px 520px at 85% -80px, rgba(0,229,255,.10), transparent 60%),
+          radial-gradient(900px 480px at -10% 30%, rgba(255,210,63,.06), transparent 55%),
+          linear-gradient(180deg, var(--bg2), var(--bg) 340px);
+        color:var(--text);
+        font-family:"Padauk","Noto Sans Myanmar",system-ui,sans-serif;
+        line-height:1.75;
+        -webkit-font-smoothing:antialiased;
+        overflow-x:hidden;
+      }
+      h1,h2,h3,p,ul,ol,figure{ margin:0; }
+      ul,ol{ padding:0; list-style:none; }
+      a{ color:inherit; }
+      button{ font-family:inherit; cursor:pointer; }
+
+      /* ---------- twinkling stars ---------- */
+      #stars{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+      #stars i{
+        position:absolute; display:block; border-radius:50%;
+        background:#fff; opacity:.25;
+        animation:twinkle var(--d,3s) ease-in-out infinite;
+      }
+      #stars i.gold{ background:var(--gold); }
+      #stars i.cyan{ background:var(--cyan); }
+      @keyframes twinkle{ 0%,100%{ opacity:.12; } 50%{ opacity:.95; } }
+      @media (prefers-reduced-motion: reduce){
+        #stars i{ animation:none; opacity:.4; }
+        html{ scroll-behavior:auto; }
+      }
+
+      .wrap{ position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 18px 120px; }
+
+      /* ---------- hero ---------- */
+      .hero{ text-align:center; padding:34px 6px 6px; }
+      .brand{
+        font-family:"Orbitron",sans-serif; letter-spacing:.14em;
+        font-size:.78rem; font-weight:700; color:var(--cyan);
+        text-transform:uppercase;
+      }
+      .hero h1{
+        font-size:clamp(1.9rem, 7.5vw, 2.7rem); line-height:1.35; font-weight:700;
+        margin-top:10px;
+      }
+      .hero h1 .gold{ color:var(--gold); }
+      .hero p{ color:var(--muted); margin-top:12px; font-size:1.02rem; max-width:36em; margin-left:auto; margin-right:auto; }
+      .hero p b{ color:var(--text); }
+      .hero-meta{
+        display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:18px;
+      }
+      .hero-meta span{
+        border:1px solid rgba(255,210,63,.5); border-radius:999px; padding:5px 13px;
+        font-size:.88rem; color:#ffe9a3; background:rgba(255,210,63,.07); line-height:1.5;
+      }
+
+      /* ---------- sections ---------- */
+      section{ margin-top:44px; }
+      .sec-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:18px; }
+      .sec-head .no{
+        font-family:"Orbitron",sans-serif; color:var(--gold); font-weight:700; font-size:.95rem;
+      }
+      .sec-head h2{ font-size:clamp(1.3rem,5vw,1.6rem); line-height:1.4; }
+      .sec-sub{ color:var(--muted); margin:-8px 0 18px; font-size:.98rem; }
+
+      /* ---------- package cards ---------- */
+      .pkg-list{ display:grid; gap:16px; }
+      .pkg{
+        background:var(--card); border:1px solid rgba(139,152,196,.22);
+        border-radius:var(--radius); padding:20px 18px;
+      }
+      .pkg.featured{ border-color:rgba(255,210,63,.55); }
+      .pkg-top{
+        display:flex; align-items:flex-start; gap:12px;
+        padding-bottom:14px; border-bottom:1px solid rgba(139,152,196,.16);
+      }
+      .pkg-name{ font-size:1.22rem; font-weight:700; line-height:1.45; }
+      .pkg.featured .pkg-name{ color:var(--gold); }
+      .pkg-tag{ color:var(--muted); font-size:.92rem; line-height:1.55; }
+      .pkg-price{
+        margin-left:auto; flex:none; white-space:nowrap; text-align:right;
+        font-size:1.3rem; font-weight:700; line-height:1.25;
+      }
+      .pkg-price small{ display:block; font-size:.82rem; color:var(--muted); font-weight:400; }
+      .pkg-body{ margin-top:14px; display:grid; gap:14px; }
+      .pkg-block h3{
+        font-size:.92rem; color:var(--cyan); font-weight:700; margin-bottom:5px; letter-spacing:.01em;
+      }
+      .pkg-block p{ color:var(--muted); font-size:.99rem; }
+      .pkg-block p b{ color:var(--text); }
+      .pkg-points{ display:grid; gap:6px; }
+      .pkg-points li{
+        position:relative; padding-left:20px;
+        color:var(--muted); font-size:.99rem; line-height:1.65;
+      }
+      .pkg-points li::before{
+        content:""; position:absolute; left:2px; top:.62em;
+        width:7px; height:7px; border-radius:50%; background:var(--gold);
+      }
+      .pkg-points li b{ color:var(--text); }
+      .go-link{
+        display:inline-flex; align-items:center; gap:7px;
+        min-height:44px; padding:8px 4px 2px;
+        color:var(--cyan); font-weight:700; font-size:.98rem; text-decoration:none; line-height:1.4;
+      }
+      .go-link:hover{ color:#a5f3ff; }
+      .go-link:focus-visible{ outline:3px solid var(--cyan); outline-offset:2px; border-radius:6px; }
+
+      /* ---------- summary panels ---------- */
+      .panel{
+        background:var(--card); border:1px solid rgba(139,152,196,.22);
+        border-radius:var(--radius); padding:20px 18px;
+      }
+      .panel p{ color:var(--muted); font-size:1rem; }
+      .panel p b{ color:var(--text); }
+      .panel .go-link{ margin-top:6px; }
+
+      /* ---------- CTA ---------- */
+      .cta-block{ text-align:center; margin-top:46px; }
+      .cta-block h2{ font-size:clamp(1.35rem,5.5vw,1.7rem); line-height:1.45; }
+      .cta-block p{ color:var(--muted); margin-top:8px; }
+      .book-btn{
+        display:inline-flex; align-items:center; justify-content:center; gap:10px;
+        margin-top:20px; min-height:54px; padding:13px 34px;
+        border-radius:999px; border:1.5px solid var(--cyan);
+        background:linear-gradient(180deg, #125c72, #0a3547);
+        color:#eafcff; text-decoration:none;
+        font-size:1.08rem; font-weight:700; line-height:1.4;
+        box-shadow:0 8px 26px rgba(0,229,255,.16);
+      }
+      .book-btn:hover{ background:linear-gradient(180deg, #18748f, #0d4257); }
+      .book-btn:focus-visible{ outline:3px solid var(--cyan); outline-offset:3px; }
+      .cta-links{ margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+      .cta-links a{
+        display:inline-flex; align-items:center; min-height:44px; padding:8px 20px;
+        border-radius:999px; border:1px solid rgba(139,152,196,.45);
+        color:var(--text); text-decoration:none; font-weight:700; font-size:.97rem; line-height:1.4;
+        background:rgba(19,31,66,.6);
+      }
+      .cta-links a:hover{ border-color:var(--gold); color:var(--gold); }
+      .cta-links a:focus-visible{ outline:3px solid var(--cyan); outline-offset:2px; }
+
+      footer{ position:relative; z-index:1; text-align:center; color:var(--muted2); font-size:.86rem; padding:0 18px 26px; }
+          /* Port: top nav back to home (added when moving the preview into the App) */
+      .topnav{ max-width:960px; margin:0 auto; padding:14px 20px 0; }
+      .topnav a{ color:#ffd700; text-decoration:none; font-family:'Padauk',sans-serif; font-size:1rem; }
+      .topnav a:hover{ text-decoration:underline; }
+</style>
+  </head>
+  <body>
+    <nav class="topnav"><a href="index.html">← StarFish Tarot — ပင်မ စာမျက်နှာ</a></nav>
+    <div id="stars" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <!-- 1. Hero -->
+      <header class="hero">
+        <p class="brand">Starfish Tarot</p>
+        <h1>ဝန်ဆောင်မှုများ <span class="gold">Services</span></h1>
+        <p><b>StarFish Tarot</b> မှာ မေးချင်တဲ့ မေးခွန်းအရေအတွက်နဲ့ အခြေအနေပေါ် မူတည်ပြီး ရွေးချယ်နိုင်တဲ့ <b>Package ၅ မျိုး</b> ရှိပါတယ်။ တစ်ခုချင်းစီမှာ ဘယ်သူ့အတွက် သင့်တော်လဲဆိုတာ အောက်မှာ ရေးထားပါတယ် — ကိုက်ညီတဲ့ Package ကို ရွေးပြီး Booking ကနေ စတင်လိုက်ရုံပါပဲ။</p>
+        <div class="hero-meta">
+          <span>Package ၅ မျိုး — ၅,၀၀၀ ကျပ် မှ ၃၀,၀၀၀ ကျပ် ထိ</span>
+        </div>
+      </header>
+
+      <!-- 2. Packages -->
+      <section aria-labelledby="pkg-h">
+        <div class="sec-head"><span class="no">01</span><h2 id="pkg-h">Package ၅ မျိုး — အသေးစိတ်</h2></div>
+        <p class="sec-sub">ဈေးနှုန်းအားလုံး ကျပ်ဖြင့် ဖြစ်ပြီး ပေးချေမှုကို KPay / Wave Pay / AYA Pay ဖြင့် လက်ခံပါတယ်။</p>
+
+        <div class="pkg-list">
+          <!-- Package 1 -->
+          <article class="pkg">
+            <div class="pkg-top">
+              <div>
+                <h3 class="pkg-name">မေးခွန်း ၁ ခု</h3>
+                <p class="pkg-tag">မေးခွန်း တစ်ခုတည်းအတွက် အမြန် လမ်းညွှန်မှု</p>
+              </div>
+              <p class="pkg-price"><span>၅,၀၀၀</span><small>ကျပ်</small></p>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-block">
+                <h3>အကျဉ်း</h3>
+                <p>မေးခွန်း ၁ ခုအတွက် ၁ ကတ် မှ ၃ ကတ်ထိ ဆွဲပြီး အဖြေပေးပါတယ်။</p>
+              </div>
+              <div class="pkg-block">
+                <h3>ဘယ်သူ့အတွက် သင့်တော်လဲ</h3>
+                <p>သိချင်တဲ့ မေးခွန်း တစ်ခု၊ ဆုံးဖြတ်ရမယ့် ကိစ္စ တစ်ခုအတွက် ရှင်းရှင်းလင်းလင်း အဖြေတစ်ခု လိုချင်သူများ အတွက် သင့်တော်ပါတယ်။</p>
+              </div>
+              <a class="go-link" href="booking.html">Booking ကနေ ဒီ Package တင်ရန် →</a>
+            </div>
+          </article>
+
+          <!-- Package 2 -->
+          <article class="pkg featured">
+            <div class="pkg-top">
+              <div>
+                <h3 class="pkg-name">မေးခွန်း ၃ ခု</h3>
+                <p class="pkg-tag">အကြောင်းအရာ မတူတဲ့ မေးခွန်း သုံးခု တစ်ခါတည်း</p>
+              </div>
+              <p class="pkg-price"><span>၁၂,၀၀၀</span><small>ကျပ်</small></p>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-block">
+                <h3>အကျဉ်း</h3>
+                <p>မေးခွန်း ၃ ခုကို တစ်ခုချင်းစီ သီးသန့် သုံးသပ် ဟောပေးပါတယ်။</p>
+              </div>
+              <div class="pkg-block">
+                <h3>ဘယ်သူ့အတွက် သင့်တော်လဲ</h3>
+                <p>အချစ်ရေး၊ အလုပ်၊ ငွေကြေး စသဖြင့် အကြောင်းအရာ မတူတဲ့ မေးခွန်း အနည်းငယ်ကို တစ်ခါတည်း မေးချင်သူများ အတွက် သင့်တော်ပါတယ်။</p>
+              </div>
+              <a class="go-link" href="booking.html">Booking ကနေ ဒီ Package တင်ရန် →</a>
+            </div>
+          </article>
+
+          <!-- Package 3 -->
+          <article class="pkg">
+            <div class="pkg-top">
+              <div>
+                <h3 class="pkg-name">Love Package</h3>
+                <p class="pkg-tag">အချစ်ရေး သီးသန့် အသေးစိတ် ဟောကြားမှု</p>
+              </div>
+              <p class="pkg-price"><span>၁၅,၀၀၀</span><small>ကျပ်</small></p>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-block">
+                <h3>အကျဉ်း</h3>
+                <p>အချစ်ရေး သီးသန့် — ဆက်ဆံရေး၊ ခံစားချက်နဲ့ လမ်းကြောင်းကို အသေးစိတ် ကြည့်ပေးပါတယ်။</p>
+              </div>
+              <div class="pkg-block">
+                <h3>ဘယ်သူ့အတွက် သင့်တော်လဲ</h3>
+                <p>ချစ်သူနဲ့ ဆက်ဆံရေး အခြေအနေ၊ တစ်ဖက်လူရဲ့ ခံစားချက်နဲ့ ဆက်ဆံရေးရဲ့ ရှေ့လမ်းကြောင်းကို သေချာစွာ သိချင်သူများ အတွက် သင့်တော်ပါတယ်။</p>
+              </div>
+              <a class="go-link" href="booking.html">Booking ကနေ ဒီ Package တင်ရန် →</a>
+            </div>
+          </article>
+
+          <!-- Package 4 -->
+          <article class="pkg">
+            <div class="pkg-top">
+              <div>
+                <h3 class="pkg-name">Deep Reading</h3>
+                <p class="pkg-tag">မေးခွန်း ၅–၆ ခု — နက်နက်ရှိုင်းရှိုင်း သုံးသပ်မှု</p>
+              </div>
+              <p class="pkg-price"><span>၂၀,၀၀၀</span><small>ကျပ်</small></p>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-block">
+                <h3>အကျဉ်း</h3>
+                <p>မေးခွန်း ၅ ခု မှ ၆ ခုအထိ နက်နက်ရှိုင်းရှိုင်း ဘက်စုံ သုံးသပ် ဟောပေးပါတယ်။</p>
+              </div>
+              <div class="pkg-block">
+                <h3>ဘယ်သူ့အတွက် သင့်တော်လဲ</h3>
+                <p>အခြေအနေ ရှုပ်ထွေးနေပြီး ကိစ္စ အများကြီးကို ဘက်စုံ သုံးသပ်ချက် ရယူချင်သူများ၊ အရေးကြီးတဲ့ ဆုံးဖြတ်ချက်မချခင် သေချာစွာ စဉ်းစားချင်သူများ အတွက် သင့်တော်ပါတယ်။</p>
+              </div>
+              <a class="go-link" href="booking.html">Booking ကနေ ဒီ Package တင်ရန် →</a>
+            </div>
+          </article>
+
+          <!-- Package 5 -->
+          <article class="pkg">
+            <div class="pkg-top">
+              <div>
+                <h3 class="pkg-name">တစ်နှစ်စာ Package</h3>
+                <p class="pkg-tag">တစ်နှစ်လုံးစာ ဟောစာတမ်း — တစ်ခါတည်း ပို့ပေးမည်</p>
+              </div>
+              <p class="pkg-price"><span>၃၀,၀၀၀</span><small>ကျပ်</small></p>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-block">
+                <h3>ဘာတွေ ရမလဲ</h3>
+                <p>တစ်နှစ်လုံးရဲ့ အဓိက လမ်းကြောင်း + ၁၂ လစာ ဇယား — ကိုယ့်အတွက် သီးသန့် ဟောထားတဲ့ ဟောစာတမ်း တစ်စောင် တစ်ခါတည်း ပို့ပေးမည်။</p>
+              </div>
+              <div class="pkg-block">
+                <h3>သူများထက် ပိုကောင်းတဲ့ အချက်တွေ</h3>
+                <ul class="pkg-points">
+                  <li><b>ကိုယ့်အတွက် သီးသန့်</b> ဆွဲပေးတာ — generic ဇာတာ မဟုတ်ပါ။</li>
+                  <li><b>၁၂ လလုံး</b> တစ်လချင်းစီ အဓိက အကြောင်းအရာ + သတိထားရမယ့် အချက် ပါပါတယ်။</li>
+                  <li><b>စာဖြင့် အသေးစိတ်</b> ဟောပေးတာ — အချိန်မရွေး ပြန်ဖတ်လို့ရပါတယ်။</li>
+                </ul>
+              </div>
+              <div class="pkg-block">
+                <h3>ဘယ်သူ့အတွက် သင့်တော်လဲ</h3>
+                <p>လာမယ့် တစ်နှစ်လုံးစာ အကြောင်းကို ကြိုတင် သိထားချင်ပြီး နှစ်တစ်နှစ်လုံးအတွက် ကြိုတင် ပြင်ဆင် စီစဉ်ချင်သူများ အတွက် သင့်တော်ပါတယ်။</p>
+              </div>
+              <a class="go-link" href="booking.html">Booking ကနေ ဒီ Package တင်ရန် →</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 3. How it works — summary (full steps live on the Booking page) -->
+      <section aria-labelledby="how-h">
+        <div class="sec-head"><span class="no">02</span><h2 id="how-h">ဘယ်လို အလုပ်လုပ်လဲ</h2></div>
+        <div class="panel">
+          <p>Package ရွေးပြီးရင် <b>Booking စာမျက်နှာ</b> မှာ အဆင့်ဆင့် ရေးထားတဲ့အတိုင်း မေးခွန်းပို့၊ ပေးချေပြီး အဖြေကို Messenger ကနေ ပြန်ရပါမယ်။ အဆင့်အသေးစိတ်ကို Booking မှာ ကြည့်နိုင်ပါတယ်။</p>
+          <a class="go-link" href="booking.html">Booking စာမျက်နှာ — အဆင့်ဆင့် ကြည့်ရန် →</a>
+        </div>
+      </section>
+
+      <!-- 4. What is not read — summary (full list lives on the Booking page) -->
+      <section aria-labelledby="no-h">
+        <div class="sec-head"><span class="no">03</span><h2 id="no-h">ဘာတွေ မဟောဘူး</h2></div>
+        <div class="panel">
+          <p><b>ဆေးကုသမှု / ကျန်းမာရေး၊ တရားရုံး / ဥပဒေ၊ ထီဂဏန်း / လောင်းကစား၊ သေဆုံးမှု၊ Love Spells / ယတြာ</b> နဲ့ <b>မေးခွန်းတစ်ခုတည်းကို ထပ်ခါထပ်ခါ မေးတာ</b>တွေကို ဘယ် Package နဲ့မှ ဟောပေးမှာ မဟုတ်ပါဘူး။ အပြည့်အစုံကို Booking စာမျက်နှာမှာ ကြည့်နိုင်ပါတယ်။</p>
+          <a class="go-link" href="booking.html">Booking စာမျက်နှာ — အပြည့်အစုံ ကြည့်ရန် →</a>
+        </div>
+      </section>
+
+      <!-- 5. CTA -->
+      <div class="cta-block">
+        <h2>Package ရွေးပြီးရင်<br />Booking ကနေ စတင်လိုက်ပါ</h2>
+        <p>ရွေးထားတဲ့ Package နာမည်နဲ့ မေးခွန်းကို Booking စာမျက်နှာမှာ ရေးထားတဲ့ အဆင့်တွေအတိုင်း ပို့ပေးရုံပါပဲ။</p>
+        <a class="book-btn" href="booking.html">Booking တင်ရန် →</a>
+        <div class="cta-links">
+          <a href="about.html">About — ဆရာအကြောင်းနဲ့ ဟောပုံ →</a>
+          <a href="https://m.me/MgKyalNgar" target="_blank" rel="noopener">Messenger ကနေ တိုက်ရိုက် မေးရန်</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>StarFish Tarot — Created by Mg Kyal Ngar</footer>
+
+    <script>
+      // Twinkling stars (CSS animation, generated dots)
+      (function(){
+        var box = document.getElementById('stars');
+        var n = 90, html = '';
+        for (var i = 0; i < n; i++){
+          var x = (Math.random()*100).toFixed(2);
+          var y = (Math.random()*100).toFixed(2);
+          var s = (Math.random()*2 + 1).toFixed(1);
+          var d = (Math.random()*3 + 2.2).toFixed(1);
+          var delay = (Math.random()*4).toFixed(1);
+          var cls = Math.random() < .14 ? ' class="gold"' : (Math.random() < .2 ? ' class="cyan"' : '');
+          html += '<i'+cls+' style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;--d:'+d+'s;animation-delay:'+delay+'s"></i>';
+        }
+        box.innerHTML = html;
+      })();
+    </script>
+  </body>
+</html>

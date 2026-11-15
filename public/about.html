@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="my">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>StarFish Tarot အကြောင်း</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        color-scheme: dark;
+        --bg:#0a1128;
+        --bg2:#0d1531;
+        --card:#131f42;
+        --card2:#16234c;
+        --line:rgba(0,229,255,.35);
+        --cyan:#00e5ff;
+        --cyan-dim:#7dd7e8;
+        --gold:#ffd23f;
+        --gold-deep:#f5b301;
+        --text:#f2f5ff;
+        --muted:#aab6d8;
+        --muted2:#8b98c4;
+        --radius:18px;
+      }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0;
+        background:
+          radial-gradient(1100px 520px at 85% -80px, rgba(0,229,255,.10), transparent 60%),
+          radial-gradient(900px 480px at -10% 30%, rgba(255,210,63,.06), transparent 55%),
+          linear-gradient(180deg, var(--bg2), var(--bg) 340px);
+        color:var(--text);
+        font-family:"Padauk","Noto Sans Myanmar",system-ui,sans-serif;
+        line-height:1.75;
+        -webkit-font-smoothing:antialiased;
+        overflow-x:hidden;
+      }
+      h1,h2,h3,p,ul,ol,figure{ margin:0; }
+      ul,ol{ padding:0; list-style:none; }
+      a{ color:inherit; }
+      button{ font-family:inherit; cursor:pointer; }
+
+      /* ---------- twinkling stars ---------- */
+      #stars{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+      #stars i{
+        position:absolute; display:block; border-radius:50%;
+        background:#fff; opacity:.25;
+        animation:twinkle var(--d,3s) ease-in-out infinite;
+      }
+      #stars i.gold{ background:var(--gold); }
+      #stars i.cyan{ background:var(--cyan); }
+      @keyframes twinkle{ 0%,100%{ opacity:.12; } 50%{ opacity:.95; } }
+      @media (prefers-reduced-motion: reduce){
+        #stars i{ animation:none; opacity:.4; }
+        html{ scroll-behavior:auto; }
+      }
+
+      .wrap{ position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 18px 56px; }
+
+      /* ---------- hero ---------- */
+      .hero{ text-align:center; padding:34px 6px 6px; }
+      .brand{
+        font-family:"Orbitron",sans-serif; letter-spacing:.14em;
+        font-size:.78rem; font-weight:700; color:var(--cyan);
+        text-transform:uppercase;
+      }
+      .hero h1{
+        font-size:clamp(1.9rem, 7.5vw, 2.7rem); line-height:1.35; font-weight:700;
+        margin-top:10px;
+      }
+      .hero h1 .gold{ color:var(--gold); }
+      .hero p{ color:var(--muted); margin-top:12px; font-size:1.02rem; max-width:36em; margin-left:auto; margin-right:auto; }
+      .hero p b{ color:var(--text); }
+      /* ---------- sections ---------- */
+      section{ margin-top:44px; }
+      .sec-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:18px; }
+      .sec-head .no{
+        font-family:"Orbitron",sans-serif; color:var(--gold); font-weight:700; font-size:.95rem;
+      }
+      .sec-head h2{ font-size:clamp(1.3rem,5vw,1.6rem); line-height:1.4; }
+      .sec-sub{ color:var(--muted); margin:-8px 0 18px; font-size:.98rem; }
+
+      /* ---------- panels & lists ---------- */
+      .panel{
+        background:var(--card); border:1px solid rgba(139,152,196,.22);
+        border-radius:var(--radius); padding:20px 18px;
+      }
+      .panel p{ color:var(--muted); font-size:1rem; }
+      .panel p + p{ margin-top:10px; }
+      .panel p b{ color:var(--text); }
+
+      .info-list{ display:grid; gap:14px; }
+      .info-list li{ display:flex; gap:12px; align-items:flex-start; font-size:1rem; }
+      .info-list .tick{
+        flex:none; width:26px; height:26px; margin-top:3px; border-radius:8px;
+        background:rgba(0,229,255,.12); border:1px solid var(--line);
+        display:flex; align-items:center; justify-content:center;
+      }
+      .info-list .tick svg{ width:14px; height:14px; }
+      .info-list b{ font-weight:700; display:block; line-height:1.55; }
+      .info-list span{ color:var(--muted); }
+
+      /* reader profile */
+      .reader-name{ font-size:1.35rem; font-weight:700; line-height:1.45; }
+      .reader-role{ color:var(--cyan); font-size:.95rem; margin-top:2px; }
+      .reader-rows{ display:grid; gap:12px; margin-top:16px; }
+      .reader-row{
+        display:flex; gap:12px; align-items:flex-start;
+        background:var(--card2); border:1px solid rgba(139,152,196,.18);
+        border-radius:12px; padding:12px 14px; font-size:.99rem;
+      }
+      .reader-row .dot{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-top:10px; }
+      .reader-row b{ display:block; line-height:1.55; }
+      .reader-row span{ color:var(--muted); }
+
+      /* ---------- topics offered ---------- */
+      .topic-card{ border-radius:var(--radius); padding:18px; border:1px solid rgba(0,229,255,.45); background:var(--card); }
+      .topic-card h3{ font-size:1.05rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--cyan); }
+      .topic-card ul{ display:grid; gap:11px; }
+      @media (min-width:640px){ .topic-card ul{ grid-template-columns:1fr 1fr; } }
+      .topic-card li{ display:flex; gap:10px; align-items:flex-start; font-size:.98rem; }
+      .topic-card li .mark{
+        flex:none; width:22px; height:22px; margin-top:3px; border-radius:7px;
+        display:flex; align-items:center; justify-content:center;
+        background:rgba(0,229,255,.12); border:1px solid var(--line);
+      }
+      .topic-card li .mark svg{ width:11px; height:11px; }
+      .topic-card li b{ display:block; line-height:1.5; font-weight:700; }
+      .topic-card li span{ color:var(--muted); font-size:.94rem; }
+      .guide-note{ color:var(--muted); font-size:.96rem; margin-top:16px; text-align:center; }
+      .guide-note a{ color:var(--gold); font-weight:700; text-decoration:none; }
+      .guide-note a:hover{ text-decoration:underline; }
+      .guide-note a:focus-visible{ outline:3px solid var(--cyan); outline-offset:2px; border-radius:4px; }
+
+      /* ---------- CTA ---------- */
+      .cta-block{ text-align:center; margin-top:46px; }
+      .cta-block h2{ font-size:clamp(1.35rem,5.5vw,1.7rem); line-height:1.45; }
+      .cta-block p{ color:var(--muted); margin-top:8px; }
+      .msgr-btn{
+        display:inline-flex; align-items:center; justify-content:center; gap:10px;
+        margin-top:20px; min-height:54px; padding:13px 34px;
+        border-radius:999px; border:1.5px solid var(--cyan);
+        background:linear-gradient(180deg, #125c72, #0a3547);
+        color:#eafcff; text-decoration:none;
+        font-size:1.08rem; font-weight:700; line-height:1.4;
+        box-shadow:0 8px 26px rgba(0,229,255,.16);
+      }
+      .msgr-btn:hover{ background:linear-gradient(180deg, #18748f, #0d4257); }
+      .msgr-btn:focus-visible{ outline:3px solid var(--cyan); outline-offset:3px; }
+      .msgr-btn svg{ width:21px; height:21px; flex:none; }
+      .cta-links{ margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+      .cta-links a{
+        display:inline-flex; align-items:center; min-height:44px; padding:8px 20px;
+        border-radius:999px; border:1px solid rgba(139,152,196,.45);
+        color:var(--text); text-decoration:none; font-weight:700; font-size:.97rem; line-height:1.4;
+        background:rgba(19,31,66,.6);
+      }
+      .cta-links a:hover{ border-color:var(--gold); color:var(--gold); }
+      .cta-links a:focus-visible{ outline:3px solid var(--cyan); outline-offset:2px; }
+      .panel .cta-links{ justify-content:flex-start; margin-top:14px; }
+
+      footer{ position:relative; z-index:1; text-align:center; color:var(--muted2); font-size:.86rem; padding:0 18px 26px; }
+          /* Port: top nav back to home (added when moving the preview into the App) */
+      .topnav{ max-width:960px; margin:0 auto; padding:14px 20px 0; }
+      .topnav a{ color:#ffd700; text-decoration:none; font-family:'Padauk',sans-serif; font-size:1rem; }
+      .topnav a:hover{ text-decoration:underline; }
+</style>
+  </head>
+  <body>
+    <nav class="topnav"><a href="index.html">← StarFish Tarot — ပင်မ စာမျက်နှာ</a></nav>
+    <div id="stars" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <!-- 1. Hero -->
+      <header class="hero">
+        <p class="brand">Starfish Tarot</p>
+        <h1 data-edit>StarFish Tarot <span class="gold">အကြောင်း</span></h1>
+        <p data-edit><b>StarFish Tarot</b> သည် Tarot ကတ်များဖြင့် လမ်းညွှန်မှု ပေးသော Online ဝန်ဆောင်မှု တစ်ခုဖြစ်သည်။ အပြင်မှာ တွေ့ဆုံစရာ မလိုဘဲ မေးခွန်းကို Messenger ကနေ ပို့လိုက်ရုံနဲ့ ဟောစာတမ်းကို စာဖြင့် သေချာစွာ ပြန်လည် ဖြေကြားပေးပါတယ်။</p>
+      </header>
+
+      <!-- 2. About the reader -->
+      <section aria-labelledby="reader-h">
+        <div class="sec-head"><span class="no">01</span><h2 id="reader-h" data-edit>ဆရာအကြောင်း</h2></div>
+        <div class="panel">
+          <p class="reader-name" data-edit>Mg Kyal Ngar</p>
+          <p class="reader-role" data-edit>Tarot Reader — StarFish Tarot</p>
+          <div class="reader-rows">
+            <div class="reader-row">
+              <span class="dot" aria-hidden="true"></span>
+              <div>
+                <b data-edit>Tarot ကို စတင် လေ့လာခဲ့ပုံ</b>
+                <span data-edit>Tarot ကတ်တွေရဲ့ အဓိပ္ပာယ်နဲ့ သင်္ကေတတွေကို စိတ်ဝင်စားရာကနေ စတင် လေ့လာခဲ့ပြီး နေ့စဉ် လေ့ကျင့်ရင်းနဲ့ ဟောကြားမှု စတင်ခဲ့ပါတယ်။</span>
+              </div>
+            </div>
+            <div class="reader-row">
+              <span class="dot" aria-hidden="true"></span>
+              <div>
+                <b data-edit>Tarot ဟောကြားမှု အတွေ့အကြုံ</b>
+                <span data-edit>မိတ်ဆွေတွေကို ဟောပေးရင်းကနေ အခုတော့ StarFish Tarot Page ကနေ Online ဟောကြားမှု ပေးနေပါတယ်။</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Reading style -->
+      <section aria-labelledby="style-h">
+        <div class="sec-head"><span class="no">02</span><h2 id="style-h" data-edit>ဟောကြားမှု ပုံစံ</h2></div>
+        <div class="panel">
+          <ul class="info-list">
+            <li>
+              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div><b data-edit>ရှင်းရှင်းလင်းလင်း ရေးထားတဲ့ ဟောစာတမ်း</b><span data-edit>ကတ် တစ်ကတ်ချင်းစီရဲ့ အဓိပ္ပာယ်ကို မေးခွန်းနဲ့ ချိတ်ဆက်ပြီး နားလည်လွယ်အောင် အဆင့်ဆင့် စီစဉ် ရေးပေးပါတယ်။</span></div>
+            </li>
+            <li>
+              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div><b data-edit>လမ်းညွှန်တဲ့ ပုံစံ — မကြောက်စေတဲ့ ပုံစံ</b><span data-edit>မလွယ်ကူတဲ့ ကတ် ထွက်လာရင်တောင် ကြောက်စရာလို့ မဟောဘဲ သတိထားရမယ့် အချက်နဲ့ လုပ်ဆောင်နိုင်တဲ့ အကြံဉာဏ်အဖြစ် ဖြေပေးပါတယ်။</span></div>
+            </li>
+            <li>
+              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div><b data-edit>ကိုယ့်အချိန်နဲ့ကိုယ် ဖတ်လို့ရ</b><span data-edit>ဟောစာတမ်းကို စာဖြင့် ပို့ပေးတာမို့ အလျင်စလို မလိုဘဲ အေးအေးဆေးဆေး ဖတ်ပြီး အချိန်ယူ ပြန်သုံးသပ်နိုင်ပါတယ်။</span></div>
+            </li>
+          </ul>
+          <p style="margin-top:16px;"><b data-edit>ဟောတဲ့ ပုံစံ</b> — <span data-edit>Tarot ကို အနာဂတ်ကို အတိအကျ ပြောတဲ့ ကိရိယာလို့ မမြင်ပါဘူး။ လက်ရှိ အခြေအနေကို ပြန်သုံးသပ်ပြီး ပိုကောင်းတဲ့ ဆုံးဖြတ်ချက် ချနိုင်ဖို့ လမ်းညွှန်မှုတစ်ခုလို့ပဲ မြင်ပါတယ်။</span></p>
+        </div>
+      </section>
+
+      <!-- 4. Topics offered (not-offered list lives on the Booking page) -->
+      <section aria-labelledby="topics-h">
+        <div class="sec-head"><span class="no">03</span><h2 id="topics-h" data-edit>ဘာတွေ ဟောပေးလဲ</h2></div>
+        <div class="topic-card">
+            <h3 data-edit>✓ ဟောပေးတဲ့ အကြောင်းအရာတွေ</h3>
+            <ul>
+              <li>
+                <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div><b data-edit>အချစ်ရေးနဲ့ ဆက်ဆံရေး</b><span data-edit>နှစ်ဦးကြား ခံစားချက်၊ ဆက်ဆံရေး လမ်းကြောင်းနဲ့ အနာဂတ် အလားအလာ</span></div>
+              </li>
+              <li>
+                <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div><b data-edit>အလုပ်နဲ့ အသက်မွေးဝမ်းကျောင်း</b><span data-edit>အလုပ်ပြောင်းခြင်း၊ အခွင့်အလမ်းနဲ့ ဆုံးဖြတ်ချက်များအတွက် လမ်းညွှန်မှု</span></div>
+              </li>
+              <li>
+                <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div><b data-edit>စီးပွားရေးနဲ့ ငွေကြေး</b><span data-edit>လုပ်ငန်း စတင်ခြင်း၊ ရင်းနှီးမြှုပ်နှံမှု ဆုံးဖြတ်ချက်များအတွက် သုံးသပ်ချက်</span></div>
+              </li>
+              <li>
+                <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#00e5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div><b data-edit>ကိုယ်ပိုင် လမ်းရွေးချယ်မှု</b><span data-edit>ဘဝ လမ်းကြောင်း၊ ကိုယ်ပိုင် တိုးတက်မှုနဲ့ ရွေးချယ်စရာများကြား ဆုံးဖြတ်ရန် အကူအညီ</span></div>
+              </li>
+            </ul>
+          </div>
+        <p class="guide-note" data-edit>မဟောပေးတဲ့ အရာတွေ အသေးစိတ်ကို <a href="booking.html">Booking စာမျက်နှာ</a> မှာ ကြည့်နိုင်ပါတယ်။</p>
+      </section>
+
+      <!-- 5. Prices live on the Services page -->
+      <section aria-labelledby="price-h">
+        <div class="sec-head"><span class="no">04</span><h2 id="price-h" data-edit>ဈေးနှုန်းနဲ့ Package တွေ</h2></div>
+        <div class="panel">
+          <p data-edit>Package ၅ ခုရဲ့ ဈေးနှုန်း၊ ဘာတွေ ပါဝင်လဲနဲ့ ဘယ်သူ့အတွက် သင့်တော်လဲ ဆိုတဲ့ အသေးစိတ်ကို Services စာမျက်နှာမှာ ကြည့်နိုင်ပါတယ်။</p>
+          <div class="cta-links">
+            <a href="services.html"><span data-edit>Services စာမျက်နှာ — Package အသေးစိတ် →</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. CTA -->
+      <div class="cta-block">
+        <h2 data-edit>မေးမြန်းချင်ရင်<br />Messenger ကနေ လာခဲ့ပါ</h2>
+        <p data-edit>သိချင်တဲ့ မေးခွန်းကို ပြင်ဆင်ပြီး Page Messenger ကနေ ပို့ပေးရုံပါပဲ။</p>
+        <a class="msgr-btn" href="https://m.me/MgKyalNgar" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17V22l3.28-1.8c.9.25 1.85.38 2.83.38h.75c5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1.14 12.44l-2.5-2.67-4.88 2.67 5.37-5.7 2.57 2.67 4.82-2.67-5.38 5.7z"/></svg>
+          <span data-edit>Messenger ကနေ မေးမယ် 📩</span>
+        </a>
+        <div class="cta-links">
+          <a href="services.html"><span data-edit>Services စာမျက်နှာ — Package အသေးစိတ် →</span></a>
+          <a href="booking.html"><span data-edit>Booking စာမျက်နှာ — မေးမြန်းနည်း အဆင့်ဆင့် →</span></a>
+        </div>
+      </div>
+    </div>
+
+    <footer>StarFish Tarot — Created by Mg Kyal Ngar</footer>
+
+    <script>
+      // Twinkling stars (CSS animation, generated dots)
+      (function(){
+        var box = document.getElementById('stars');
+        var n = 90, html = '';
+        for (var i = 0; i < n; i++){
+          var x = (Math.random()*100).toFixed(2);
+          var y = (Math.random()*100).toFixed(2);
+          var s = (Math.random()*2 + 1).toFixed(1);
+          var d = (Math.random()*3 + 2.2).toFixed(1);
+          var delay = (Math.random()*4).toFixed(1);
+          var cls = Math.random() < .14 ? ' class="gold"' : (Math.random() < .2 ? ' class="cyan"' : '');
+          html += '<i'+cls+' style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;--d:'+d+'s;animation-delay:'+delay+'s"></i>';
+        }
+        box.innerHTML = html;
+      })();
+    </script>
+
+  </body>
+</html>
