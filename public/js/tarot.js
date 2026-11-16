@@ -301,15 +301,6 @@ function revealSaveButton() {
     if (saveBtn) saveBtn.style.display = '';
 }
 
-// 16 Nov 2026 (#3, #6): Spread list ပြန်သွားခြင်း — reading လုပ်နေရင် အတည်ပြုချက် တောင်းမည်
-async function confirmExitToList() {
-    if (drawnCardDetails.length > 0) {
-        const ok = await showConfirm('Spread list ပြန်သွားမလား?', 'ဖတ်နေတဲ့ ဟောစာတမ်း ပျက်သွားမယ်။', 'ပြန်သွားမည်', 'ဆက်ဖတ်မည်');
-        if (!ok) return;
-    }
-    resetToSelection();
-}
-
 function resetToSelection() {
     currentSpreadType = '';
     cardsToDraw = 0;
@@ -329,9 +320,6 @@ function resetToSelection() {
     showStep('step-selection');
 }
 
-// 16 Nov 2026 (#6): Shuffle step က Spread list ပြန်သွားမည် ခလုတ်
-const backBtnShuffle = document.getElementById('backToSpreadsBtn');
-if (backBtnShuffle) backBtnShuffle.addEventListener('click', () => confirmExitToList());
 
 // 16 Nov 2026 (#3): Browser back ကို ကိုင်တွယ်ခြင်း — reading ပျက်မှာမို့ အတည်ပြုချက် တောင်းမည်
 window.addEventListener('popstate', async (event) => {
@@ -677,9 +665,9 @@ function goToRevealStep() {
                 <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span></div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
-                    <div class="reveal-card-caption"><span class="reveal-pos-name">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</span><span class="reveal-card-name">${card.name}${card.isReversed ? ' (ပြောင်းပြန်)' : ''}</span></div>
                 </div>
             </div>
+            <div class="reveal-card-caption"><span class="reveal-pos-name">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</span><span class="reveal-card-name">${card.name}${card.isReversed ? ' (ပြောင်းပြန်)' : ''}</span></div>
         `;
 
         wrapper.addEventListener('click', function() {
@@ -708,7 +696,6 @@ function goToRevealStep() {
     
     // AI အတွက် မေးခွန်းတောင်းမည့် Textbox နှင့် ခလုတ်များ
         buttonsWrapper.innerHTML = `
-        <button class="btn-cancel" id="backToSpreadsBtnReveal" style="width: 100%; padding: 0.8rem; font-size: 0.9rem;">← Spread list ပြန်သွားမည်</button>
         <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">
             ဟောစာတမ်း ဖတ်မည် ✨
         </button>
@@ -754,8 +741,6 @@ function goToRevealStep() {
         saveReadingToJournal(drawnCardDetails, currentSpreadType);
     });
 
-    const backBtnReveal = document.getElementById('backToSpreadsBtnReveal');
-    if (backBtnReveal) backBtnReveal.onclick = () => confirmExitToList();
     
     document.getElementById('readResultBtn').addEventListener('click', () => {
         document.getElementById('readResultBtn').style.display = 'none'; 

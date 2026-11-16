@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.18'; // 16 Nov 2026: Premium check once at entry only — tap-time /api/me check removed from selectSpread (VPN hang fix)
+const CACHE_NAME = 'starfish-tarot-v3.19'; // 16 Nov 2026: back-to-list buttons removed + reading buttons resized on mobile + reveal captions below cards
 const urlsToCache = [
   '/',
   '/index.html',
