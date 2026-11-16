@@ -911,7 +911,18 @@ footer {
 ========================================= */
 
 /* (၁) ပုံမှန် ၃-ကတ်၊ ၁-ကတ် Spread များအတွက် */
-.spread-three-card-time, .spread-three-card-action, .spread-one-card {
+.spread-three-card-time, .spread-three-card-action, .spread-one-card, .spread-past-relationship, .spread-type-of-partner {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: auto;
+    margin-top: 2rem;
+}
+
+/* (၁-က) Premium Spreads အသစ် (၅/၇/၉-ကတ်) — အတန်းလိုက် flex-wrap */
+.spread-their-intentions, .spread-monthly-guidance, .spread-relationship-guidance {
     display: flex;
     justify-content: center;
     gap: 5px;

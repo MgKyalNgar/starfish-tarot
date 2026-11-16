@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.13'; // 13 Nov 2026: bumped so phones fetch the Messenger button fix in style.css mobile query — the old .action-btn mobile rule (width 100% + 0.7rem) was overriding it, now .pricing-book-btn is exempt with width auto + 1.05rem (old SW served stale precache)
+const CACHE_NAME = 'starfish-tarot-v3.14'; // 16 Nov 2026: Phase 1 — 5 new Premium spreads (reading.html cards + style.css reveal layout for past-relationship/type-of-partner/their-intentions/monthly-guidance/relationship-guidance)
 const urlsToCache = [
   '/',
   '/index.html',
