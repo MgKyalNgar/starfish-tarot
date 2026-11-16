@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             closeReadingModal(false); 
         }
 
+        // 16 Nov 2026: reading လုပ်နေတုန်း back ကို tarot.js က confirm နဲ့ ကိုင်တွယ်မယ် — ဒီ handler က ဝင်မစွက်ဖက်ဘူး (မဟုတ်ရင် confirm မစောင့်ပဲ reading ဖျက်မိမယ်)
+        if (typeof readingStep !== 'undefined' && readingStep !== 'selection') return;
+
         if (hash === '#shuffle') {
             if (typeof showStep === 'function') showStep('step-shuffle');
         } else if (hash === '#reveal') {

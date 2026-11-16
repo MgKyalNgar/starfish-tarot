@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.15'; // 16 Nov 2026: Reading flow fixes #1-6, #8, #9, #11 (spread title + counter reset, back confirm + back-to-list, reveal labels, question stays visible, journal after reading, tap feedback)
+const CACHE_NAME = 'starfish-tarot-v3.16'; // 16 Nov 2026: Round-2 — back-cancel race fix (config.js popstate guard + tarot.js view restore + modal check), :active tap feedback, sticky counter, bigger captions
 const urlsToCache = [
   '/',
   '/index.html',

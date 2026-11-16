@@ -343,12 +343,8 @@ function resetToSelection() {
     fanReady = false;
     readingStep = 'selection';
     document.querySelectorAll('.spread-card.spread-tapped').forEach(el => el.classList.remove('spread-tapped'));
-    const deckArea = document.getElementById('deck-area');
-    if (deckArea) deckArea.innerHTML = '';
-    const guideText = document.getElementById('shuffleGuideText');
-    if (guideText) guideText.style.display = 'none';
-    const qWrapper = document.getElementById('premiumQuestionWrapper');
-    if (qWrapper) qWrapper.style.display = 'none';
+    // 16 Nov 2026: Shuffle အဆင့်ကို အစကနေ ပြန်ဆောက်မည် (forward နဲ့ ပြန်လာရင်လည်း ကတ်အုပ် အလွတ် မဖြစ်တော့ဘူး)
+    if (typeof createDeckStack === 'function') createDeckStack();
     const spreadTitleEl = document.getElementById('spreadTitle');
     if (spreadTitleEl) spreadTitleEl.innerText = 'Tarot Deck';
     const counter = document.getElementById('pickCounter');
@@ -363,12 +359,19 @@ if (backBtnShuffle) backBtnShuffle.addEventListener('click', () => confirmExitTo
 
 // 16 Nov 2026 (#3): Browser back ကို ကိုင်တွယ်ခြင်း — reading ပျက်မှာမို့ အတည်ပြုချက် တောင်းမည်
 window.addEventListener('popstate', async (event) => {
+    // ကတ် အဓိပ္ပာယ် modal ပွင့်နေရင် back က modal ကိုပဲ ပိတ်မယ် — စာမျက်နှာ မပြောင်းဘူး
+    if (typeof isModalOpen !== 'undefined' && isModalOpen) {
+        if (typeof closeReadingModal === 'function') closeReadingModal(false);
+        history.pushState({step: readingStep}, '', readingStep === 'reveal' ? '#reveal' : (readingStep === 'shuffle' ? '#shuffle' : window.location.pathname));
+        return;
+    }
     if (readingStep === 'selection') return; // list မှာဆို browser အတိုင်း ထွက်သွားပါစေ
     if (drawnCardDetails.length > 0) {
         const ok = await showConfirm('Spread list ပြန်သွားမလား?', 'ဖတ်နေတဲ့ ဟောစာတမ်း ပျက်သွားမယ်။', 'ပြန်သွားမည်', 'ဆက်ဖတ်မည်');
         if (!ok) {
-            // မပြန်ဘူး — လက်ရှိ အဆင့်ကို history မှာ ပြန်ထည့်မည်
+            // မပြန်ဘူး — လက်ရှိ အဆင့်ကို history မှာ ပြန်ထည့်မည် + view ကို URL နဲ့ ကိုက်အောင် ပြန်ထားမည်
             history.pushState({step: readingStep}, '', readingStep === 'reveal' ? '#reveal' : '#shuffle');
+            showStep(readingStep === 'reveal' ? 'step-reveal' : 'step-shuffle');
             return;
         }
     }
