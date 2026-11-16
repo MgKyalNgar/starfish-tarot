@@ -745,6 +745,7 @@ footer {
 .reveal-card-wrapper.flip-card {
     width: 108px; 
     max-width: 108px;
+    aspect-ratio: 130 / 210;
     cursor: pointer;
     background-image: none !important;
     border: none !important;
@@ -753,7 +754,6 @@ footer {
 
 .reveal-card-wrapper .flip-card-inner {
     aspect-ratio: 130 / 210; 
-    height: auto;
 }
 
 .reveal-card-wrapper {
@@ -946,13 +946,13 @@ footer {
 .spread-celtic-cross {
     width: 100%;
     max-width: 450px;
-    height: 750px;
+    height: 600px;
 }
 
 .spread-love-reading {
     width: 100%;
     max-width: 400px;
-    height: 600px;
+    height: 550px;
 }
 
 /* ⚠️ အရေးကြီးဆုံးပြင်ဆင်ချက် ⚠️
@@ -972,7 +972,7 @@ footer {
 }
 
 /* --- THE CELTIC CROSS (၁၀-ကတ်) နေရာချထားမှု --- */
-.spread-celtic-cross .reveal-card-wrapper { width: 75px; }
+.spread-celtic-cross .reveal-card-wrapper { width: 75px; height: 125px; }
 
 /* ကတ်များအားလုံးကို သက်ဆိုင်ရာနေရာ၌ အလယ်ဗဟိုချမည် */
 .spread-celtic-cross .card-pos-1 { top: 50%; left: 35%; transform: translate(-50%, -50%); z-index: 1; }
@@ -992,7 +992,7 @@ footer {
 
 
 /* --- RELATIONSHIP READING (H ပုံစံ - ၇ ကတ်) နေရာချထားမှု --- */
-.spread-love-reading .reveal-card-wrapper { width: 80px; }
+.spread-love-reading .reveal-card-wrapper { width: 80px; height: 135px; }
 
 .spread-love-reading .card-pos-1 { top: 20%; left: 20%; transform: translate(-50%, -50%); }
 .spread-love-reading .card-pos-2 { top: 50%; left: 20%; transform: translate(-50%, -50%); }
@@ -1115,11 +1115,11 @@ footer {
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
     
     /* Celtic Cross အတွက် ကတ်များကို Height 130px သို့ ချဲ့ထားသည် */
-    .spread-celtic-cross { max-width: 400px; height: 780px; margin-top: 0rem !important; }
-    .spread-celtic-cross .reveal-card-wrapper { width: 80px; }
+    .spread-celtic-cross { max-width: 400px; height: 560px; margin-top: 0rem !important; }
+    .spread-celtic-cross .reveal-card-wrapper { width: 80px; height: 130px; }
     
     /* Relationship Reading အတွက် ကတ်များကို Height 130px သို့ ချဲ့ထားသည် */
-    .spread-love-reading { max-width: 360px; height: 600px; margin-top: 0rem !important; }
+    .spread-love-reading { max-width: 360px; height: 520px; margin-top: 0rem !important; }
     .spread-love-reading .reveal-card-wrapper { width: 90px; height: 145px; }
 }
 
@@ -1157,13 +1157,9 @@ footer {
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
-.reveal-card-caption {
-    margin-top: 6px;
+.reveal-pos-label {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
     background: rgba(10, 17, 40, 0.88);
     padding: 5px 4px; text-align: center; line-height: 1.4;
-    border-radius: 8px;
-    visibility: hidden;
+    color: var(--accent-cyan); font-size: 0.68rem; font-weight: bold;
 }
-.reveal-card-wrapper.flipped .reveal-card-caption { visibility: visible; }
-.reveal-card-caption .reveal-pos-name { display: block; color: var(--accent-cyan); font-size: 0.68rem; font-weight: bold; }
-.reveal-card-caption .reveal-card-name { display: block; color: #fff; font-size: 0.68rem; }

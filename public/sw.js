@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.19'; // 16 Nov 2026: back-to-list buttons removed + reading buttons resized on mobile + reveal captions below cards
+const CACHE_NAME = 'starfish-tarot-v3.20'; // 16 Nov 2026: pre-flip position label on face-down cards, below-card captions removed (name is printed on the card art), Love/Celtic sizes restored
 const urlsToCache = [
   '/',
   '/index.html',

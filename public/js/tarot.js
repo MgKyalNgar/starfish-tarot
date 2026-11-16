@@ -662,12 +662,11 @@ function goToRevealStep() {
 
         wrapper.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span></div>
+                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span><div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div></div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
                 </div>
             </div>
-            <div class="reveal-card-caption"><span class="reveal-pos-name">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</span><span class="reveal-card-name">${card.name}${card.isReversed ? ' (ပြောင်းပြန်)' : ''}</span></div>
         `;
 
         wrapper.addEventListener('click', function() {
