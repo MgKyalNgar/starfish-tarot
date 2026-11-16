@@ -8,6 +8,25 @@
 let userPremiumQuestion = ''; // Premium မေးခွန်းမှတ်သားရန် Variable အသစ် (ထပ်ဖြည့်ထားသည်)
 let isCurrentSpreadPremium = false;
 let fanReady = false; // 13 Nov 2026 (#3): fan ငြိမ်ပြီးမှ ကတ်ရွေးလို့ရမယ် — ခင်းနေတုန်း နှိပ်တာ လက်မခံဘူး
+let readingStep = 'selection'; // 16 Nov 2026: လက်ရှိ အဆင့် (selection/shuffle/reveal) — browser back ကို တစ်ဆင့်ချင်း ကိုင်တွယ်ရန်
+
+// 16 Nov 2026: Spread နာမည် + ကတ် နေရာ အဓိပ္ပာယ် map — ခေါင်းစဉ်၊ reveal label၊ modal၊ journal၊ (နောက်မှ) prompt သုံးခုလုံး ဒီ map ပဲ သုံးမည်
+const SPREAD_INFO = {
+    'one-card': { title: '၁-ကတ် ဟောစာတမ်း', positions: ['အဖြေ'] },
+    'three-card-time': { title: 'အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်', positions: ['အတိတ်', 'ပစ္စုပ္ပန်', 'အနာဂတ်'] },
+    'three-card-action': { title: 'အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်', positions: ['လက်ရှိအခြေအနေ', 'အကြံပြုချက်', 'ရလဒ်'] },
+    'past-relationship': { title: 'အတိတ် ဆက်ဆံရေး (၃-ကတ်)', positions: ['အတိတ် ဆက်ဆံရေး အကြောင်းအရာ', 'အဓိက စိန်ခေါ်မှု', 'သင်ခန်းစာ'] },
+    'type-of-partner': { title: 'လက်တွဲဖော် ပုံစံ (၃-ကတ်)', positions: ['ဆွဲဆောင်တဲ့ လက်တွဲဖော် ပုံစံ', 'လိုချင်တဲ့ ပုံစံ', 'လိုအပ်တဲ့ ပုံစံ'] },
+    'their-intentions': { title: 'သူ့ရဲ့ ရည်ရွယ်ချက် (၅-ကတ်)', positions: ['သူက ဘယ်သူလဲ', 'ငါ့အပေါ် ဘယ်လို ခံစားရလဲ', 'အကောင်း အဆိုး?', 'သူ့ရဲ့ ရည်ရွယ်ချက်', 'ငါ ဘာလုပ်သင့်လဲ'] },
+    'love-reading': { title: 'အချစ်ရေး သီးသန့် (၇-ကတ်)', positions: ['သင့်ခံစားချက်', 'သင်လိုအပ်တာ', 'သင့်အပေါ် အတိတ်လွှမ်းမိုးမှု', 'သူ့ခံစားချက်', 'သူလိုအပ်တာ', 'သူ့အပေါ် အတိတ်လွှမ်းမိုးမှု', 'ဆက်ဆံရေးရဲ့ အနာဂတ်'] },
+    'monthly-guidance': { title: 'လစဉ် လမ်းညွှန် (၇-ကတ်)', positions: ['လာမယ့် လရဲ့ အဓိက အကြောင်းအရာ', 'ပြီးခဲ့တဲ့ လက လွှတ်ချရမှာ', 'ပြီးခဲ့တဲ့ လက ဆက်လုပ်ရမှာ', 'ရင်ဆိုင်ရမယ့် စိန်ခေါ်မှု', 'ရလာမယ့် အခွင့်အရေး', 'ကိုယ့်ကိုယ်ကို ဂရုစိုက်ဖို့', 'ကြီးထွားမှု နဲ့ ကုစားမှု'] },
+    'relationship-guidance': { title: 'ဆက်ဆံရေး လမ်းညွှန် (၉-ကတ်)', positions: ['ဆက်ဆံရေးရဲ့ စွမ်းအင်', 'ငါ အခြေအနေကို ဘယ်လို မြင်လဲ', 'သူ အခြေအနေကို ဘယ်လို မြင်လဲ', 'ရှေ့မတိုးနိုင်အောင် ဘာက ပိတ်နေလဲ', 'ရှေ့ဘယ်လို တိုးမလဲ', 'အားသာချက်', 'အားနည်းချက်', 'သင်ခန်းစာ', 'အကြံပြုချက်'] },
+    'celtic-cross': { title: 'Celtic Cross (၁၀-ကတ်)', positions: ['လက်ရှိ အခြေအနေ', 'စိန်ခေါ်မှု', 'အတိတ်', 'အနာဂတ်', 'ရည်မှန်းချက်', 'အတွင်းစိတ်', 'အကြံပြုချက်', 'ပြင်ပ လွှမ်းမိုးမှု', 'မျှော်လင့်ချက် / ကြောက်ရွံ့မှု', 'နောက်ဆုံး ရလဒ်'] }
+};
+const MY_NUM = ['၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉', '၁၀'];
+function myNum(n) { return MY_NUM[n - 1] || String(n); }
+function getSpreadTitle(type) { return (SPREAD_INFO[type] && SPREAD_INFO[type].title) || 'Tarot Reading'; }
+function getPositionName(type, index) { const p = SPREAD_INFO[type] && SPREAD_INFO[type].positions; return (p && p[index]) || ('ကတ် ' + myNum(index + 1)); }
 
 // ============================================================================
 // [၂] LIBRARY PAGE LOGIC (ကတ်စာကြည့်တိုက် စာမျက်နှာအတွက်)
@@ -244,12 +263,16 @@ async function fetchPremiumFromServer() {
     }
 }
 
-async function selectSpread(type, count, isPremium = false) {
+async function selectSpread(type, count, isPremium = false, el) {
+    // 16 Nov 2026 (#11): နှိပ်တာနဲ့ ချက်ချင်း တုံ့ပြန်မှု — ကတ်ကို မှိန်ပြမည် (Premium check စောင့်နေတုန်း)
+    if (el && el.classList) el.classList.add('spread-tapped');
+
     if (isPremium) {
         const userStr = localStorage.getItem('tarot_user');
-        
+
         if (!userStr) {
             toastThenRedirect("Premium ဟောစာတမ်းများကို ဖတ်ရန် ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။", 'info', 'login.html');
+            if (el && el.classList) el.classList.remove('spread-tapped');
             return;
         }
 
@@ -264,16 +287,25 @@ async function selectSpread(type, count, isPremium = false) {
         }
         const isPremiumNow = serverPremium !== null ? serverPremium : !!currentUser.isSubscribed;
         if (!isPremiumNow) {
-            handlePremiumClick(); 
-            return; 
+            handlePremiumClick();
+            if (el && el.classList) el.classList.remove('spread-tapped');
+            return;
         }
     }
 
     currentSpreadType = type;
     cardsToDraw = count;
     isCurrentSpreadPremium = isPremium; // Premium ဟုတ်မဟုတ် ဤနေရာတွင် မှတ်ထားမည်
+    drawnCardDetails = []; // 16 Nov 2026 (#1): Spread အသစ် ရွေးတိုင်း counter ကို 0 ကနေ ပြန်စမည်
+    readingStep = 'shuffle';
+
+    // 16 Nov 2026 (#2, #5): Shuffle ခေါင်းစဉ်မှာ Spread နာမည် ပြမည်၊ counter ကို သီးခြား ပြမည်
+    const spreadTitleEl = document.getElementById('spreadTitle');
+    if (spreadTitleEl) spreadTitleEl.innerText = getSpreadTitle(type);
+    updatePickCounter();
+
     createDeckStack();
-    
+
     history.pushState({step: 'shuffle'}, '', '#shuffle');
     showStep('step-shuffle');
 }
@@ -287,6 +319,62 @@ function closeModal() {
     const modal = document.getElementById('premiumModal');
     if(modal) modal.classList.add('hidden');
 }
+// 16 Nov 2026 (#9): ဟောစာတမ်း ထွက်ပြီးမှ Journal သိမ်းမည် ခလုတ် ပေါ်မည်
+function revealSaveButton() {
+    const saveBtn = document.getElementById('saveReadingBtn');
+    if (saveBtn) saveBtn.style.display = '';
+}
+
+// 16 Nov 2026 (#3, #6): Spread list ပြန်သွားခြင်း — reading လုပ်နေရင် အတည်ပြုချက် တောင်းမည်
+async function confirmExitToList() {
+    if (drawnCardDetails.length > 0) {
+        const ok = await showConfirm('Spread list ပြန်သွားမလား?', 'ဖတ်နေတဲ့ ဟောစာတမ်း ပျက်သွားမယ်။', 'ပြန်သွားမည်', 'ဆက်ဖတ်မည်');
+        if (!ok) return;
+    }
+    resetToSelection();
+}
+
+function resetToSelection() {
+    currentSpreadType = '';
+    cardsToDraw = 0;
+    drawnCardDetails = [];
+    isCurrentSpreadPremium = false;
+    userPremiumQuestion = '';
+    fanReady = false;
+    readingStep = 'selection';
+    document.querySelectorAll('.spread-card.spread-tapped').forEach(el => el.classList.remove('spread-tapped'));
+    const deckArea = document.getElementById('deck-area');
+    if (deckArea) deckArea.innerHTML = '';
+    const guideText = document.getElementById('shuffleGuideText');
+    if (guideText) guideText.style.display = 'none';
+    const qWrapper = document.getElementById('premiumQuestionWrapper');
+    if (qWrapper) qWrapper.style.display = 'none';
+    const spreadTitleEl = document.getElementById('spreadTitle');
+    if (spreadTitleEl) spreadTitleEl.innerText = 'Tarot Deck';
+    const counter = document.getElementById('pickCounter');
+    if (counter) counter.innerText = '';
+    history.replaceState({step: 'selection'}, '', window.location.pathname);
+    showStep('step-selection');
+}
+
+// 16 Nov 2026 (#6): Shuffle step က Spread list ပြန်သွားမည် ခလုတ်
+const backBtnShuffle = document.getElementById('backToSpreadsBtn');
+if (backBtnShuffle) backBtnShuffle.addEventListener('click', () => confirmExitToList());
+
+// 16 Nov 2026 (#3): Browser back ကို ကိုင်တွယ်ခြင်း — reading ပျက်မှာမို့ အတည်ပြုချက် တောင်းမည်
+window.addEventListener('popstate', async (event) => {
+    if (readingStep === 'selection') return; // list မှာဆို browser အတိုင်း ထွက်သွားပါစေ
+    if (drawnCardDetails.length > 0) {
+        const ok = await showConfirm('Spread list ပြန်သွားမလား?', 'ဖတ်နေတဲ့ ဟောစာတမ်း ပျက်သွားမယ်။', 'ပြန်သွားမည်', 'ဆက်ဖတ်မည်');
+        if (!ok) {
+            // မပြန်ဘူး — လက်ရှိ အဆင့်ကို history မှာ ပြန်ထည့်မည်
+            history.pushState({step: readingStep}, '', readingStep === 'reveal' ? '#reveal' : '#shuffle');
+            return;
+        }
+    }
+    resetToSelection();
+});
+
 
 
 // ============================================================================
@@ -453,10 +541,12 @@ function proceedToSpread() {
     // ကဒ်မရွေးခင်ေခင် မေးခွန်းကို မှတ်သားပြီး Box ကို ဖျောက်မည်
     if (isCurrentSpreadPremium) {
         const qInput = document.getElementById('premiumQuestionInput');
-        if (qInput) userPremiumQuestion = qInput.value.trim();
-
-        const qWrapper = document.getElementById('premiumQuestionWrapper');
-        if (qWrapper) qWrapper.style.display = 'none'; // ကတ်ခင်းရန် နေရာလွတ်အောင် ဖျောက်မည်
+        if (qInput) {
+            userPremiumQuestion = qInput.value.trim();
+            // 16 Nov 2026 (#8): မေးခွန်းကို pick/reveal အထိ မြင်နေရမယ် — textarea ကို read-only ထားမည် (ဖျောက်မည် မဟုတ်)
+            qInput.readOnly = true;
+            qInput.style.opacity = '0.75';
+        }
     }
   
     if (shuffleBtn) shuffleBtn.style.display = 'none';
@@ -476,8 +566,8 @@ function proceedToSpread() {
 // ============================================================================
 // ရွေးပြီး X / N ကတ် counter ကို ခေါင်းစဉ်မှာ အချိန်နဲ့တပြေးညီ ပြမည် (13 Nov 2026, #3)။
 function updatePickCounter() {
-    const title = document.querySelector('#step-shuffle h2');
-    if (title) title.innerText = `ရွေးပြီး ${drawnCardDetails.length} / ${cardsToDraw} ကတ်`;
+    const counter = document.getElementById('pickCounter');
+    if (counter) counter.innerText = `ရွေးပြီး ${drawnCardDetails.length} / ${cardsToDraw} ကတ်`;
 }
 
 function spreadCardsOut() {
@@ -503,8 +593,8 @@ function spreadCardsOut() {
 
     spreadContainer.style.height = `${(totalRows - 1) * ySpacing + cardHeight + 50}px`;
 
-    const title = document.querySelector('#step-shuffle h2');
-    if(title) title.innerText = 'ကတ်များ ခင်းနေပါသည်...';
+    const counter = document.getElementById('pickCounter');
+    if(counter) counter.innerText = 'ကတ်များ ခင်းနေပါသည်...';
 
     for (let i = 0; i < availableDeck.length; i++) {
         const cardItem = document.createElement('div');
@@ -573,7 +663,21 @@ function selectIndividualCard(cardElement, availableDeck) {
 // ============================================================================
 function goToRevealStep() {
     history.replaceState({step: 'reveal'}, '', '#reveal');
+    readingStep = 'reveal';
     showStep('step-reveal');
+
+    // 16 Nov 2026 (#2): Reveal အဆင့်မှာ Spread နာမည် + မေးခွန်း ပြမည်
+    const revealTitle = document.getElementById('revealSpreadTitle');
+    if (revealTitle) revealTitle.innerText = getSpreadTitle(currentSpreadType);
+    const revealQ = document.getElementById('revealQuestionLine');
+    if (revealQ) {
+        if (isCurrentSpreadPremium && userPremiumQuestion) {
+            revealQ.innerText = '❓ မေးခွန်း: ' + userPremiumQuestion;
+            revealQ.style.display = 'block';
+        } else {
+            revealQ.style.display = 'none';
+        }
+    }
 
     const shuffleStep = document.getElementById('step-shuffle');
     if(shuffleStep) shuffleStep.classList.add('hidden');
@@ -591,9 +695,10 @@ function goToRevealStep() {
 
         wrapper.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-card-front card-pattern"></div>
+                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span></div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
+                    <div class="reveal-card-caption"><span class="reveal-pos-name">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</span><span class="reveal-card-name">${card.name}${card.isReversed ? ' (ပြောင်းပြန်)' : ''}</span></div>
                 </div>
             </div>
         `;
@@ -624,13 +729,14 @@ function goToRevealStep() {
     
     // AI အတွက် မေးခွန်းတောင်းမည့် Textbox နှင့် ခလုတ်များ
         buttonsWrapper.innerHTML = `
+        <button class="btn-cancel" id="backToSpreadsBtnReveal" style="width: 100%; padding: 0.8rem; font-size: 0.9rem;">← Spread list ပြန်သွားမည်</button>
         <button class="action-btn" id="readResultBtn" style="display: none; width: 100%; padding: 1rem; font-size: 1.1rem; background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); font-weight: bold; border: none; animation: fadeIn 0.8s ease;">
             ဟောစာတမ်း ဖတ်မည် ✨
         </button>
         
         <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%; margin-top: 15px;">
             <button class="btn-cancel" id="restartReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem;">အစမှ ပြန်ရွေးမည်</button>
-            <button class="btn-cancel" id="saveReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem; border-color: rgba(0,240,255,0.5); color: #fff;">Journal သိမ်းမည် 📝</button>
+            <button class="btn-cancel" id="saveReadingBtn" style="flex: 1; padding: 0.8rem; font-size: 0.9rem; border-color: rgba(0,240,255,0.5); color: #fff; display: none;">Journal သိမ်းမည် 📝</button>
         </div>
     `;
 
@@ -668,6 +774,9 @@ function goToRevealStep() {
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
         saveReadingToJournal(drawnCardDetails, currentSpreadType);
     });
+
+    const backBtnReveal = document.getElementById('backToSpreadsBtnReveal');
+    if (backBtnReveal) backBtnReveal.onclick = () => confirmExitToList();
     
     document.getElementById('readResultBtn').addEventListener('click', () => {
         document.getElementById('readResultBtn').style.display = 'none'; 
@@ -676,7 +785,11 @@ function goToRevealStep() {
         if (isCurrentSpreadPremium) {
             if (typeof generatePremiumReading === 'function') {
                 // DOM မှ မယူတော့ဘဲ Memory ထဲမှ မေးခွန်းကို တိုက်ရိုက်ထည့်ပေးလိုက်သည်
-                generatePremiumReading(drawnCardDetails, currentSpreadType, userPremiumQuestion);
+                // 16 Nov 2026 (#9): ဟောစာတမ်း အပြည့်ထွက်ပြီးမှ Journal သိမ်းမည် ခလုတ် ပေါ်မည်
+                generatePremiumReading(drawnCardDetails, currentSpreadType, userPremiumQuestion).then(() => {
+                    const resultBox = document.getElementById('staticReadingResult');
+                    if (resultBox && resultBox.innerHTML.includes('Premium ဟောစာတမ်း')) revealSaveButton();
+                });
             } else {
                 console.error("preTarot.js script is not loaded or missing.");
                 showToast("Premium စနစ် ချို့ယွင်းနေပါသည်။ (preTarot.js ချိတ်ဆက်ရန် လိုအပ်သည်)", 'error');
@@ -684,7 +797,8 @@ function goToRevealStep() {
         } 
         // Free ဆိုလျှင် ပုံမှန်အတိုင်း ပြမည်
         else {
-            showStaticReadingResult(); 
+            showStaticReadingResult();
+            revealSaveButton(); // 16 Nov 2026 (#9): ဟောစာတမ်း ထွက်ပြီးမှ Journal သိမ်းမည် ခလုတ် ပေါ်မည်
         }
     });
 
@@ -790,6 +904,7 @@ function showStaticReadingResult() {
 
     resultBox.innerHTML = htmlContent;
     resultBox.classList.remove('hidden');
+    revealSaveButton(); // 16 Nov 2026 (#9)
     setTimeout(() => { resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
 }
 
@@ -808,12 +923,7 @@ async function saveReadingToJournal(cardsArray, spreadType) {
     const currentUser = JSON.parse(userStr);
     const today = new Date().toLocaleDateString('en-GB'); 
 
-    let spreadName = "Tarot Reading";
-    if (spreadType === 'three-card-time') spreadName = 'အတိတ်၊ ပစ္စုပ္ပန်၊ အနာဂတ်';
-    else if (spreadType === 'three-card-action') spreadName = 'အခြေအနေ၊ အကြံပြုချက်၊ ရလဒ်';
-    else if (spreadType === 'one-card') spreadName = 'One Card Reading';
-    // Premium spreads များကို ထပ်မံဖြည့်စွက်နိုင်ပါသည်
-    else spreadName = 'Premium Custom Spread'; 
+    let spreadName = getSpreadTitle(spreadType); // 16 Nov 2026: SPREAD_INFO map က နာမည် ယူမည် (Spread အသစ် ၅ ခုပါ အမှန်ရမည်)
 
     const saveBtn = document.getElementById('saveReadingBtn');
     if (saveBtn) {
@@ -859,14 +969,9 @@ async function saveReadingToJournal(cardsArray, spreadType) {
 function openReadingModal(card, index) {
     let cardTitle = "";
 
-    if (currentSpreadType === 'three-card-time') {
-        const titles = ["Past (အတိတ်)", "Present (ပစ္စုပ္ပန်)", "Future (အနာဂတ်)"];
-        cardTitle = titles[index] ? titles[index] : "";
-    } else if (currentSpreadType === 'three-card-action') {
-        const titles = ["Situation (အခြေအနေ)", "Action (အကြံပြုချက်)", "Outcome (ရလဒ်)"];
-        cardTitle = titles[index] ? titles[index] : "";
-    } else if (currentSpreadType === 'one-card') {
-        cardTitle = "Quick Answer";
+    // 16 Nov 2026 (#4): Spread အားလုံးအတွက် ကတ် နေရာ အဓိပ္ပာယ် ပြမည် (Library ကနေ ဖွင့်ရင် Spread မရှိလို့ နာမည် မပါဘူး)
+    if (SPREAD_INFO[currentSpreadType]) {
+        cardTitle = getPositionName(currentSpreadType, index);
     }
 
     const isRev = card.isReversed; 

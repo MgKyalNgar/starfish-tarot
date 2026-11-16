@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.14'; // 16 Nov 2026: Phase 1 — 5 new Premium spreads (reading.html cards + style.css reveal layout for past-relationship/type-of-partner/their-intentions/monthly-guidance/relationship-guidance)
+const CACHE_NAME = 'starfish-tarot-v3.15'; // 16 Nov 2026: Reading flow fixes #1-6, #8, #9, #11 (spread title + counter reset, back confirm + back-to-list, reveal labels, question stays visible, journal after reading, tap feedback)
 const urlsToCache = [
   '/',
   '/index.html',

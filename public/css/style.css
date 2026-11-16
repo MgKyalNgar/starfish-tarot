@@ -1136,3 +1136,22 @@ footer {
     opacity: 0;
     transform: translateY(20px);
 }
+
+/* 16 Nov 2026 — Reading flow fixes (#1, #2, #4, #5, #11) */
+.spread-card.spread-tapped { opacity: 0.55; transform: scale(0.96); }
+#pickCounter { font-size: 1.05rem; }
+.reveal-pos-badge {
+    position: absolute; top: 6px; left: 6px; z-index: 2;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(0, 240, 255, 0.9); color: #0a1128;
+    font-size: 13px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.reveal-card-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    background: rgba(10, 17, 40, 0.88);
+    padding: 4px 3px; text-align: center; line-height: 1.3;
+}
+.reveal-card-caption .reveal-pos-name { display: block; color: var(--accent-cyan); font-size: 0.62rem; font-weight: bold; }
+.reveal-card-caption .reveal-card-name { display: block; color: #fff; font-size: 0.62rem; }
