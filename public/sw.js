@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.16'; // 16 Nov 2026: Round-2 — back-cancel race fix (config.js popstate guard + tarot.js view restore + modal check), :active tap feedback, sticky counter, bigger captions
+const CACHE_NAME = 'starfish-tarot-v3.17'; // 16 Nov 2026: #11 root cause — spread-card user-select:none (press no longer starts text selection / Text Cursor)
 const urlsToCache = [
   '/',
   '/index.html',
