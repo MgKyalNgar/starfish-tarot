@@ -246,25 +246,9 @@ function showStep(stepId) {
 
 // Server ဘက်က Premium အခြေအနေကို အသစ်စစ်သည် (localStorage ကို မယုံပါ)။
 // Server ဆက်သွယ်မရလျှင် null ပြန်ပေးမည် — အဲဒီအခါ localStorage တန်ဖိုးကို သုံးမည်။
-async function fetchPremiumFromServer() {
-    if (typeof supabaseClient === 'undefined' || !supabaseClient) return null;
-    try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) return null;
-        const res = await fetch('/api/me', {
-            headers: { 'Authorization': 'Bearer ' + session.access_token }
-        });
-        if (!res.ok) return null;
-        const result = await res.json();
-        return !!(result.data && result.data.isSubscribed);
-    } catch (e) {
-        console.warn('Premium check failed:', e);
-        return null;
-    }
-}
 
 async function selectSpread(type, count, isPremium = false, el) {
-    // 16 Nov 2026 (#11): နှိပ်တာနဲ့ ချက်ချင်း တုံ့ပြန်မှု — ကတ်ကို မှိန်ပြမည် (Premium check စောင့်နေတုန်း)
+    // 16 Nov 2026 (#11): နှိပ်တာနဲ့ ချက်ချင်း တုံ့ပြန်မှု — ကတ်ကို မှိန်ပြမည်
     if (el && el.classList) el.classList.add('spread-tapped');
 
     if (isPremium) {
@@ -277,16 +261,8 @@ async function selectSpread(type, count, isPremium = false, el) {
         }
 
         const currentUser = JSON.parse(userStr);
-        // Server ကသာ အမှန် — localStorage ပြင်ထားရင်တောင် ဒီမှာ မိမယ်။
-        const serverPremium = await fetchPremiumFromServer();
-        if (serverPremium !== null && serverPremium !== !!currentUser.isSubscribed) {
-            // Server နဲ့ မကိုက်ရင် localStorage ကို အမှန်ပြင်ပေးမည်။
-            currentUser.isSubscribed = serverPremium;
-            localStorage.setItem('tarot_user', JSON.stringify(currentUser));
-            if (typeof updateAuthUI === 'function') updateAuthUI();
-        }
-        const isPremiumNow = serverPremium !== null ? serverPremium : !!currentUser.isSubscribed;
-        if (!isPremiumNow) {
+        // 16 Nov 2026: နှိပ်ချိန် server မစစ်တော့ဘူး — ဝင်ဝင်ခြင်း syncSubscriptionFromServer() က တစ်ကြိမ် စစ်ပြီး localStorage ကို အမှန်ပြင်ထားပြီးသား။ VPN မှာ /api/me ကြာလို့ နှိပ်မရသလို ဖြစ်နေတာကို ဖြေရှင်းမယ်။
+        if (!currentUser.isSubscribed) {
             handlePremiumClick();
             if (el && el.classList) el.classList.remove('spread-tapped');
             return;

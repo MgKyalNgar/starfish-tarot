@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.17'; // 16 Nov 2026: #11 root cause — spread-card user-select:none (press no longer starts text selection / Text Cursor)
+const CACHE_NAME = 'starfish-tarot-v3.18'; // 16 Nov 2026: Premium check once at entry only — tap-time /api/me check removed from selectSpread (VPN hang fix)
 const urlsToCache = [
   '/',
   '/index.html',
