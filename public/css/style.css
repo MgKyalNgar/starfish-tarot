@@ -1149,14 +1149,6 @@ footer {
 .spread-card.spread-tapped { opacity: 0.55; transform: scale(0.96); }
 .spread-card:active { opacity: 0.55; transform: scale(0.96); } /* 16 Nov 2026 (#11): click က လွှတ်ပြီးမှ ဖြစ်လို့ နှိပ်နေတုန်း ချက်ချင်း မှိန်ဖို့ :active လိုတယ် */
 #pickCounter { font-size: 1.05rem; position: sticky; top: 0; z-index: 5; background: var(--bg-dark); padding: 0.4rem 0; }
-.reveal-pos-badge {
-    position: absolute; top: 6px; left: 6px; z-index: 2;
-    width: 24px; height: 24px; border-radius: 50%;
-    background: rgba(0, 240, 255, 0.9); color: #0a1128;
-    font-size: 13px; font-weight: bold;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
 .reveal-pos-label {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
     background: rgba(10, 17, 40, 0.88);
@@ -1164,7 +1156,7 @@ footer {
     color: var(--accent-cyan); font-size: 0.68rem; font-weight: bold;
 }
 /* 16 Nov 2026 (Celtic swap): ကတ် ၁ label ကို အပေါ်ရွှေ့ (အောက်က ကတ် ၂ ဖုံးနေလို့)၊ ကတ် ၂ label ကို container ထဲမှာ ကတ်အောက် အလျားလိုက် ထား */
-.spread-celtic-cross .card-pos-1 .reveal-pos-label { top: 0; bottom: auto; left: 30px; }
+.spread-celtic-cross .card-pos-1 .reveal-pos-label { top: 0; bottom: auto; }
 .celtic-card2-label {
     position: absolute; left: 35%; top: calc(50% + 25px + 46px); transform: translateX(-50%);
     background: rgba(10, 17, 40, 0.88);

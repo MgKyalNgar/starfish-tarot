@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.21'; // 16 Nov 2026: Celtic label swap — card 1 label to top, card 2 label below card (horizontal, container-positioned)
+const CACHE_NAME = 'starfish-tarot-v3.22'; // 17 Nov 2026: number badge removed (number already in position label), card 1 label full width
 const urlsToCache = [
   '/',
   '/index.html',

@@ -662,7 +662,7 @@ function goToRevealStep() {
 
         wrapper.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span>${(currentSpreadType === 'celtic-cross' && index === 1) ? '' : `<div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div>`}</div>
+                <div class="flip-card-front card-pattern">${(currentSpreadType === 'celtic-cross' && index === 1) ? '' : `<div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div>`}</div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
                 </div>
