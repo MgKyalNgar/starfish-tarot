@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.25'; // 17 Nov 2026: card back background-size cover -> contain; bg color #1b002b to match card_back edges
+const CACHE_NAME = 'starfish-tarot-v3.26'; // 17 Nov 2026: pricing cards — booking descriptions + name-left/price-right header row
 const urlsToCache = [
   '/',
   '/index.html',
