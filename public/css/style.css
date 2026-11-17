@@ -395,9 +395,9 @@ footer {
    Card Backs & 3D Flip Mechanics (Shared)
 ========================================= */
 .flip-card-front, .deck-card, .spread-card-item {
-    background-color: #0a1128;
+    background-color: #1b002b; /* 17 Nov 2026: card_back အစွန်းအရောင်နဲ့ တူအောင် — margin တစ်သားတည်းဖြစ်ဖို့ */
     background-image: url('/Tarot Card/card_back.jpg');
-    background-size: cover;
+    background-size: contain; /* 17 Nov 2026: cover က ရွှေ frame ဖြတ်ပစ်လို့ contain ပြောင်း — ပုံအပြည့်မြင်ရမယ် */
     background-position: center;
     border: 2px solid rgba(0, 240, 255, 0.3);
     border-radius: 12px;
