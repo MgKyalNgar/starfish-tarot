@@ -4,7 +4,29 @@
 // =========================================
 
 // API Key များကို Frontend တွင် မထားတော့ဘဲ Vercel API ဆီသို့သာ လှမ်းချိတ်ပါမည်
-const VERCEL_API_URL = '/api/gemini'; 
+const VERCEL_API_URL = '/api/reading'; // Token+B (17 Nov 2026): /api/gemini.js အဟောင်း အစား
+
+// localStorage ထဲက Premium token ကို ယူခြင်း (Token+B, 17 Nov 2026)
+function getPremiumToken() {
+    try {
+        const user = JSON.parse(localStorage.getItem('tarot_user') || 'null');
+        return (user && user.premiumToken) ? user.premiumToken : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Premium reading request — token header ပါမည်
+async function postPremiumReading(body) {
+    const headers = { "Content-Type": "application/json" };
+    const token = getPremiumToken();
+    if (token) headers["X-Premium-Token"] = token;
+    return fetch(VERCEL_API_URL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+    });
+}
 
 async function generatePremiumReading(cards, spreadType, userQuestion) {
     const resultBox = document.getElementById('staticReadingResult');
@@ -26,26 +48,26 @@ async function generatePremiumReading(cards, spreadType, userQuestion) {
     const promptText = buildPrompt(cards, spreadType, userQuestion);
 
     try {
-        // ၃။ ကိုယ်ပိုင် Vercel API သို့ လှမ်းခေါ်ခြင်း
-        const response = await fetch(VERCEL_API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: promptText }]
-                }]
-                // ဒီနေရာမှာ ရှိနေတဲ့ generationConfig အပိုင်းကြီးတစ်ခုလုံးကို ဖျက်လိုက်ပါ!
-            })
-        });
+        // ၃။ ကိုယ်ပိုင် Vercel API သို့ လှမ်းခေါ်ခြင်း (Token+B: Premium token header ပါမည်)
+        const requestBody = {
+            contents: [{
+                parts: [{ text: promptText }]
+            }]
+        };
+        let response = await postPremiumReading(requestBody);
+
+        // 403 (token သက်တမ်းကုန် / ပျောက်) ဆိုလျှင် token အသစ်ပြန်ယူပြီး တစ်ခါထပ်စမ်းမည်
+        if (response.status === 403 && typeof syncSubscriptionFromServer === 'function') {
+            await syncSubscriptionFromServer();
+            response = await postPremiumReading(requestBody);
+        }
 
         const data = await response.json();
-        
+
         // Error ဖြစ်ခဲ့လျှင် ဖမ်းရန် (အသစ်ပြင်ထားသောအပိုင်း)
         if (!response.ok || data.error) {
             // [object Object] မဖြစ်အောင် Error စာသား အတိအကျကို ဆွဲထုတ်မည်
-            const errorDetail = data.error?.message || JSON.stringify(data.error) || 'Unknown API Error';
+            const errorDetail = data.error?.message || data.detail || JSON.stringify(data.error) || 'Unknown API Error';
             throw new Error(errorDetail);
         }
 

@@ -23,6 +23,9 @@ async function syncSubscriptionFromServer() {
         const currentUser = JSON.parse(userStr);
         currentUser.role = me.role || currentUser.role || 'user';
         currentUser.isSubscribed = !!me.isSubscribed;
+        // Token+B (17 Nov 2026): Premium token ကို သိမ်းမည် — /api/reading အတွက် သုံးသည်။
+        // Premium မဟုတ်တော့လျှင် / ပယ်ဖျက်ခံရလျှင် token ကို null ထားမည်။
+        currentUser.premiumToken = me.premiumToken || null;
         if (me.name) currentUser.name = me.name;
         localStorage.setItem('tarot_user', JSON.stringify(currentUser));
         return true;

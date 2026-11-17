@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.26'; // 17 Nov 2026: pricing cards — booking descriptions + name-left/price-right header row
+const CACHE_NAME = 'starfish-tarot-v3.27'; // 17 Nov 2026: Token+B — /api/reading + premium token (auth.js changed)
 const urlsToCache = [
   '/',
   '/index.html',

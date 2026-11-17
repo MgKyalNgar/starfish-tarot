@@ -1,7 +1,12 @@
+import hashlib
+import hmac
 import os
+import time
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from supabase import create_client, Client
+import httpx
 
 app = FastAPI()
 
@@ -11,6 +16,43 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 # Admin API အတွက်သာ သုံးသော Secret key (service_role နဲ့ ညီသည်)။
 # Server ဘက်မှာသာ ရှိရမည်။ Browser code ထဲမှာ ဘယ်တော့မှ မထည့်ရ။
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+
+# Premium Token အတွက် Secret (Token+B, 17 Nov 2026) — Vercel env only။
+# /api/me က ထုတ်ပေးသော token ကို /api/reading က ဒီ secret နဲ့ ပြန်စစ်သည်။
+PREMIUM_TOKEN_SECRET = os.environ.get("PREMIUM_TOKEN_SECRET")
+PREMIUM_TOKEN_TTL_SECONDS = 24 * 60 * 60  # 24 နာရီ
+
+
+def issue_premium_token(user_id):
+    """Premium user အတွက် HMAC-signed token ထုတ်ပေးသည်။ ပုံစံ: user_id.exp.signature"""
+    if not PREMIUM_TOKEN_SECRET:
+        print("Warning: PREMIUM_TOKEN_SECRET is not set — no premium token issued")
+        return None
+    exp = int(time.time()) + PREMIUM_TOKEN_TTL_SECONDS
+    payload = f"{user_id}.{exp}"
+    sig = hmac.new(
+        PREMIUM_TOKEN_SECRET.encode(), payload.encode(), hashlib.sha256
+    ).hexdigest()
+    return f"{payload}.{sig}"
+
+
+def verify_premium_token(token):
+    """Token ကို စစ်ပြီး user_id ပြန်ပေးသည်။ မမှန်လျှင် / သက်တမ်းကုန်လျှင် None။"""
+    if not token or not PREMIUM_TOKEN_SECRET:
+        return None
+    try:
+        user_id, exp, sig = token.split(".")
+        if int(exp) < int(time.time()):
+            return None
+        payload = f"{user_id}.{exp}"
+        expected = hmac.new(
+            PREMIUM_TOKEN_SECRET.encode(), payload.encode(), hashlib.sha256
+        ).hexdigest()
+        if not hmac.compare_digest(expected, sig):
+            return None
+        return user_id
+    except (ValueError, TypeError):
+        return None
 
 # Supabase နဲ့ ချိတ်ဆက်ရန် Client တည်ဆောက်ခြင်း
 if SUPABASE_URL and SUPABASE_KEY:
@@ -138,7 +180,13 @@ def get_all_cards():
 @app.get("/api/me")
 async def get_my_status(request: Request):
     me = await require_user(request)
-    return {"status": "success", "data": me}
+    data = dict(me)
+    # Premium user ဆိုလျှင် /api/reading အတွက် token ထုတ်ပေးမည် (Token+B, 17 Nov 2026)။
+    if me.get("isSubscribed"):
+        token = issue_premium_token(me["id"])
+        if token:
+            data["premiumToken"] = token
+    return {"status": "success", "data": data}
 
 
 # (၃) Admin API — User အားလုံးကို ကြည့်ရန် (Admin အတွက်သာ)
@@ -212,3 +260,60 @@ async def admin_set_subscription(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# Premium Reading — Token+B (17 Nov 2026): token စစ်ပြီး Gemini ကို ခေါ်သည်။
+# /api/gemini.js အဟောင်း အစား သုံးသည် — endpoint နာမည်မှာ "gemini" မပါတော့ပါ။
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY2")
+GEMINI_MODELS = ["gemini-3-flash-preview", "gemini-2.5-flash"]
+
+
+@app.post("/api/reading")
+async def premium_reading(request: Request):
+    token = request.headers.get("x-premium-token", "")
+    if not verify_premium_token(token):
+        raise HTTPException(
+            status_code=403, detail="Premium token missing, invalid or expired"
+        )
+    if not GEMINI_API_KEY:
+        raise HTTPException(
+            status_code=500, detail="Gemini API key is not configured"
+        )
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    last_error = "Unknown error"
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        for model in GEMINI_MODELS:
+            url = (
+                "https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{model}:generateContent?key={GEMINI_API_KEY}"
+            )
+            try:
+                resp = await client.post(url, json=body)
+            except Exception as e:
+                last_error = str(e)
+                break
+            try:
+                data = resp.json()
+            except Exception:
+                data = {}
+            if resp.status_code == 429 or (
+                isinstance(data, dict)
+                and isinstance(data.get("error"), dict)
+                and data["error"].get("code") == 429
+            ):
+                print(f"{model} limit reached, trying next model...")
+                last_error = "Token Limit Exhausted"
+                continue
+            if resp.status_code != 200 or (isinstance(data, dict) and data.get("error")):
+                message = ""
+                if isinstance(data, dict) and isinstance(data.get("error"), dict):
+                    message = data["error"].get("message", "")
+                raise HTTPException(status_code=500, detail=message or "Gemini API error")
+            return JSONResponse(content=data)
+    raise HTTPException(
+        status_code=500, detail=f"All AI models failed. ({last_error})"
+    )
