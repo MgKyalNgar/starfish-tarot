@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.20'; // 16 Nov 2026: pre-flip position label on face-down cards, below-card captions removed (name is printed on the card art), Love/Celtic sizes restored
+const CACHE_NAME = 'starfish-tarot-v3.21'; // 16 Nov 2026: Celtic label swap — card 1 label to top, card 2 label below card (horizontal, container-positioned)
 const urlsToCache = [
   '/',
   '/index.html',

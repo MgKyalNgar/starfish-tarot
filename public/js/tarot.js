@@ -662,7 +662,7 @@ function goToRevealStep() {
 
         wrapper.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span><div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div></div>
+                <div class="flip-card-front card-pattern"><span class="reveal-pos-badge">${myNum(index + 1)}</span>${(currentSpreadType === 'celtic-cross' && index === 1) ? '' : `<div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div>`}</div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
                 </div>
@@ -678,6 +678,14 @@ function goToRevealStep() {
         });
 
         revealArea.appendChild(wrapper);
+
+        // 16 Nov 2026 (Celtic card 2): label ကို container ထဲမှာ သီးသန့် ထား — ကတ်အောက် အလျားလိုက် ပြဖို့ (wrapper လှည့်ထားလို့ အထဲမှာ ထားရင် ဒေါင်လိုက် ဖြစ်သွားမယ်)
+        if (currentSpreadType === 'celtic-cross' && index === 1) {
+            const card2Label = document.createElement('div');
+            card2Label.className = 'celtic-card2-label';
+            card2Label.textContent = `ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}`;
+            revealArea.appendChild(card2Label);
+        }
     });
     
     let buttonsWrapper = document.getElementById('readingButtonsWrapper');

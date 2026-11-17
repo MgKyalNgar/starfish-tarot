@@ -1163,3 +1163,13 @@ footer {
     padding: 5px 4px; text-align: center; line-height: 1.4;
     color: var(--accent-cyan); font-size: 0.68rem; font-weight: bold;
 }
+/* 16 Nov 2026 (Celtic swap): ကတ် ၁ label ကို အပေါ်ရွှေ့ (အောက်က ကတ် ၂ ဖုံးနေလို့)၊ ကတ် ၂ label ကို container ထဲမှာ ကတ်အောက် အလျားလိုက် ထား */
+.spread-celtic-cross .card-pos-1 .reveal-pos-label { top: 0; bottom: auto; left: 30px; }
+.celtic-card2-label {
+    position: absolute; left: 35%; top: calc(50% + 25px + 46px); transform: translateX(-50%);
+    background: rgba(10, 17, 40, 0.88);
+    padding: 5px 8px; text-align: center; line-height: 1.4;
+    color: var(--accent-cyan); font-size: 0.68rem; font-weight: bold;
+    border-radius: 8px; z-index: 2; white-space: nowrap;
+}
+.spread-celtic-cross .card-pos-2.flipped + .celtic-card2-label { display: none; }
