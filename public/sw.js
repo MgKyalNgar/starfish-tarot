@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.27'; // 17 Nov 2026: Token+B — /api/reading + premium token (auth.js changed)
+const CACHE_NAME = 'starfish-tarot-v3.28'; // 17 Nov 2026: Premium page + gold modal button (style.css changed)
 const urlsToCache = [
   '/',
   '/index.html',

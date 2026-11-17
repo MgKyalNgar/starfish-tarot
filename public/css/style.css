@@ -247,6 +247,25 @@ body::after {
 
 .btn-cancel:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
+/* Gold button (17 Nov 2026) — Premium modal "Premium ဝင်ရန်" button */
+.btn-gold {
+    background: rgba(255, 215, 0, 0.08);
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background: #ffd700;
+    color: var(--bg-dark);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
 /* Modal Basics */
 .modal-overlay {
     position: fixed;

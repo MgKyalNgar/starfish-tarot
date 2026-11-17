@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="my">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>StarFish Tarot — Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.25rem; }
+
+      :root{
+        --bg:#f7f4ec;
+        --bg-2:#efe9da;
+        --surface:#fffdf8;
+        --surface-2:#f3eee1;
+        --ink:#1c1a26;
+        --ink-2:#4c4763;
+        --muted:#7a7492;
+        --line:#ddd3ba;
+        --gold:#b8860b;
+        --gold-bright:#d4a017;
+        --gold-soft:#f5e7bd;
+        --navy:#17142b;
+        --navy-2:#221e3d;
+        --good:#2e7d4f;
+        --shadow:0 10px 30px rgba(28,22,10,.10);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#100e1d;
+          --bg-2:#17142b;
+          --surface:#1b1830;
+          --surface-2:#221e3d;
+          --ink:#f2ecdc;
+          --ink-2:#cfc8e4;
+          --muted:#9d96bb;
+          --line:#39335c;
+          --gold:#d4a017;
+          --gold-bright:#e9bc3f;
+          --gold-soft:#2e2a16;
+          --navy:#0c0a18;
+          --navy-2:#17142b;
+          --good:#6fce97;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Noto Sans Myanmar", system-ui, sans-serif;
+        font-size:15px;
+        line-height:1.7;
+        -webkit-font-smoothing:antialiased;
+      }
+      .wrap{max-width:1060px;margin:0 auto;padding:0 20px 72px}
+
+      /* ---------- top nav ---------- */
+      .topnav{
+        display:flex;align-items:center;justify-content:space-between;gap:12px;
+        padding:16px 0 4px;flex-wrap:wrap;
+      }
+      .backlink{
+        display:inline-flex;align-items:center;gap:8px;min-height:40px;
+        color:var(--ink-2);text-decoration:none;font-size:.92rem;font-weight:600;
+        padding:6px 10px 6px 2px;border-radius:8px;
+      }
+      .backlink:hover{color:var(--gold)}
+      /* ---------- hero ---------- */
+      .hero{
+        margin-top:14px;
+        background:linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 78%);
+        color:#f4efdd;border-radius:20px;padding:44px 34px 38px;position:relative;overflow:hidden;
+      }
+      .hero::after{
+        content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+        background:
+          radial-gradient(2px 2px at 12% 22%, #e9bc3f 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 84% 16%, #fff3c4 50%, transparent 51%),
+          radial-gradient(2px 2px at 68% 78%, #e9bc3f 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 30% 84%, #fff3c4 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 48% 10%, #e9bc3f 50%, transparent 51%),
+          radial-gradient(2px 2px at 94% 62%, #fff3c4 50%, transparent 51%);
+      }
+      .hero-inner{position:relative;z-index:1;max-width:640px}
+      .hero .latin{font-family:"Cormorant Garamond", serif;font-size:1.12rem;letter-spacing:.3em;text-transform:uppercase;color:#e9bc3f;margin:0 0 10px;font-weight:600}
+      .hero h1{font-size:clamp(1.55rem, 4.2vw, 2.3rem);line-height:1.45;margin:0 0 12px;font-weight:800}
+      .hero h1 .gold{color:#e9bc3f}
+      .hero p.lead{font-size:.94rem;line-height:1.75;color:#ddd6c2;margin:0 0 26px;max-width:52ch}
+      .hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+      .price-chip{
+        display:inline-flex;flex-direction:column;line-height:1.35;
+        border:1px solid rgba(233,188,63,.55);border-radius:12px;padding:10px 18px;background:rgba(233,188,63,.08);
+      }
+      .price-chip b{font-size:1.18rem;color:#fff}
+      .price-chip span{font-size:.8rem;color:#cfc49a}
+      .btn{
+        display:inline-flex;align-items:center;justify-content:center;gap:9px;
+        min-height:48px;padding:10px 22px;border-radius:12px;border:0;cursor:pointer;
+        font-family:inherit;font-size:1rem;font-weight:700;text-decoration:none;
+        transition:transform .15s ease, box-shadow .15s ease;
+      }
+      .btn:active{transform:scale(.98)}
+      .btn-gold{background:var(--gold-bright);color:#221a04;box-shadow:0 6px 18px rgba(212,160,23,.35)}
+      .btn-gold:hover{background:#e9bc3f}
+      .btn-ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+      .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+      .hero .btn-gold{min-height:52px}
+
+      /* ---------- sections ---------- */
+      section{margin-top:52px}
+      .sec-head{margin-bottom:20px}
+      .sec-head h2{font-size:clamp(1.22rem,3vw,1.55rem);margin:0 0 6px;line-height:1.45}
+      .sec-head p{margin:0;color:var(--ink-2);max-width:64ch;font-size:.93rem}
+      .sec-head .rule{width:52px;height:3px;background:var(--gold-bright);border-radius:2px;margin-bottom:14px}
+
+      /* ---------- comparison ---------- */
+      .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+      .plan{
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:26px 24px;box-shadow:var(--shadow);
+      }
+      .plan.premium{border:2px solid var(--gold-bright);position:relative}
+      .plan .plan-name{font-family:"Cormorant Garamond", serif;font-size:1.05rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0}
+      .plan.premium .plan-name{color:var(--gold)}
+      .plan .plan-price{font-size:1.45rem;font-weight:800;margin:6px 0 2px;line-height:1.4}
+      .plan .plan-sub{color:var(--ink-2);font-size:.88rem;margin:0 0 16px}
+      .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+      .plan li{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;line-height:1.65}
+      .plan li > span{flex:1 1 auto;min-width:0}
+      .plan li svg{flex:none;margin-top:5px}
+      .plan li.off{color:var(--muted)}
+      .badge-rec{
+        position:absolute;top:-14px;right:18px;background:var(--gold-bright);color:#221a04;
+        font-size:.78rem;font-weight:800;padding:4px 12px;border-radius:999px;
+      }
+
+      /* ---------- AI reading ---------- */
+      .ai-band{
+        background:linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 85%);
+        color:#f4efdd;border-radius:20px;padding:34px 32px 30px;position:relative;overflow:hidden;
+      }
+      .ai-band::after{
+        content:"";position:absolute;inset:0;pointer-events:none;opacity:.45;
+        background:
+          radial-gradient(2px 2px at 88% 20%, #e9bc3f 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 14% 78%, #fff3c4 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 62% 12%, #e9bc3f 50%, transparent 51%);
+      }
+      .ai-band .latin{font-family:"Cormorant Garamond", serif;font-size:1rem;letter-spacing:.28em;text-transform:uppercase;color:#e9bc3f;margin:0 0 8px;position:relative;z-index:1;font-weight:600}
+      .ai-band h2{font-size:clamp(1.22rem,3vw,1.55rem);margin:0 0 10px;line-height:1.45;position:relative;z-index:1}
+      .ai-band > p{margin:0;color:#ddd6c2;max-width:68ch;position:relative;z-index:1;font-size:.93rem}
+      .ai-band > p b{color:#fff}
+      .ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;position:relative;z-index:1}
+      .ai-point{background:rgba(244,239,221,.06);border:1px solid rgba(233,188,63,.35);border-radius:var(--radius);padding:18px 18px 14px}
+      .ai-point .ai-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:rgba(233,188,63,.14);color:#e9bc3f;margin-bottom:10px}
+      .ai-point h3{margin:0 0 4px;font-size:1rem;line-height:1.5}
+      .ai-point p{margin:0;font-size:.9rem;color:#cfc8e4;line-height:1.65}
+      .ai-questions{margin-top:22px;position:relative;z-index:1;border-top:1px solid rgba(233,188,63,.28);padding-top:18px}
+      .ai-questions p{margin:0 0 10px;font-size:.92rem;color:#e9bc3f;font-weight:700}
+      .q-chips{display:flex;flex-wrap:wrap;gap:8px}
+      .q-chips span{font-size:.88rem;color:#f4efdd;background:rgba(244,239,221,.07);border:1px solid rgba(244,239,221,.22);border-radius:999px;padding:6px 14px;line-height:1.5}
+      .ai-trust{margin-top:16px;position:relative;z-index:1;font-size:.9rem;color:#cfc8e4}
+      .ai-trust b{color:#fff}
+      @media (max-width:760px){ .ai-grid{grid-template-columns:1fr} .ai-band{padding:26px 20px 22px} }
+
+      /* ---------- spreads grid ---------- */
+      .spread-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+      .spread-card{
+        color:var(--ink);
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:20px 18px 16px;position:relative;box-shadow:var(--shadow);
+      }
+      .spread-card .cards-visual{display:flex;gap:5px;margin-bottom:14px}
+      .mini-card{
+        width:22px;height:34px;border-radius:4px;border:1.5px solid var(--gold);
+        background:var(--gold-soft);display:grid;place-items:center;color:var(--gold);
+      }
+      .spread-card h3{margin:0 0 4px;font-size:.96rem;line-height:1.55}
+      .spread-card .en{font-family:"Cormorant Garamond", serif;font-size:.9rem;color:var(--muted);letter-spacing:.03em;display:block;margin-bottom:8px}
+      .spread-card p{margin:0;font-size:.85rem;color:var(--ink-2);line-height:1.65}
+      .lock-tag{
+        display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+        font-size:.78rem;font-weight:700;color:var(--gold);
+        background:var(--gold-soft);border-radius:999px;padding:3px 10px;
+      }
+      /* ---------- price / join ---------- */
+      .join-grid{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
+      .price-card{
+        background:linear-gradient(165deg, var(--navy) 0%, var(--navy-2) 85%);
+        color:#f4efdd;border-radius:var(--radius);padding:28px 26px;box-shadow:var(--shadow);
+      }
+      .price-card .latin{font-family:"Cormorant Garamond", serif;letter-spacing:.28em;text-transform:uppercase;color:#e9bc3f;font-size:1rem;margin:0 0 8px;font-weight:600}
+      .price-card .amount{font-size:2rem;font-weight:800;line-height:1.3;margin:0}
+      .price-card .amount small{font-size:1rem;font-weight:600;color:#cfc49a}
+      .price-card .once{color:#ddd6c2;font-size:.95rem;margin:4px 0 18px}
+      .price-card ul{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:9px;font-size:.9rem}
+      .price-card li{display:flex;gap:9px;align-items:flex-start;line-height:1.65}
+      .price-card li > span{flex:1 1 auto;min-width:0}
+      .price-card li svg{flex:none;margin-top:5px}
+      .price-card .btn{width:100%}
+      .price-card .fineprint{font-size:.8rem;color:#a99f7e;margin:12px 0 0;text-align:center}
+
+      .steps{display:grid;gap:14px}
+      .step{
+        display:flex;gap:16px;background:var(--surface);border:1px solid var(--line);
+        border-radius:var(--radius);padding:20px 20px;box-shadow:var(--shadow);
+      }
+      .step-num{
+        flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+        background:var(--gold-bright);color:#221a04;font-weight:800;font-size:1.1rem;
+      }
+      .step h3{margin:2px 0 4px;font-size:.96rem;line-height:1.55}
+      .step p{margin:0;color:var(--ink-2);font-size:.89rem}
+      .pay-methods{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+      .pay-methods span{
+        font-size:.82rem;font-weight:700;border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;background:var(--surface-2);color:var(--ink-2);
+      }
+
+      /* ---------- notice ---------- */
+      .notice{
+        display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);
+        border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);
+      }
+      .notice svg{flex:none;margin-top:3px}
+      .notice h3{margin:0 0 6px;font-size:.98rem;line-height:1.55}
+      .notice p{margin:0;color:var(--ink-2);font-size:.9rem}
+      .notice p + p{margin-top:8px}
+
+      /* ---------- faq ---------- */
+      .faq{display:grid;gap:10px}
+      details{
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:4px 20px;box-shadow:var(--shadow);
+      }
+      summary{cursor:pointer;font-weight:700;padding:12px 0;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px}
+      summary::-webkit-details-marker{display:none}
+      summary::after{content:"+";font-size:1.3rem;color:var(--gold);font-weight:400}
+      details[open ] summary::after{content:"–"}
+      details p{margin:0 0 16px;color:var(--ink-2);font-size:.9rem}
+      summary{font-size:.94rem}
+
+      footer{margin-top:56px;text-align:center;color:var(--muted);font-size:.85rem}
+      footer .latin{font-family:"Cormorant Garamond", serif;letter-spacing:.3em;text-transform:uppercase}
+
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+      }
+
+      @media (max-width:760px){
+        .compare{grid-template-columns:1fr}
+        .join-grid{grid-template-columns:1fr}
+        .hero{padding:34px 22px 30px}
+        .step{padding:16px}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <nav class="topnav">
+        <a class="backlink" href="index.html" aria-label="StarFish Tarot ပင်မ စာမျက်နှာသို့">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+          StarFish Tarot — ပင်မ စာမျက်နှာ
+        </a>
+      </nav>
+
+      <!-- HERO -->
+      <header class="hero">
+        <div class="hero-inner">
+          <p class="latin">StarFish Tarot · Premium</p>
+          <h1>Spread အသစ် ၇ ခုလုံး<br /><span class="gold">Premium</span> နဲ့ ဖွင့်လိုက်ပါ</h1>
+          <p class="lead">Free မှာ ရတဲ့ spread ၃ ခုအပြင် အချစ်ရေး၊ ဆက်ဆံရေးနဲ့ လစဉ်လမ်းညွှန်အထိ နက်နက်နဲနဲ ကြည့်နိုင်တဲ့ <b style="color:#fff">Premium spread အသစ် ၇ ခု</b> ထပ်ဖွင့်ပေးပါတယ်။ ကတ်ရွေးပြီးတာနဲ့ အဆင့်မြင့် AI ဟောစာတမ်းလည်း ပါဝင်ပါတယ်။ တစ်ကြိမ်တည်း ပေးရုံနဲ့ ထာဝရ သုံးလို့ရပါတယ်။</p>
+          <div class="hero-cta">
+            <div class="price-chip"><b>၁၅,၀၀၀ ကျပ်</b><span>တစ်ကြိမ်တည်း · ထာဝရ Premium</span></div>
+            <a class="btn btn-gold" href="#join">Premium ဝင်ရန်
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- COMPARISON -->
+      <section aria-labelledby="compare-h">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2 id="compare-h">Free နဲ့ Premium ဘာကွာလဲ</h2>
+          <p>Premium ဆိုတာ Free ထက် ပိုနက်နဲတဲ့ spread အသစ် ၇ ခု ထပ်ရတာပါ — အဲဒီ spread တွေမှာ အဆင့်မြင့် AI ဟောစာတမ်းလည်း ပါဝင်ပါတယ်။ ကျန်တဲ့ Daily Draw နဲ့ ကတ် Library ကတော့ Free မှာလည်း အရင်အတိုင်း ရနေပါတယ်။</p>
+        </div>
+        <div class="compare">
+          <div class="plan">
+            <p class="plan-name">Free</p>
+            <p class="plan-price">အခမဲ့</p>
+            <p class="plan-sub">အကောင့်ဖွင့်ရုံနဲ့ စသုံးလို့ရပါတယ်</p>
+            <ul>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>အခြေခံ spread ၃ ခု</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Daily Draw — နေ့တိုင်း ကတ် ၁ ကတ်</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>ကတ် ၇၈ ကတ် Library အပြည့်အစုံ</li>
+              <li class="off"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Premium spread ၇ ခု — သော့ခတ်ထားပါတယ်</li>
+              <li class="off"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>အဆင့်မြင့် AI ဟောစာတမ်း — Premium မှာပဲ ရပါတယ်</li>
+            </ul>
+          </div>
+          <div class="plan premium">
+            <span class="badge-rec">တစ်ကြိမ်တည်း · ထာဝရ</span>
+            <p class="plan-name">Premium</p>
+            <p class="plan-price">၁၅,၀၀၀ ကျပ်</p>
+            <p class="plan-sub">လစဉ် ထပ်ပေးစရာ မလိုပါ — တစ်ခါဝင်ရုံနဲ့ ပြီးပါပြီ</p>
+            <ul>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Free ရဲ့ အရာအားလုံး</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span><b>Premium spread အသစ် ၇ ခု</b> အကုန် ဖွင့်ပေးပါတယ်</span></li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span><b>အဆင့်မြင့် AI ဟောစာတမ်း</b> ပါဝင်ပါတယ်</span></li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>ကတ် ၅–၁၀ ကတ်အထိ သုံးတဲ့ နက်နဲတဲ့ ဖတ်နည်းများ</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2e7d4f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>သက်တမ်းကုန်တာ မရှိ — ထာဝရ သုံးလို့ရပါတယ်</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI READING — brief mention -->
+      <section aria-labelledby="ai-h">
+        <div class="ai-band">
+          <p class="latin">Advanced AI Reading</p>
+          <h2 id="ai-h">အဆင့်မြင့် AI ဟောစာတမ်း ပါဝင်ပါတယ်</h2>
+          <p>Spread တစ်ခုချင်းစီမှာ ကတ်ရွေးပြီးတာနဲ့ Tarot အတွက် စနစ်တကျ လေ့ကျင့်ပေးထားတဲ့ အဆင့်မြင့် AI က သင်ရွေးတဲ့ ကတ်တွေကို ချိတ်ဆက်ပြီး မြန်မာလို ဟောစာတမ်း ထုတ်ပေးပါတယ်။</p>
+        </div>
+      </section>
+
+      <!-- SPREADS -->
+      <section aria-labelledby="spreads-h">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2 id="spreads-h">Premium Spread ၇ ခု</h2>
+          <p>spread တစ်ခုချင်းစီမှာ ကတ်ရွေးပြီးတာနဲ့ အဆင့်မြင့် AI က သင့်ကတ်တွေကို ချိတ်ဆက်ပြီး ဟောစာတမ်း အဖြေ ထုတ်ပေးပါတယ်။ မေးခွန်းတစ်ခုချင်းစီအတွက် သီးသန့် ဖတ်ပေးတာမို့ ဘယ် spread က သင် အခု သိချင်နေတာနဲ့ အကိုက်ညီဆုံးလဲ ကြည့်ကြည့်ပါ။</p>
+        </div>
+
+        <div class="spread-grid" id="spreadGrid"></div>
+      </section>
+
+      <!-- JOIN -->
+      <section id="join" aria-labelledby="join-h">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2 id="join-h">Premium ဝင်နည်း — အဆင့် ၃ ဆင့်</h2>
+          <p>Online payment မရှိသေးလို့ Messenger ကနေ လက်ဖြင့် အတည်ပြုပေးပါတယ်။ များသောအားဖြင့် တစ်ရက်အတွင်း ဖွင့်ပေးပါတယ်။</p>
+        </div>
+        <div class="join-grid">
+          <div class="price-card">
+            <p class="latin">Premium · Lifetime</p>
+            <p class="amount">၁၅,၀၀၀ <small>ကျပ်</small></p>
+            <p class="once">တစ်ကြိမ်တည်း ပေးချေရုံပါ — လစဉ် / နှစ်စဉ် ထပ်မပေးရပါ</p>
+            <ul>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e9bc3f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Premium spread ၇ ခု အကုန်</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e9bc3f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Tarot သီးသန့် အဆင့်မြင့် AI ဟောစာတမ်း</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e9bc3f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>သက်တမ်း မရှိ — ထာဝရ</li>
+              <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e9bc3f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>အကောင့် တစ်ခုစာ အတွက်</li>
+            </ul>
+            <a class="btn btn-gold" href="https://m.me/MgKyalNgar" target="_blank" rel="noopener">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17V22l3.28-1.8c1.13.31 2.34.48 3.58.48 5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1.09 12.46l-2.6-2.77-5.07 2.77 5.58-5.93 2.66 2.77 4.98-2.77-5.55 5.93z"/></svg>
+              Messenger ကနေ ဝင်မယ်
+            </a>
+            <p class="fineprint">m.me/MgKyalNgar — StarFish Tarot Page</p>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">၁</div>
+              <div>
+                <h3>Messenger ကနေ ငွေလွှဲပြီး slip ပို့ပါ</h3>
+                <p>StarFish Tarot Page ရဲ့ Messenger ကို စာပို့ပြီး ၁၅,၀၀၀ ကျပ် လွှဲပေးပါ။ လွှဲပြီးရင် ငွေလွှဲ slip (screenshot) ကို အဲဒီ chat ထဲမှာပဲ ပို့ပေးပါ။</p>
+                <div class="pay-methods"><span>KPay</span><span>Wave Money</span><span>AYA Pay</span></div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">၂</div>
+              <div>
+                <h3>အကောင့် email ပေးပို့ပါ</h3>
+                <p>StarFish Tarot App မှာ အကောင့်ဖွင့်ထားတဲ့ email ကို Messenger မှာပဲ ပြောပေးပါ။ Premium ကို အဲဒီ အကောင့်မှာပဲ ဖွင့်ပေးမှာမို့ email အမှား မရှိအောင် သေချာ စစ်ပေးပါ။</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">၃</div>
+              <div>
+                <h3>Admin ဖွင့်ပေးပြီးရင် App ပြန်ဖွင့်ပါ</h3>
+                <p>အတည်ပြုပြီးရင် Admin က သင့် အကောင့်ကို Premium ဖွင့်ပေးပါမယ်။ App ကို အပြည့်ပိတ်ပြီး ပြန်ဖွင့်လိုက်ပါ (သို့) reload လုပ်လိုက်ပါ — locked spread တွေ အကုန် ပွင့်သွားပါလိမ့်မယ်။</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTICE -->
+      <section aria-labelledby="notice-h">
+        <div class="notice">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          <div>
+            <h3 id="notice-h">သတိပြုရန် — Messenger ဟောခြင်းနဲ့ မတူပါ</h3>
+            <p>ဒီ Premium က <b>StarFish Tarot App ထဲမှာပဲ</b> ကိုယ်တိုင် spread ရွေးပြီး အဆင့်မြင့် AI ဟောစာတမ်း ဖတ်ဖို့ အတွက်ပါ။ Messenger ကနေ မေးခွန်း မေးပြီး Admin ကိုယ်တိုင် ဟောပေးတဲ့ service (မေးခွန်း ၁ ခု ၅,၀၀၀ ကျပ် ကနေ စတဲ့ package တွေ) နဲ့ သီးခြားစီပါ — Premium ဝင်ထားရုံနဲ့ Messenger ဟောခြင်း မပါဝင်ပါ။</p>
+            <p>Messenger package တွေ အကြောင်း သိချင်ရင် ဈေးနှုန်း စာမျက်နှာမှာ ကြည့်လို့ရပါတယ်။</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section aria-labelledby="faq-h">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2 id="faq-h">မေးလေ့ရှိတဲ့ မေးခွန်းများ</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Premium က ဘယ်လောက် ကြာကြာ သုံးလို့ရလဲ?</summary>
+            <p>ထာဝရပါ။ ၁၅,၀၀၀ ကျပ် တစ်ကြိမ်တည်း ပေးရုံပါပဲ — လစဉ် သက်တမ်းတိုးစရာ၊ ထပ်ပေးစရာ မရှိပါဘူး။</p>
+          </details>
+          <details>
+            <summary>ငွေလွှဲပြီး ဘယ်လောက် စောင့်ရမလဲ?</summary>
+            <p>Slip နဲ့ အကောင့် email ရတာနဲ့ Admin က လက်ဖြင့် အတည်ပြုပြီး ဖွင့်ပေးပါတယ်။ များသောအားဖြင့် တစ်ရက်အတွင်း ပြီးပါတယ် — ပြီးရင် Messenger ကနေ ပြန်အကြောင်းကြားပေးပါမယ်။</p>
+          </details>
+          <details>
+            <summary>ဖုန်း ပြောင်းရင် Premium ပျောက်သွားမလား?</summary>
+            <p>မပျောက်ပါဘူး။ Premium က ဖုန်းနဲ့ မဟုတ်ဘဲ သင့် အကောင့် (email) နဲ့ ချိတ်ထားတာပါ။ ဖုန်းအသစ်မှာ အကောင့် အဟောင်းနဲ့ login ပြန်ဝင်ရုံနဲ့ Premium အတိုင်း ပြန်ရပါတယ်။</p>
+          </details>
+          <details>
+            <summary>အပြင် AI ဆော့ဝဲတွေမှာ မေးတာနဲ့ ဘာကွာလဲ?</summary>
+            <p>ကွာပါတယ်။ သာမန် AI app တွေက Tarot ကို အထွေထွေ ဗဟုသုတအနေနဲ့ပဲ သိထားတာမို့ ကတ်အဓိပ္ပာယ်ကို ယေဘုယျ ရှင်းပြပေးရုံပါပဲ — သင့်ရဲ့ spread ပုံစံ၊ ကတ်ကျတဲ့ အနေအထားနဲ့ ကတ်အတွဲအစပ်ကို တစ်ဆက်တည်း ဖတ်ပေးတာ မဟုတ်ပါဘူး။ StarFish ရဲ့ အဆင့်မြင့် AI ကတော့ Tarot အတွက် သီးသန့် စနစ်တကျ လေ့ကျင့်ပေးထားတာမို့ သင်ရွေးတဲ့ ကတ်တွေကို အချင်းချင်း ချိတ်ဆက်ပြီး သင့်မေးခွန်း တစ်ခုတည်းအတွက် သီးသန့် ဟောစာတမ်း ထုတ်ပေးပါတယ်။ ဒါကြောင့် အဖြေက "လူတိုင်းအတွက် ပြောလို့ရတဲ့ စကား" မဟုတ်ဘဲ ကိုယ့်အခြေအနေနဲ့ တိုက်ဆိုင်နေသလို ခံစားရတာပါ။</p>
+          </details>
+          <details>
+            <summary>အဆင့်မြင့် AI ဟောစာတမ်း ဆိုတာ ဘယ်လိုမျိုးလဲ?</summary>
+            <p>သင် ကိုယ်တိုင် ရွေးထားတဲ့ ကတ်တွေနဲ့ မေးခွန်းကို အဆင့်မြင့် AI က ချိတ်ဆက်ပြီး ဟောစာတမ်း ထုတ်ပေးတာပါ။ ကတ်တစ်ချင်းစီရဲ့ အဓိပ္ပာယ်တင် မဟုတ်ဘဲ ကတ်အချင်းချင်း ဆက်စပ်ပုံနဲ့ spread ထဲက အနေအထားကိုပါ ထည့်သွင်း ဖတ်ပေးလို့ ဖတ်လိုက်တာနဲ့ ကိုယ့်အကြောင်း ပြောနေသလို ခံစားရပါလိမ့်မယ်။ ကျပန်းထုတ်တဲ့ အဖြေ မဟုတ်ပါဘူး — သင်ရွေးတဲ့ ကတ်တွေပေါ်မှာပဲ အခြေခံပါတယ်။</p>
+          </details>
+          <details>
+            <summary>App ထဲက spread နဲ့ Messenger ဟောခြင်း ဘာကွာလဲ?</summary>
+            <p>App Premium က ကိုယ်တိုင် ကတ်ရွေးပြီး Tarot သီးသန့် အဆင့်မြင့် AI က အဖြေထုတ်ပေးတာ ဖြစ်ပါတယ် — သိချင်တဲ့ အချိန်တိုင်း၊ မေးခွန်း ဘယ်နှစ်ခုဖြစ်ဖြစ် ကိုယ်တိုင် ဖတ်လို့ရပါတယ်။ Messenger ဟောခြင်းကတော့ မေးခွန်းကို ပြောပြပြီး Admin ကိုယ်တိုင် ဟောပေးတာ ဖြစ်လို့ ဈေးနှုန်းနဲ့ ပုံစံ သီးခြားစီပါ။</p>
+          </details>
+        </div>
+      </section>
+
+      <footer>
+        <p class="latin">StarFish Tarot</p>
+      </footer>
+    </div>
+
+    <script>
+      var spreads = [
+        { name: "Love Spread", mm: "အချစ်ရေး လမ်းညွှန်", cards: 7, desc: "နှလုံးသားရဲ့ အခြေအနေနဲ့ အချစ်ရေးရဲ့ ဦးတည်ရာကို ကတ် ၇ ကတ်နဲ့ နက်နက်နဲနဲ ကြည့်တာ။" },
+        { name: "Celtic Cross", mm: "ကတ်တစ် ခရော့စ်", cards: 10, desc: "Tarot ရဲ့ အကျော်ကြားဆုံး ဖတ်နည်း — အခြေအနေ၊ အတားအဆီးနဲ့ ရလဒ်အထိ ကတ် ၁၀ ကတ် အပြည့်အစုံ။" },
+        { name: "Past Relationship", mm: "အတိတ် ဆက်ဆံရေး", cards: null, desc: "ပြီးဆုံးသွားတဲ့ ဆက်ဆံရေးက သင်ခန်းစာတွေနဲ့ မပြီးပြတ်သေးတဲ့ အရာတွေကို ပြန်လည် သုံးသပ်တာ။" },
+        { name: "Type of Partner", mm: "ကိုယ်နဲ့ ကိုက်ညီတဲ့ လက်တွဲဖော်", cards: null, desc: "ကိုယ့်အတွက် သင့်တော်တဲ့ လက်တွဲဖော် အမျိုးအစားနဲ့ သူ့ရဲ့ စရိုက်လက္ခဏာတွေကို ရှာဖွေတာ။" },
+        { name: "Their Intentions", mm: "သူ့ရဲ့ ရည်ရွယ်ချက်", cards: 5, desc: "တစ်ဖက်လူရဲ့ စိတ်ထဲက စစ်မှန်တဲ့ ရည်ရွယ်ချက်ကို ကတ် ၅ ကတ်နဲ့ ဖော်ထုတ်တာ။" },
+        { name: "Monthly Guidance", mm: "လစဉ် လမ်းညွှန်မှု", cards: null, desc: "လာမယ့် တစ်လအတွက် စွမ်းအင်၊ သတိပြုစရာနဲ့ အခွင့်အလမ်းတွေကို ကြိုတင် ကြည့်တာ။" },
+        { name: "Relationship Guidance", mm: "ဆက်ဆံရေး လမ်းညွှန်", cards: 9, desc: "လက်ရှိ ဆက်ဆံရေးရဲ့ အားသာချက်၊ အားနည်းချက်နဲ့ ရှေ့ဆက်နည်းကို ကတ် ၉ ကတ်နဲ့ လမ်းညွှန်တာ။" }
+      ];
+
+      var grid = document.getElementById('spreadGrid');
+      var lockSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
+      var starSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8z"/></svg>';
+
+      spreads.forEach(function (s) {
+        var btn = document.createElement('div');
+        btn.className = 'spread-card';
+        var visualCount = s.cards ? Math.min(s.cards, 5) : 3;
+        var visual = '';
+        for (var i = 0; i < visualCount; i++) visual += '<span class="mini-card">' + starSvg + '</span>';
+        var cardLabel = s.cards ? ('ကတ် ' + toMmNum(s.cards) + ' ကတ်') : 'Premium Spread';
+        btn.innerHTML =
+          '<span class="cards-visual">' + visual + '</span>' +
+          '<h3>' + s.mm + '</h3>' +
+          '<span class="en">' + s.name + (s.cards ? ' · ' + s.cards + ' cards' : '') + '</span>' +
+          '<p>' + s.desc + '</p>' +
+          '<span class="lock-tag">' + lockSvg + ' Premium · ' + cardLabel + '</span>';
+        grid.appendChild(btn);
+      });
+
+      function toMmNum(n) {
+        var digits = ['၀','၁','၂','၃','၄','၅','၆','၇','၈','၉'];
+        return String(n).split('').map(function (d) { return digits[Number(d)]; }).join('');
+      }
+    </script>
+  </body>
+</html>
