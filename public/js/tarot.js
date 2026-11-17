@@ -662,7 +662,7 @@ function goToRevealStep() {
 
         wrapper.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-card-front card-pattern">${(currentSpreadType === 'celtic-cross' && index === 1) ? '' : `<div class="reveal-pos-label">ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div>`}</div>
+                <div class="flip-card-front card-pattern">${(currentSpreadType === 'celtic-cross' && index === 1) ? '' : `<div class="reveal-pos-label">${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}</div>`}</div>
                 <div class="flip-card-back">
                     <img src="${card.imageUrl}" alt="${card.name}" style="${card.isReversed ? 'transform: rotate(180deg);' : ''}">
                 </div>
@@ -683,7 +683,7 @@ function goToRevealStep() {
         if (currentSpreadType === 'celtic-cross' && index === 1) {
             const card2Label = document.createElement('div');
             card2Label.className = 'celtic-card2-label';
-            card2Label.textContent = `ကတ် ${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}`;
+            card2Label.textContent = `${myNum(index + 1)} — ${getPositionName(currentSpreadType, index)}`;
             revealArea.appendChild(card2Label);
         }
     });

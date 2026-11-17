@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.22'; // 17 Nov 2026: number badge removed (number already in position label), card 1 label full width
+const CACHE_NAME = 'starfish-tarot-v3.23'; // 17 Nov 2026: "ကတ်" word removed from position labels; Celtic cards 4 & 6 labels vertical on outer sides
 const urlsToCache = [
   '/',
   '/index.html',

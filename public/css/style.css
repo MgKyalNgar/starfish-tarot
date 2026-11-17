@@ -1157,6 +1157,9 @@ footer {
 }
 /* 16 Nov 2026 (Celtic swap): ကတ် ၁ label ကို အပေါ်ရွှေ့ (အောက်က ကတ် ၂ ဖုံးနေလို့)၊ ကတ် ၂ label ကို container ထဲမှာ ကတ်အောက် အလျားလိုက် ထား */
 .spread-celtic-cross .card-pos-1 .reveal-pos-label { top: 0; bottom: auto; }
+/* 17 Nov 2026 (Celtic 4 & 6): label ကို ဒေါင်လိုက် — ကတ် ၂ လှည့်ထားတဲ့ အစွန်းနဲ့ မထိအောင် အပြင်ဘက် အစွန်း (၄ = ဘယ်, ၆ = ညာ) မှာ ထား */
+.spread-celtic-cross .card-pos-4 .reveal-pos-label { left: 0; right: auto; top: 50%; bottom: auto; transform: translateY(-50%); writing-mode: vertical-rl; }
+.spread-celtic-cross .card-pos-6 .reveal-pos-label { left: auto; right: 0; top: 50%; bottom: auto; transform: translateY(-50%); writing-mode: vertical-rl; }
 .celtic-card2-label {
     position: absolute; left: 35%; top: calc(50% + 25px + 46px); transform: translateX(-50%);
     background: rgba(10, 17, 40, 0.88);
