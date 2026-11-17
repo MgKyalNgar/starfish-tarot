@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.23'; // 17 Nov 2026: "ကတ်" word removed from position labels; Celtic cards 4 & 6 labels vertical on outer sides
+const CACHE_NAME = 'starfish-tarot-v3.24'; // 17 Nov 2026: pickCounter shows only after fan settles; pickCounter background removed
 const urlsToCache = [
   '/',
   '/index.html',

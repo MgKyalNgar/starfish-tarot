@@ -278,7 +278,9 @@ async function selectSpread(type, count, isPremium = false, el) {
     // 16 Nov 2026 (#2, #5): Shuffle ခေါင်းစဉ်မှာ Spread နာမည် ပြမည်၊ counter ကို သီးခြား ပြမည်
     const spreadTitleEl = document.getElementById('spreadTitle');
     if (spreadTitleEl) spreadTitleEl.innerText = getSpreadTitle(type);
-    updatePickCounter();
+    // 17 Nov 2026: Counter ကို Fan ဖြန့်ပြီးမှ ပြမည် — အခုတော့ ဖျောက်ထား (နေရာ ကျန်နေအောင် visibility သုံး)
+    const counterEl = document.getElementById('pickCounter');
+    if (counterEl) counterEl.style.visibility = 'hidden';
 
     createDeckStack();
 
@@ -315,7 +317,7 @@ function resetToSelection() {
     const spreadTitleEl = document.getElementById('spreadTitle');
     if (spreadTitleEl) spreadTitleEl.innerText = 'Tarot Deck';
     const counter = document.getElementById('pickCounter');
-    if (counter) counter.innerText = '';
+    if (counter) { counter.innerText = ''; counter.style.visibility = 'hidden'; }
     history.replaceState({step: 'selection'}, '', window.location.pathname);
     showStep('step-selection');
 }
@@ -596,6 +598,9 @@ function spreadCardsOut() {
     setTimeout(() => {
         fanReady = true;
         updatePickCounter();
+        // 17 Nov 2026: Fan ဖြန့်ပြီးမှ Counter ကို အာ့နေရာ ပြမည်
+        const counter = document.getElementById('pickCounter');
+        if (counter) counter.style.visibility = 'visible';
     }, availableDeck.length * 15 + 150);
 }
 
