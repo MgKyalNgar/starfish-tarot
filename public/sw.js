@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.29'; // 18 Nov 2026: config.js rotated to new publishable key (old default key to be deleted after verification)
+const CACHE_NAME = 'starfish-tarot-v3.30'; // 18 Nov 2026: title line-height fixes (style.css .subtitle/.pricing-desc changed)
 const urlsToCache = [
   '/',
   '/index.html',

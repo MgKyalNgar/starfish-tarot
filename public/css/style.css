@@ -202,6 +202,7 @@ body::after {
     font-size: clamp(0.9rem, 4vw, 1.1rem);
     color: var(--text-muted);
     margin-bottom: 2rem;
+    line-height: 1.75;
 }
 
 .step-reveal-card .text-center { 
@@ -671,7 +672,7 @@ footer {
 .pricing-card.featured h3 { color: #ffd700; }
 .pricing-price { font-family: 'Orbitron', sans-serif; font-size: 1.25rem; font-weight: 700; color: #fff; margin: 0 0 0 auto; white-space: nowrap; }
 .pricing-price span { font-size: 0.9rem; color: var(--text-muted); }
-.pricing-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin: 0.6rem 0 0; }
+.pricing-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin: 0.6rem 0 0; }
 .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--bg-dark); color: #ffd700; border: 1px solid #ffd700; font-size: 0.75rem; font-weight: 700; padding: 2px 12px; border-radius: 20px; white-space: nowrap; }
 .pricing-note { color: var(--text-muted); line-height: 1.8; margin: 1rem 0 1.5rem; }
 .pricing-book-btn { display: inline-block; text-decoration: none; font-family: 'Padauk', sans-serif; font-size: 1.05rem; }
