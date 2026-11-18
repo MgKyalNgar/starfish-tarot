@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.28'; // 17 Nov 2026: Premium page + gold modal button (style.css changed)
+const CACHE_NAME = 'starfish-tarot-v3.29'; // 18 Nov 2026: config.js rotated to new publishable key (old default key to be deleted after verification)
 const urlsToCache = [
   '/',
   '/index.html',
