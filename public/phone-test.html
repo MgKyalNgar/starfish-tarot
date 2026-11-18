@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone test (390px)</title>
+<style>html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:390px;height:844px;display:block}</style>
+</head>
+<body>
+<script>
+  // TEMP page for title-spacing inspection only — delete after use.
+  // Usage: /phone-test.html?page=pricing.html (pricing | booking | services | about | premium)
+  var allowed = ['pricing.html','booking.html','services.html','about.html','premium.html'];
+  var p = new URLSearchParams(location.search).get('page') || 'pricing.html';
+  if (allowed.indexOf(p) === -1) p = 'pricing.html';
+  document.title = 'Phone test — ' + p;
+  var f = document.createElement('iframe');
+  f.src = '/' + p;
+  document.body.appendChild(f);
+</script>
+</body>
+</html>
