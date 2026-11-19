@@ -127,7 +127,7 @@ function updateAuthUI() {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
                     if(supabaseClient) supabaseClient.auth.signOut();
-                    window.location.href = 'index.html'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
+                    window.location.href = '/'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
                 });
             }
         } else {
@@ -262,7 +262,7 @@ function initAuthPage() {
                     isSubscribed: isSub
                 }));
 
-                toastThenRedirect("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!", 'success', 'index.html');
+                toastThenRedirect("အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်!", 'success', '/');
             }
         } else {
             const { data, error } = await supabaseClient.auth.signUp({

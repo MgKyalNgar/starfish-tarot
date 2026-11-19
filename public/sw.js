@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.30'; // 18 Nov 2026: title line-height fixes (style.css .subtitle/.pricing-desc changed)
+const CACHE_NAME = 'starfish-tarot-v3.31'; // 19 Nov 2026: login/logout redirect '/' + fetch fallback (ERR_FAILED fix)
 const urlsToCache = [
   '/',
   '/index.html',
@@ -63,6 +63,11 @@ self.addEventListener('fetch', event => {
                 // Fetch လုပ်လို့မရတဲ့ Error တွေကိုပါ အသံတိတ်ဖမ်းပေးထားမည် (.catch ထပ်ဖြည့်ထားသည်)
                 return fetch(event.request).catch(error => {
                     console.log("Fetch failed (Offline or Blocked):", event.request.url);
+                    // Navigation ဆို cache ထဲက home page ပြပေးမည် (undefined ပြန်ရင် ERR_FAILED ဖြစ်မည်)
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/');
+                    }
+                    return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
                 });
             })
     );
