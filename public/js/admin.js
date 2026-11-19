@@ -45,7 +45,7 @@ async function initAdminPage() {
     }
     const currentUser = JSON.parse(userStr);
     if (currentUser.role !== 'admin') {
-        toastThenRedirect("⚠️ သင့်တွင် ဤစာမျက်နှာကို ကြည့်ရှုခွင့် (Admin Access) မရှိပါ။", 'error', 'index.html', 1500);
+        toastThenRedirect("⚠️ သင့်တွင် ဤစာမျက်နှာကို ကြည့်ရှုခွင့် (Admin Access) မရှိပါ။", 'error', '/', 1500);
         return;
     }
 
