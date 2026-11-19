@@ -2,7 +2,7 @@
   "name": "Starfish Tarot",
   "short_name": "Starfish Tarot",
   "description": "သင့်အတွက် အကောင်းဆုံး Tarot ဟောစာတမ်း",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0a1128",
   "theme_color": "#0a1128",
