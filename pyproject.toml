@@ -1,0 +1,9 @@
+[project]
+name = "starfish-tarot"
+version = "0.1.0"
+description = "StarFish Tarot — Cloudflare Worker (FastAPI + httpx REST, no supabase-py)"
+requires-python = ">=3.12"
+dependencies = ["fastapi", "pydantic", "httpx"]
+
+[dependency-groups]
+dev = ["workers-py", "workers-runtime-sdk"]
