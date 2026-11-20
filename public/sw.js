@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.32'; // 20 Nov 2026: Google login (auth.js + login.html)
+const CACHE_NAME = 'starfish-tarot-v3.33'; // 20 Nov 2026: Home login cover + Guest Mode (auth.js + index.html + style.css)
 const urlsToCache = [
   '/',
   '/index.html',

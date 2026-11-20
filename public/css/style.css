@@ -1189,3 +1189,15 @@ footer {
     border-radius: 8px; z-index: 2; white-space: nowrap;
 }
 .spread-celtic-cross .card-pos-2.flipped + .celtic-card2-label { display: none; }
+
+/* =========================================
+   Login cover on Home (20 Nov 2026)
+   Guest ဆို Login form က Home ပေါ်မှာ အုပ်ပြီး ပေါ်မယ်
+   .modal-overlay ကို ပြန်သုံးသည် — scroll လိုရင် box က အလယ်မှာ နေပြီး အောက်ကို ဆွဲလို့ရမယ်
+========================================= */
+#loginCover {
+    overflow-y: auto;
+}
+#loginCover .auth-box {
+    margin: auto;
+}

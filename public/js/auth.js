@@ -198,6 +198,7 @@ async function updateAuthUI() {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
+                    sessionStorage.removeItem('guest_mode');
                     if(supabaseClient) supabaseClient.auth.signOut();
                     window.location.href = '/'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
                 });
@@ -233,6 +234,25 @@ async function updateAuthUI() {
         _premiumSynced = true;
         syncSubscriptionFromServer().then(synced => { if (synced) updateAuthUI(); });
     }
+
+    // Home cover login (20 Nov 2026) — Guest ဆို Login cover ပေါ်မယ် (#loginCover က Home မှာပဲ ရှိသည်)
+    const loginCover = document.getElementById('loginCover');
+    if (loginCover && !currentUser && !sessionStorage.getItem('guest_mode')) {
+        loginCover.classList.remove('hidden');
+    }
+}
+
+// Guest Mode (20 Nov 2026) — Login မဝင်ဘဲ ဆက်သုံးမယ်။
+// Home cover မှာ နှိပ်ရင် cover ပိတ်ပြီး Home မှာပဲ ဆက်နေမယ်၊
+// login.html မှာ နှိပ်ရင် reading.html ကို သွားမယ်။ session တစ်ခု တစ်ခါပဲ မှတ်မယ်။
+function enterGuestMode() {
+    sessionStorage.setItem('guest_mode', '1');
+    const loginCover = document.getElementById('loginCover');
+    if (loginCover) {
+        loginCover.classList.add('hidden');
+    } else {
+        window.location.href = 'reading.html';
+    }
 }
 
 function initAuthPage() {
@@ -242,6 +262,10 @@ function initAuthPage() {
     // Google login ခလုတ် (20 Nov 2026)
     const googleBtn = document.getElementById('googleLoginBtn');
     if (googleBtn) googleBtn.onclick = signInWithGoogle;
+
+    // Guest Mode ခလုတ် (20 Nov 2026) — Home cover မှာရော login.html မှာပါ ရှိသည်
+    const guestBtn = document.getElementById('guestModeBtn');
+    if (guestBtn) guestBtn.onclick = enterGuestMode;
 
     let isLogin = true;
     const authTitle = document.getElementById('authTitle');
