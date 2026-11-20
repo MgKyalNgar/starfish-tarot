@@ -195,11 +195,15 @@ async function updateAuthUI() {
 
             const logoutBtn = container.querySelector('.nav-logout-btn');
             if(logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
+                logoutBtn.addEventListener('click', async (e) => {
                     e.preventDefault();
                     localStorage.removeItem('tarot_user');
                     sessionStorage.removeItem('guest_mode');
-                    if(supabaseClient) supabaseClient.auth.signOut();
+                    // 20 Nov 2026: signOut ပြီးမှ ပြန်မယ် — အရင်က မစောင့်ဘဲ တန်းပြန်လို့
+                    // VPN နှေးရင် signOut မပြီးခင် စာမျက်နှာ ပြောင်းပြီး session restore က အကောင့်ကို ပြန်ယူလိုက်တယ်
+                    if (supabaseClient) {
+                        try { await supabaseClient.auth.signOut(); } catch (err) { console.warn('Sign out failed:', err); }
+                    }
                     window.location.href = '/'; // Logout လုပ်လျှင် Home သို့ပြန်သွားမည်
                 });
             }

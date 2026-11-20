@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.33'; // 20 Nov 2026: Home login cover + Guest Mode (auth.js + index.html + style.css)
+const CACHE_NAME = 'starfish-tarot-v3.34'; // 20 Nov 2026: Logout fix — await signOut before redirect (auth.js)
 const urlsToCache = [
   '/',
   '/index.html',
