@@ -1,4 +1,4 @@
-const CACHE_NAME = 'starfish-tarot-v3.34'; // 20 Nov 2026: Logout fix — await signOut before redirect (auth.js)
+const CACHE_NAME = 'starfish-tarot-v3.35'; // 20 Nov 2026: Google login VPN note (login.html + cover) + #authSubmitBtn mobile size fix
 const urlsToCache = [
   '/',
   '/index.html',

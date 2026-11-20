@@ -1132,6 +1132,11 @@ footer {
         padding: 0.8rem 2rem !important;
         margin-bottom: 0 !important;
     }
+    /* အကောင့်ဝင်မည် ခလုတ်ကို အပေါ်က .action-btn ဖုန်း စည်းမျဉ်းကနေ လွတ်အောင် (20 Nov 2026) — ဖုန်းမှာ သေးရှည်ရှည် ဖြစ်နေလို့ */
+    #authSubmitBtn {
+        font-size: 1rem !important;
+        padding: 12px 16px !important;
+    }
     /* Title နှင့် ကပ်သွားစေရန် margin-top များကို 0rem ပြောင်းထားသည် */
     .spread-three-card-time, .spread-three-card-action, .spread-one-card { margin-top: 0rem; }
     
