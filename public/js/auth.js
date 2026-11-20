@@ -35,6 +35,75 @@ async function syncSubscriptionFromServer() {
     }
 }
 
+// ===== Google Login (20 Nov 2026) =====
+// User row ကို ရှာမယ်၊ မရှိရင် ဆောက်မယ် — password login နဲ့ Google login နှစ်ခုလုံး မျှသုံးသည်။
+// RLS 12 Nov 2026: session ရှိမှ insert ရသည် (auth.uid() = id policy) — login ဝင်ပြီးမှ ခေါ်ရမည်။
+async function ensureUserRow(user) {
+    let { data: dbUser } = await supabaseClient
+        .from('User')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    if (!dbUser) {
+        const nameForRow = user.user_metadata?.full_name || user.user_metadata?.name || user.user_metadata?.display_name || user.email.split('@')[0];
+        const { data: created } = await supabaseClient
+            .from('User')
+            .insert([{
+                id: user.id,
+                email: user.email,
+                name: nameForRow,
+                role: 'user',
+                isSubscribed: false
+            }])
+            .select('*')
+            .single();
+        if (created) dbUser = created;
+    }
+    return dbUser;
+}
+
+// Google နဲ့ Login/Signup — အကောင့်အသစ်ဆို Supabase က auto-ဖွင့်ပေးသည်၊
+// အကောင့်ဟောင်းဆို ဝင်သွားသည်။ ပြီးရင် Cloudflare home (/) ကို ပြန်လာမည်။
+async function signInWithGoogle() {
+    if (!supabaseClient) {
+        showToast("စနစ်ချို့ယွင်းနေပါသည်။ HTML တွင် Supabase Link ထည့်ရန် လိုအပ်ပါသည်။", 'error');
+        return;
+    }
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: 'https://starfish-tarot.kyal.workers.dev/'
+        }
+    });
+    if (error) showToast("Error: " + error.message, 'error');
+}
+
+// Google OAuth က ပြန်လာတဲ့အခါ (Supabase session ရှိပြီး localStorage မှာ tarot_user မရှိသေးရင်)
+// User row ကို ရှာမယ်/ဆောက်မယ်၊ localStorage ဖြည့်မယ်။ ပုံမှန် load မှာ localStorage ရှိနေလို့ ဘာမှ မလုပ်ဘူး။
+async function restoreSessionUser() {
+    if (typeof supabaseClient === 'undefined' || !supabaseClient) return false;
+    if (localStorage.getItem('tarot_user')) return false;
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session || !session.user) return false;
+        const user = session.user;
+        const dbUser = await ensureUserRow(user);
+        const displayName = (dbUser && dbUser.name) || user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+        localStorage.setItem('tarot_user', JSON.stringify({
+            email: user.email,
+            name: displayName,
+            id: user.id,
+            role: dbUser ? dbUser.role : 'user',
+            isSubscribed: dbUser ? dbUser.isSubscribed : false
+        }));
+        return true;
+    } catch (e) {
+        console.warn('Session restore failed:', e);
+        return false;
+    }
+}
+
 // ===== In-app Toast & Confirm (13 Nov 2026) — browser alert()/confirm() အစား =====
 // auth.js က စာမျက်နှာ ၇ ခုလုံးမှာ ပါလို့ helper တွေကို ဒီမှာပဲ ထားသည်။
 
@@ -101,7 +170,10 @@ function showConfirm(title, message, okText = 'အတည်ပြုမည်', 
     });
 }
 
-function updateAuthUI() {
+async function updateAuthUI() {
+    // Google OAuth ပြန်လာတဲ့အခါ session ကို အရင် ဖမ်းမယ် — ပြီးမှ nav ကို ပြမယ်။
+    await restoreSessionUser();
+
     const userStr = localStorage.getItem('tarot_user');
     const currentUser = userStr ? JSON.parse(userStr) : null;
     const authLinksContainers = document.querySelectorAll('.auth-links');
@@ -167,6 +239,10 @@ function initAuthPage() {
     const authForm = document.getElementById('authForm');
     if (!authForm) return;
 
+    // Google login ခလုတ် (20 Nov 2026)
+    const googleBtn = document.getElementById('googleLoginBtn');
+    if (googleBtn) googleBtn.onclick = signInWithGoogle;
+
     let isLogin = true;
     const authTitle = document.getElementById('authTitle');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
@@ -224,35 +300,12 @@ function initAuthPage() {
                 authSubmitBtn.innerText = "အကောင့်ဝင်မည်";
                 authSubmitBtn.disabled = false;
             } else {
-                let { data: dbUser } = await supabaseClient
-                    .from('User')
-                    .select('*')
-                    .eq('id', data.user.id)
-                    .single();
-
-                // RLS 12 Nov 2026: User row ကို login မှာ လိုအပ်ရင် ဖန်တီးသည်။
-                // Sign-up ပြီးချင်း session မရှိသေးလို့ RLS insert policy
-                // (auth.uid() = id) ကို မကျော်နိုင်ဘူး — login မှာတော့ session
-                // ရှိနေပြီမို့ insert ရသည်။
-                if (!dbUser) {
-                    const nameForRow = data.user.user_metadata?.display_name || email.split('@')[0];
-                    const { data: created } = await supabaseClient
-                        .from('User')
-                        .insert([{
-                            id: data.user.id,
-                            email: email,
-                            name: nameForRow,
-                            role: 'user',
-                            isSubscribed: false
-                        }])
-                        .select('*')
-                        .single();
-                    if (created) dbUser = created;
-                }
+                // User row ကို ရှာမယ်၊ မရှိရင် ဆောက်မယ် (Google login နဲ့ မျှသုံးသည်)
+                const dbUser = await ensureUserRow(data.user);
 
                 const userRole = dbUser ? dbUser.role : 'user';
                 const isSub = dbUser ? dbUser.isSubscribed : false;
-                const displayName = data.user.user_metadata?.display_name || email.split('@')[0];
+                const displayName = data.user.user_metadata?.display_name || (dbUser && dbUser.name) || email.split('@')[0];
 
                 localStorage.setItem('tarot_user', JSON.stringify({
                     email: data.user.email,
